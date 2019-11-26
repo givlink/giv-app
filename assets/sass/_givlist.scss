@@ -1,0 +1,94 @@
+.GivList {
+  background-color: white;
+  &__tab {
+    display: flex;
+    justify-content: center;
+    &__btn {
+      width: 50%;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.4em;
+      color: $head-black-color;
+      border-bottom: 1px solid $select-border-color;
+      &:first-child {
+        border-right: 1px solid $select-border-color;
+      }
+      &.on {
+        color: $base-color;
+        border-bottom: 1px solid $base-color;
+      }
+    }
+  }
+  &__box {
+    padding: 0 10px;
+    overflow: scroll;
+    height: calc( 100vh - 190px );
+    &__term {
+      padding: 20px 0;
+      border-bottom: 1px solid $select-border-color;
+      &__date {
+        color: $head-black-color;
+        font-size: 1.4em;
+      }
+      &__content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-decoration: none;
+        &__person {
+          padding: 20px 0;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          text-decoration: none;
+          position: relative;
+          &__icon {
+            margin-right: 5px;
+
+            &__img {
+              width: 50px;
+              height: 50px;
+              border-radius: 25px;
+              object-fit: cover;
+            }
+          }
+
+          &__text {
+            &__name {
+              font-size: 1.4em;
+              font-weight: bold;
+              color: $head-black-color;
+            }
+
+            &__position {
+              color: $head-black-color;
+            }
+          }
+        }
+        &__thanks {
+          border: 1px solid $select-border-color;
+          padding: 5px 20px 5px 10px ;
+          position: relative;
+          &__text {
+            font-size: 1.2em;
+            color: $head-black-color;
+          }
+          &:after {
+            position: absolute;
+            content: '';
+            right: 5px;
+            top: calc( 50% - 8px);
+            width: 9px;
+            height: 17px;
+            background-image: url("../../../givapp/web_template_ejs/develop/images/giv_right_arrow.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+          }
+        }
+      }
+    }
+
+  }
+}

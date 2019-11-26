@@ -1,0 +1,37 @@
+.Notification {
+  &__list {
+    &__li {
+      margin-bottom: 3px;
+      &__link {
+        background-color: white;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        text-decoration: none;
+        padding: 10px;
+        &__icon {
+          margin-right: 5px;
+          &__img {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            object-fit: cover;
+          }
+        }
+
+        &__text {
+          &__info {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: $head-black-color;
+            margin-bottom: 5px;
+          }
+          &__date {
+            color: $head-black-color;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+}

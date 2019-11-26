@@ -1,0 +1,67 @@
+@import "reset";
+@import "common";
+
+
+body {
+  width: 375px;
+  margin: 0 auto;
+  background-color: #EDF3F7;
+  height: 100vh;
+  @include max-screen($breakpoint-mobile) {
+    width: 100%;
+  }
+
+}
+
+.Title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -120px!important;
+
+  @include max-screen($breakpoint-mobile) {
+    display: block;
+    margin-top: -40px!important;
+  }
+  &__icon {
+    width: 35%;
+    @include max-screen($breakpoint-mobile) {
+      width: 100%;
+    }
+  }
+  &__box {
+    width: 65%;
+    @include max-screen($breakpoint-mobile) {
+      width: 100%;
+    }
+    h2 {
+      font-size: 3.1em;
+      @include max-screen($breakpoint-mobile) {
+        font-size: 2.0em;
+      }
+    }
+  }
+}
+
+.Inner {
+  padding: 100px 0;
+  @include max-screen($breakpoint-mobile) {
+    padding: 80px 20px;
+  }
+}
+
+.Main {
+  padding-top: 70px;
+}
+
+@import "header";
+@import "invite";
+@import "regist";
+@import "footer";
+@import "home";
+@import "detail";
+@import "user";
+@import "givlist";
+@import "form";
+@import "notification";
+@import "search";
