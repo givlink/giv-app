@@ -47,6 +47,7 @@ export default {
     'bootstrap-vue/nuxt',
     'nuxt-sass-resources-loader',
     '@nuxtjs/auth',
+    '@nuxtjs/axios',
   ],
   auth: {
     redirect: {
