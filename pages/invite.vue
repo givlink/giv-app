@@ -43,6 +43,7 @@
             const getUrl = encodeURI(baseUrl);
             return axios.get(baseUrl)
                 .then((res) => {
+                    this.$store.commit("setCode", this.code);
                     this.$router.push('/facebook')
                 })
                 .catch((e) => {

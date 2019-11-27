@@ -103,25 +103,41 @@
           }
           &__text {
             color: $head-black-color;
+            margin: 0;
+            font-size: 1.4em;
           }
           &__btn {
-            color: $head-black-color;
-            position: relative;
-            border-radius: 16px;
-            width: 90px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid $select-border-color;
+
             &.on {
               background-color: $base-color;
               color: white;
               border: 1px solid $base-color;
             }
             &__check {
-              opacity: 0;
-              position: absolute;
+              input {
+
+                opacity: 0;
+                position: absolute;
+              }
+              label {
+                color: $head-black-color;
+                position: relative;
+                border-radius: 16px;
+                width: 90px;
+                height: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid $select-border-color;
+                &:before {
+                  display: none;
+                }
+              }
+              input[type="checkbox"]:checked + label {
+                background-color: $base-color;
+                color: white;
+                border: 1px solid $base-color;
+              }
             }
           }
         }

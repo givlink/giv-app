@@ -12,78 +12,33 @@
       </div>
     </div>
     <div class="Regist__main">
-      <form class="Regist__main__select">
+      <div class="Regist__main__select">
         <h3 class="Regist__main__select__text">
           あなたのgivを選択してください
         </h3>
         <ul class="Regist__main__select__box">
-          <li class="Regist__main__select__box__li">
+
+          <li class="Regist__main__select__box__li"  v-for="item in skills">
             <p class="Regist__main__select__box__li__text">
-              タグが入ります
+              {{item.tag}}
             </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
+            <div class="Regist__main__select__box__li__btn">
+              <b-form-checkbox
+                v-model="selected"
+                :key="item.id"
+                :value="item.id"
+                name="giv"
+                :id="item.id"
+                class="Regist__main__select__box__li__btn__check"
+              >
+                <span class="Regist__main__select__box__li__btn__text">選択</span>
+              </b-form-checkbox>
+            </div>
           </li>
         </ul>
-      </form>
+      </div>
       <div class="Regist__main__bottom">
-        <nuxt-link to="/regist_place" class="Invite__btn__link">次へ</nuxt-link>
+        <button v-on:click="next" class="Invite__btn__link">次へ</button>
       </div>
     </div>
   </div>
@@ -91,7 +46,35 @@
 
 <script>
 
+    import axios from 'axios'
     export default {
+        data() {
+            return {
+                skills: [],
+                selected: [],
+            }
+        },
+        async asyncData({ app }) {
+            const baseUrl = process.env.baseUrl + '/skill_tags';
+            const getUrl = encodeURI(baseUrl);
+            const response = await axios.get(getUrl, {
+            });
+            return {
+                skills: response.data.skill_tags
+            }
+        },
+        methods: {
+            logout () {
+                Cookie.remove('auth')
+                this.$store.commit('setAuth', null)
+            },
+            next() {
+                this.$store.commit("setSkills", this.selected);
+                this.$router.push('/regist_place')
+                console.log(this.selected);
+                console.log(this.$store.state);
+            }
+        },
     }
 </script>
 

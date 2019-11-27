@@ -17,13 +17,13 @@
           プロフィールの確認
         </h3>
         <div class="Regist__main__profile__icon">
-          <img class="Regist__main__profile__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
+          <b-img :src='`${img}`' class="Regist__main__profile__icon__img" alt=""></b-img>
         </div>
-        <p class="Regist__main__profile__name">山田 太郎</p>
-        <p class="Regist__main__profile__position">KDS</p>
+        <p class="Regist__main__profile__name">{{name}}</p>
+<!--        <p class="Regist__main__profile__position">KDS</p>-->
       </div>
       <div class="Regist__main__bottom">
-        <nuxt-link to="/regist_giv" class="Invite__btn__link">次へ</nuxt-link>
+        <button v-on:click="next" class="Invite__btn__link">次へ</button>
       </div>
     </div>
   </div>
@@ -33,6 +33,22 @@
     import Logo from '~/components/Logo.vue'
 
     export default {
+        data() {
+            return {
+                img: '',
+                name: '',
+            }
+        },
+        mounted() {
+            this.img = this.$store.state.auth.user.picture?  this.$store.state.auth.user.picture.data.url: '';
+            this.name = this.$store.state.auth.user.name;
+        },
+        methods: {
+            next() {
+                this.$store.commit("setUser", this.img, this.name);
+                this.$router.push('/regist_giv')
+            }
+        }
     }
 </script>
 

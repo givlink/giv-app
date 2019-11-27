@@ -52,8 +52,8 @@ export default {
   auth: {
     redirect: {
       login: '/invite',  // 未ログイン時のリダイレクト先
-      logout: '/',  // ログアウト処理を実行した直後のリダイレクト先
       callback: '/callback',  // コールバックURL（各プロバイダで設定したものと同じPathにする）
+      home: '/regist',         // ログイン後のリダイレクトURL
     },
     strategies: {
       facebook: {

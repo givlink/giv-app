@@ -12,78 +12,32 @@
       </div>
     </div>
     <div class="Regist__main">
-      <form class="Regist__main__select">
+      <div class="Regist__main__select">
         <h3 class="Regist__main__select__text">
           あなたの興味・関心を選択してください
         </h3>
         <ul class="Regist__main__select__box">
-          <li class="Regist__main__select__box__li">
+          <li class="Regist__main__select__box__li"  v-for="item in interests">
             <p class="Regist__main__select__box__li__text">
-              タグが入ります
+              {{item.tag}}
             </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
-          </li>
-          <li class="Regist__main__select__box__li">
-            <p class="Regist__main__select__box__li__text">
-              タグが入ります
-            </p>
-            <label class="Regist__main__select__box__li__btn">
-              <input type="checkbox" name="giv" class="Regist__main__select__box__li__btn__check">
-              <span class="Regist__main__select__box__li__btn__text">選択</span>
-            </label>
+            <div class="Regist__main__select__box__li__btn">
+              <b-form-checkbox
+                v-model="selected"
+                :key="item.id"
+                :value="item.id"
+                name="giv"
+                :id="item.id"
+                class="Regist__main__select__box__li__btn__check"
+              >
+                <span class="Regist__main__select__box__li__btn__text">選択</span>
+              </b-form-checkbox>
+            </div>
           </li>
         </ul>
-      </form>
+      </div>
       <div class="Regist__main__bottom">
-        <nuxt-link to="/" class="Invite__btn__link">givを始める</nuxt-link>
+        <button v-on:click="next" class="Invite__btn__link">givを始める</button>
       </div>
     </div>
   </div>
@@ -91,7 +45,61 @@
 
 <script>
 
+    import axios from 'axios'
+    const Cookie = process.client ? require('js-cookie') : undefined;
     export default {
+        data() {
+            return {
+                interests: [],
+                selected: [],
+            }
+        },
+        async asyncData({ app }) {
+            const baseUrl = process.env.baseUrl + '/skill_tags';
+            const getUrl = encodeURI(baseUrl);
+            const response = await axios.get(getUrl, {
+            });
+            return {
+                interests: response.data.skill_tags
+            }
+        },
+        methods: {
+            logout () {
+                Cookie.remove('auth')
+                this.$store.commit('setAuth', null)
+            },
+            next() {
+                this.$store.commit("setInterests", this.selected);
+                console.log(this.selected);
+                console.log(this.$store.state);
+                console.log(Cookie.get("auth._token.facebook"));
+                const baseUrl = process.env.baseUrl + '/users';
+                const getUrl = encodeURI(baseUrl);
+                return axios.post(baseUrl,
+                    {
+                        "first_name": this.$store.state.name,
+                        "last_name": this.$store.state.name,
+                        "profile_image_url": this.$store.state.img,
+                        "giv_tags": this.$store.state.skills,
+                        "area_tags": this.$store.state.places,
+                        "interest_tags": this.$store.state.interests,
+                        "time_tags": [],
+                        "invitation_code": 'aAbOUwpW',//this.$store.state.code,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': Cookie.get("auth._token.facebook")
+                        },
+
+                    }
+                )
+                    .then((res) => {
+                        this.$router.push('/')
+                    })
+                    .catch((e) => {
+                        this.hasError = 'もう一度はじめからやり直してください';
+                    });
+            }
+        },
     }
 </script>
 
