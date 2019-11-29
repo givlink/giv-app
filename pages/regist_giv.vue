@@ -37,6 +37,31 @@
           </li>
         </ul>
       </div>
+      <div class="Regist__main__select">
+        <h3 class="Regist__main__select__text">
+          givを提供できる時間帯を選択してください
+        </h3>
+        <ul class="Regist__main__select__box">
+
+          <li class="Regist__main__select__box__li"  v-for="item in times">
+            <p class="Regist__main__select__box__li__text">
+              {{item.tag}}
+            </p>
+            <div class="Regist__main__select__box__li__btn">
+              <b-form-checkbox
+                v-model="selected_time"
+                :key="item.id"
+                :value="item.id"
+                name="giv"
+                :id="`times_${item.id}`"
+                class="Regist__main__select__box__li__btn__check"
+              >
+                <span class="Regist__main__select__box__li__btn__text">選択</span>
+              </b-form-checkbox>
+            </div>
+          </li>
+        </ul>
+      </div>
       <div class="Regist__main__bottom">
         <button v-on:click="next" class="Invite__btn__link">次へ</button>
       </div>
@@ -51,7 +76,9 @@
         data() {
             return {
                 skills: [],
+                times: [],
                 selected: [],
+                selected_time: [],
             }
         },
         async asyncData({ app }) {
@@ -59,8 +86,13 @@
             const getUrl = encodeURI(baseUrl);
             const response = await axios.get(getUrl, {
             });
+            const baseUrl_time = process.env.baseUrl + '/time_tags';
+            const getUrl_time = encodeURI(baseUrl_time);
+            const response2 = await axios.get(getUrl_time, {
+            });
             return {
-                skills: response.data.skill_tags
+                skills: response.data.skill_tags,
+                times: response2.data.time_tags
             }
         },
         methods: {
@@ -70,9 +102,8 @@
             },
             next() {
                 this.$store.commit("setSkills", this.selected);
+                this.$store.commit("setTimes", this.selected_time);
                 this.$router.push('/regist_place')
-                console.log(this.selected);
-                console.log(this.$store.state);
             }
         },
     }

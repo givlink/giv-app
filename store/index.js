@@ -17,9 +17,13 @@ export const mutations = {
   setInterests(state, interests) {
     state.interests = interests;
   },
-  setUser(state, img, name) {
+  setTimes(state, times) {
+    state.times = times;
+  },
+  setUser(state, img, first_name, last_name) {
     state.img = img;
-    state.name = name;
+    state.last_name = last_name;
+    state.first_name = first_name;
   },
   setCode(state, code) {
     state.code = code;

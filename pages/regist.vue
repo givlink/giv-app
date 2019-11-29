@@ -19,7 +19,7 @@
         <div class="Regist__main__profile__icon">
           <b-img :src='`${img}`' class="Regist__main__profile__icon__img" alt=""></b-img>
         </div>
-        <p class="Regist__main__profile__name">{{name}}</p>
+        <p class="Regist__main__profile__name">{{last_name}} {{first_name}}</p>
 <!--        <p class="Regist__main__profile__position">KDS</p>-->
       </div>
       <div class="Regist__main__bottom">
@@ -30,22 +30,28 @@
 </template>
 
 <script>
-    import Logo from '~/components/Logo.vue'
-
+    import JWT from 'jwt-decode';
     export default {
         data() {
             return {
                 img: '',
-                name: '',
+                first_name: '',
+                last_name: '',
             }
         },
         mounted() {
-            this.img = this.$store.state.auth.user.picture?  this.$store.state.auth.user.picture.data.url: '';
-            this.name = this.$store.state.auth.user.name;
+            // console.log(this.$store.state.auth);
+            const token = this.$auth.$storage.getUniversal("_token.auth0");
+            console.log(this.$auth.$storage.getUniversal("_token.auth0"));
+            const decodeData = JWT(token);
+            // console.log(this.$store.state.auth);
+            this.img = decodeData.picture?  decodeData.picture: '';
+            this.first_name = decodeData.given_name;
+            this.last_name = decodeData.family_name;
         },
         methods: {
             next() {
-                this.$store.commit("setUser", this.img, this.name);
+                this.$store.commit("setUser", this.img, this.first_name, this.last_name);
                 this.$router.push('/regist_giv')
             }
         }

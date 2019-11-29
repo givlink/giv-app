@@ -77,8 +77,8 @@
                 const getUrl = encodeURI(baseUrl);
                 return axios.post(baseUrl,
                     {
-                        "first_name": this.$store.state.name,
-                        "last_name": this.$store.state.name,
+                        "first_name": this.$store.state.first_name,
+                        "last_name": this.$store.state.last_name,
                         "profile_image_url": this.$store.state.img,
                         "giv_tags": this.$store.state.skills,
                         "area_tags": this.$store.state.places,

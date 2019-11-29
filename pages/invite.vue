@@ -43,10 +43,13 @@
             const getUrl = encodeURI(baseUrl);
             return axios.get(baseUrl)
                 .then((res) => {
+                    console.log(res);
                     this.$store.commit("setCode", this.code);
-                    this.$router.push('/facebook')
+                    this.$auth.loginWith('auth0')
+                    // this.$router.push('/facebook')
                 })
                 .catch((e) => {
+                    console.log(e);
                     this.hasError = '招待コードが間違っています';
                 });
         }

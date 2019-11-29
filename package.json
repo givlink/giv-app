@@ -21,6 +21,7 @@
     "bootstrap-vue": "^2.0.0",
     "cookieparser": "^0.1.0",
     "js-cookie": "^2.2.1",
+    "jwt-decode": "^2.2.0",
     "node-sass": "^4.13.0",
     "nuxt": "^2.0.0",
     "nuxt-sass-resources-loader": "^2.0.5",

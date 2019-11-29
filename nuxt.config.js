@@ -50,19 +50,37 @@ export default {
     '@nuxtjs/axios',
   ],
   auth: {
+    strategies: {
+      auth0: {
+        domain: 'giv-dev.auth0.com',  // 追加
+        client_id: 'djTzarbZSWb1or25sP3UgTs8T7yOEASB',  // 追加
+        scope: ['openid', 'profile', 'email'],
+        response_type: 'id_token token',
+        token_key: 'id_token'
+      }
+    },
     redirect: {
       login: '/invite',  // 未ログイン時のリダイレクト先
-      callback: '/callback',  // コールバックURL（各プロバイダで設定したものと同じPathにする）
-      home: '/regist',         // ログイン後のリダイレクトURL
+      logout: '/logout',  // ログアウト処理を実行した直後のリダイレクト先
+      callback: '/callback',  // コールバックURL
+      home: '/regist',  // ログイン後に遷移するページ
     },
-    strategies: {
-      facebook: {
-        client_id: '415902109120496',
-        userinfo_endpoint: 'https://graph.facebook.com/v2.12/me?fields=about,name,picture{url},email,birthday',
-        scope: ['public_profile', 'email', 'user_birthday']
-      },
-    }
   },
+  // auth: {
+  //   redirect: {
+  //     login: '/invite',  // 未ログイン時のリダイレクト先
+  //     callback: '/callback',  // コールバックURL（各プロバイダで設定したものと同じPathにする）
+  //     home: '/regist',         // ログイン後のリダイレクトURL
+  //   },
+  //   strategies: {
+  //     facebook: {
+  //       client_id: '415902109120496',
+  //       userinfo_endpoint: 'https://graph.facebook.com/v2.12/me?fields=about,name,picture{url},email,birthday',
+  //       scope: ['public_profile', 'email', 'user_birthday']
+  //     },
+  //   }
+  //
+  // },
   /*
   ** Build configuration
   */
