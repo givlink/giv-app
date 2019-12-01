@@ -24,8 +24,10 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    import axios from 'axios';
+    const Cookie = process.client ? require('js-cookie') : undefined;
     export default {
+        layout: 'noheader',
     data() {
         return {
             code: '',
@@ -43,13 +45,11 @@
             const getUrl = encodeURI(baseUrl);
             return axios.get(baseUrl)
                 .then((res) => {
-                    console.log(res);
                     this.$store.commit("setCode", this.code);
+                    Cookie.set('code', this.code); // saving token in cookie for server rendering
                     this.$auth.loginWith('auth0')
-                    // this.$router.push('/facebook')
                 })
                 .catch((e) => {
-                    console.log(e);
                     this.hasError = '招待コードが間違っています';
                 });
         }

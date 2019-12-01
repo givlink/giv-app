@@ -23,16 +23,16 @@
               {{item.tag}}
             </p>
             <div class="Regist__main__select__box__li__btn">
-              <b-form-checkbox
+              <b-form-radio
                 v-model="selected"
-                :key="item.id"
+                :key="`skill_${item.id}`"
                 :value="item.id"
                 name="giv"
-                :id="item.id"
+                :id="`skill_${item.id}`"
                 class="Regist__main__select__box__li__btn__check"
               >
                 <span class="Regist__main__select__box__li__btn__text">選択</span>
-              </b-form-checkbox>
+              </b-form-radio>
             </div>
           </li>
         </ul>
@@ -50,7 +50,7 @@
             <div class="Regist__main__select__box__li__btn">
               <b-form-checkbox
                 v-model="selected_time"
-                :key="item.id"
+                :key="`times_${item.id}`"
                 :value="item.id"
                 name="giv"
                 :id="`times_${item.id}`"
@@ -65,6 +65,7 @@
       <div class="Regist__main__bottom">
         <button v-on:click="next" class="Invite__btn__link">次へ</button>
       </div>
+      <p class="Regist__main__error">{{this.error_message}}</p>
     </div>
   </div>
 </template>
@@ -79,6 +80,7 @@
                 times: [],
                 selected: [],
                 selected_time: [],
+                error_message: "",
             }
         },
         async asyncData({ app }) {
@@ -97,13 +99,20 @@
         },
         methods: {
             logout () {
-                Cookie.remove('auth')
+                Cookie.remove('auth');
                 this.$store.commit('setAuth', null)
             },
             next() {
-                this.$store.commit("setSkills", this.selected);
-                this.$store.commit("setTimes", this.selected_time);
-                this.$router.push('/regist_place')
+                this.error_message = '';
+                if(this.selected.length < 1) {
+                    this.error_message = '自分のgivは最低一つ選択してください。';
+                } else if(this.selected_time < 1) {
+                    this.error_message = 'givを提供できる時間は最低一つ選択してください。';
+                } else {
+                    this.$store.commit("setSkills", this.selected);
+                    this.$store.commit("setTimes", this.selected_time);
+                    this.$router.push('/regist_place')
+                }
             }
         },
     }

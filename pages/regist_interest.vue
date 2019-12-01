@@ -23,10 +23,10 @@
             <div class="Regist__main__select__box__li__btn">
               <b-form-checkbox
                 v-model="selected"
-                :key="item.id"
+                :key="`interest_${item.id}`"
                 :value="item.id"
                 name="giv"
-                :id="item.id"
+                :id="`interest_${item.id}`"
                 class="Regist__main__select__box__li__btn__check"
               >
                 <span class="Regist__main__select__box__li__btn__text">選択</span>
@@ -38,6 +38,7 @@
       <div class="Regist__main__bottom">
         <button v-on:click="next" class="Invite__btn__link">givを始める</button>
       </div>
+      <p class="Regist__main__error">{{this.error_message}}</p>
     </div>
   </div>
 </template>
@@ -46,6 +47,7 @@
 import axios from "axios";
 const Cookie = process.client ? require("js-cookie") : undefined;
 export default {
+    layout: 'default',
   data() {
     return {
       interests: [],
@@ -66,43 +68,46 @@ export default {
       this.$store.commit("setAuth", null);
     },
     next() {
-      this.$store.commit("setInterests", this.selected);
-      console.log(this.selected);
-      console.log(this.$store.state);
-      console.log(Cookie.get("auth._token.facebook"));
-      const baseUrl = process.env.baseUrl + "/users";
-      const getUrl = encodeURI(baseUrl);
+        this.error_message = '';
+        if(this.selected.length < 1) {
+            this.error_message = '興味・関心は最低一つ選択してください。';
+        } else {
+            this.$store.commit("setInterests", this.selected);
+            const baseUrl = process.env.baseUrl + "/users";
+            const getUrl = encodeURI(baseUrl);
 
-      const token = this.$auth.$storage.getUniversal("_token.auth0");
-      console.log(token);
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token
+            const token = this.$auth.$storage.getUniversal("_token.auth0");
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token
+                }
+            };
+            const data = {
+                first_name: this.$store.state.first_name,
+                last_name: this.$store.state.last_name,
+                profile_image_url: this.$store.state.img,
+                giv_tags: this.$store.state.skills,
+                area_tags: this.$store.state.places,
+                interest_tags: this.$store.state.interests,
+                time_tags: this.$store.state.interests,
+                invitation_code: this.$store.state.code, //this.$store.state.code,
+            }
+
+            return axios
+                .post(
+                    baseUrl,
+                    data,
+                    config
+                )
+                .then(res => {
+                    console.log(res);
+                    this.$router.push("/");
+                })
+                .catch(e => {
+                    this.hasError = "もう一度はじめからやり直してください";
+                });
         }
-      };
-
-      return axios
-        .post(
-          baseUrl,
-          {
-            first_name: this.$store.state.first_name,
-            last_name: this.$store.state.last_name,
-            profile_image_url: this.$store.state.img,
-            giv_tags: this.$store.state.skills,
-            area_tags: this.$store.state.places,
-            interest_tags: this.$store.state.interests,
-            time_tags: [],
-            invitation_code: "aAbOUwpW" //this.$store.state.code,
-          },
-          config
-        )
-        .then(res => {
-          this.$router.push("/");
-        })
-        .catch(e => {
-          this.hasError = "もう一度はじめからやり直してください";
-        });
     }
   }
 };

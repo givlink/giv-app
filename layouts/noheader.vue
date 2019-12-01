@@ -1,16 +1,13 @@
 <template>
   <div>
-    <ex-header />
     <nuxt />
   </div>
 </template>
 
 <script>
-    import ExHeader from '~/components/beforeHeader.vue';
     export default {
-        name: 'default',	// テンプレート名
+        name: 'noheader',	// テンプレート名
         components: {
-            ExHeader,		// <ex-header>に対応
         }
     }
 </script>

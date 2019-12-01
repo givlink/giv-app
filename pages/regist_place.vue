@@ -22,16 +22,16 @@
               {{item.tag}}
             </p>
             <div class="Regist__main__select__box__li__btn">
-              <b-form-checkbox
+              <b-form-radio
                 v-model="selected"
-                :key="item.id"
+                :key="`place_${item.id}`"
                 :value="item.id"
                 name="giv"
-                :id="item.id"
+                :id="`place_${item.id}`"
                 class="Regist__main__select__box__li__btn__check"
               >
                 <span class="Regist__main__select__box__li__btn__text">選択</span>
-              </b-form-checkbox>
+              </b-form-radio>
             </div>
           </li>
         </ul>
@@ -39,6 +39,7 @@
       <div class="Regist__main__bottom">
         <button v-on:click="next" class="Invite__btn__link">次へ</button>
       </div>
+      <p class="Regist__main__error">{{this.error_message}}</p>
     </div>
   </div>
 </template>
@@ -64,10 +65,13 @@
         },
         methods: {
             next() {
-                this.$store.commit("setPlaces", this.selected);
-                this.$router.push('/regist_interest')
-                console.log(this.selected);
-                console.log(this.$store.state);
+                this.error_message = '';
+                if(this.selected.length < 1) {
+                    this.error_message = '提供場所は最低一つ選択してください。';
+                } else {
+                    this.$store.commit("setPlaces", this.selected);
+                    this.$router.push('/regist_interest')
+                }
             }
         },
     }

@@ -1,5 +1,5 @@
 <template>
-  <div class="Regist Main">
+  <div v-if="isShow" class="Regist Main">
     <div class="Regist__flow">
       <div class="Regist__flow__position">
         <img class="Regist__flow__position__img" src="~/assets/image/regist_flow_01.png" alt="giv" />
@@ -31,32 +31,56 @@
 </template>
 
 <script>
-import JWT from "jwt-decode";
-export default {
-  data() {
-    return {
-      img: "",
-      first_name: "",
-      last_name: ""
+    import axios from 'axios';
+    const Cookie = process.client ? require('js-cookie') : undefined;
+    export default {
+        data() {
+            return {
+                img: "",
+                first_name: "",
+                last_name: "",
+                isShow: false
+            };
+        },
+        mounted() {
+            const token = this.$auth.$storage.getUniversal("_token.auth0");
+            if(token && token !== '') {
+                const baseUrl = process.env.baseUrl + '/login';
+                const getUrl = encodeURI(baseUrl);
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token
+                    }
+                };
+                return axios.get(baseUrl, config)
+                    .then((res) => {
+                        this.$router.push("/");
+                    })
+                    .catch((e) => {
+                        this.$auth.fetchUser();
+                        const user = this.$auth.$storage.getState("user");
+                        this.img = user.picture;
+                        this.first_name = user.given_name;
+                        this.last_name = user.family_name;
+                        this.isShow = true;
+                    });
+            } else {
+                this.$auth.loginWith('auth0');
+            }
+        },
+        methods: {
+            next() {
+                this.$store.commit("setImg", this.img);
+                this.$store.commit("setFirstName", this.first_name);
+                this.$store.commit("setLastName", this.last_name);
+                Cookie.set('img', this.img);
+                Cookie.set('first_name', this.first_name);
+                Cookie.set('last_name', this.last_name);
+                this.$router.push("/regist_giv");
+            }
+        }
     };
-  },
-  mounted() {
-    console.log(this.$auth.$storage.getUniversal("_token.auth0"));
-
-    this.$auth.fetchUser();
-    const user = this.$auth.$storage.getState("user");
-
-    this.img = user.picture;
-    this.first_name = user.given_name;
-    this.last_name = user.family_name;
-  },
-  methods: {
-    next() {
-      this.$store.commit("setUser", this.img, this.first_name, this.last_name);
-      this.$router.push("/regist_giv");
-    }
-  }
-};
 </script>
 
 <style>

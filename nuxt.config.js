@@ -30,7 +30,8 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: [
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -43,7 +44,8 @@ export default {
     "bootstrap-vue/nuxt",
     "nuxt-sass-resources-loader",
     "@nuxtjs/auth",
-    "@nuxtjs/axios"
+    "@nuxtjs/axios",
+    'nuxt-client-init-module'
   ],
   auth: {
     strategies: {
@@ -57,8 +59,8 @@ export default {
       }
     },
     redirect: {
-      login: "/invite", // 未ログイン時のリダイレクト先
-      logout: "/logout", // ログアウト処理を実行した直後のリダイレクト先
+      // login: "/invite", // 未ログイン時のリダイレクト先
+      logout: "/login", // ログアウト処理を実行した直後のリダイレクト先
       callback: "/callback", // コールバックURL
       home: "/regist" // ログイン後に遷移するページ
     }

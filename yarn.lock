@@ -5180,6 +5180,11 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
+nuxt-client-init-module@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/nuxt-client-init-module/-/nuxt-client-init-module-0.1.7.tgz#91bd066ebecaf0c74d51678404a4c7cca52ac895"
+  integrity sha512-IGl1E3D2xvyNlsv5+6arHjv1mCfCbm/ik0pM4Clc8eimjMZyU+b02kiihDcmOMBcjHYkBCCQGQ/SwMJ6qtAcMA==
+
 nuxt-sass-resources-loader@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/nuxt-sass-resources-loader/-/nuxt-sass-resources-loader-2.0.5.tgz#ba88437a0abd30b718b132826e06a43b127102b5"
