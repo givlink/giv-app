@@ -2,15 +2,18 @@
   <div>
     <ex-header />
     <nuxt />
+    <ex-footer />
   </div>
 </template>
 
 <script>
-    import ExHeader from '~/components/beforeHeader.vue';
+    import ExHeader from '~/components/Header.vue';
+    import ExFooter from '~/components/Footer.vue';
     export default {
-        name: 'default',	// テンプレート名
+        name: 'logined',	// テンプレート名
         components: {
             ExHeader,		// <ex-header>に対応
+            ExFooter
         }
     }
 </script>
