@@ -1,70 +1,67 @@
-
 export default {
-  mode: 'spa',
+  mode: "spa",
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
-    title: process.env.npm_package_name || '',
+    title: process.env.npm_package_name || "",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        hid: "description",
+        name: "description",
+        content: process.env.npm_package_description || ""
+      }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
   env: {
-    baseUrl: process.env.BASE_URL || 'https://api-dev.giv.link'
+    baseUrl: process.env.BASE_URL || "https://api-dev.giv.link"
   },
   /*
-  ** Customize the progress-bar color
-  */
-  loading: { color: '#fff' },
+   ** Customize the progress-bar color
+   */
+  loading: { color: "#fff" },
   /*
-  ** Global CSS
-  */
-  css: [
-
-    { src: '~/assets/sass/main.scss', lang: 'scss' },
-  ],
+   ** Global CSS
+   */
+  css: [{ src: "~/assets/sass/main.scss", lang: "scss" }],
   /*
-  ** Plugins to load before mounting the App
-  */
-  plugins: [
-  ],
+   ** Plugins to load before mounting the App
+   */
+  plugins: [],
   /*
-  ** Nuxt.js dev-modules
-  */
-  buildModules: [
-  ],
+   ** Nuxt.js dev-modules
+   */
+  buildModules: [],
   /*
-  ** Nuxt.js modules
-  */
+   ** Nuxt.js modules
+   */
   modules: [
     // Doc: https://bootstrap-vue.js.org
-    'bootstrap-vue/nuxt',
-    'nuxt-sass-resources-loader',
-    '@nuxtjs/auth',
-    '@nuxtjs/axios',
+    "bootstrap-vue/nuxt",
+    "nuxt-sass-resources-loader",
+    "@nuxtjs/auth",
+    "@nuxtjs/axios"
   ],
   auth: {
     strategies: {
       auth0: {
-        domain: 'giv-dev.auth0.com',  // 追加
-        client_id: 'djTzarbZSWb1or25sP3UgTs8T7yOEASB',  // 追加
-        scope: ['openid', 'profile', 'email'],
-        response_type: 'id_token token',
-        token_key: 'id_token'
+        domain: "giv-dev.auth0.com", // 追加
+        client_id: "VGa2SVojtmq50NiC5I2rpV4XALrAkZql", // 追加
+        audience: "https://giv-dev.auth0.com/api/v2/",
+        scope: ["openid", "profile", "email"],
+        response_type: "id_token token",
+        token_key: "access_token"
       }
     },
     redirect: {
-      login: '/invite',  // 未ログイン時のリダイレクト先
-      logout: '/logout',  // ログアウト処理を実行した直後のリダイレクト先
-      callback: '/callback',  // コールバックURL
-      home: '/regist',  // ログイン後に遷移するページ
-    },
+      login: "/invite", // 未ログイン時のリダイレクト先
+      logout: "/logout", // ログアウト処理を実行した直後のリダイレクト先
+      callback: "/callback", // コールバックURL
+      home: "/regist" // ログイン後に遷移するページ
+    }
   },
   // auth: {
   //   redirect: {
@@ -82,13 +79,12 @@ export default {
   //
   // },
   /*
-  ** Build configuration
-  */
+   ** Build configuration
+   */
   build: {
     /*
-    ** You can extend webpack config here
-    */
-    extend (config, ctx) {
-    }
+     ** You can extend webpack config here
+     */
+    extend(config, ctx) {}
   }
-}
+};
