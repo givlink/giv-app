@@ -23,7 +23,7 @@
               {{item.tag}}
             </p>
             <div class="Regist__main__select__box__li__btn">
-              <b-form-radio
+              <b-form-checkbox
                 v-model="selected"
                 :key="`skill_${item.id}`"
                 :value="item.id"
@@ -32,7 +32,7 @@
                 class="Regist__main__select__box__li__btn__check"
               >
                 <span class="Regist__main__select__box__li__btn__text">選択</span>
-              </b-form-radio>
+              </b-form-checkbox>
             </div>
           </li>
         </ul>

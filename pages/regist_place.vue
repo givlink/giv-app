@@ -67,10 +67,10 @@
             next() {
                 this.error_message = '';
                 if(this.selected.length < 1) {
-                    this.error_message = '提供場所は最低一つ選択してください。';
+                    this.error_message = '提供場所を一つ選択してください。';
                 } else {
-                    this.$store.commit("setPlaces", this.selected);
-                    this.$router.push('/regist_interest')
+                    this.$store.commit("setPlaces", [this.selected]);
+                    this.$router.push('/regist_interest');
                 }
             }
         },
