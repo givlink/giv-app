@@ -2,10 +2,10 @@
   <div class="User Main">
     <div class="User__profile">
       <div class="User__profile__icon">
-        <img class="User__profile__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
+        <b-img :src="`${img}`" class="User__profile__icon__img" alt></b-img>
       </div>
-      <p class="User__profile__name">山田 太郎</p>
-      <p class="User__profile__position">KDS</p>
+      <p class="User__profile__name">{{last_name}} {{first_name}}</p>
+<!--      <p class="User__profile__position">KDS</p>-->
       <p class="User__profile__message">どうぞよろしくお願い致します！</p>
       <div class="User__profile__sns">
         <a href="" class="User__profile__sns__link">
@@ -85,9 +85,16 @@ export default {
         return {
             code: '',
             hasError: '',
+            img: '',
+            first_name: '',
+            last_name: '',
         }
     },
     mounted() {
+        const user = this.$auth.$storage.getState("user");
+        this.img = user.picture;
+        this.first_name = user.given_name;
+        this.last_name = user.family_name;
     },
     methods: {
         async checkCode() {
