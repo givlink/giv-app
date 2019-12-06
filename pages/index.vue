@@ -4,11 +4,11 @@
       <div class="Home__card">
         <nuxt-link to="/detail" class="Home__card__header">
           <div class="Home__card__header__icon">
-            <img class="Home__card__header__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
+            <b-img :src="`${img}`" class="Home__card__header__icon__img" alt></b-img>
           </div>
           <div class="Home__card__header__text">
-            <p class="Home__card__header__text__name">山田 太郎</p>
-            <p class="Home__card__header__text__position">KDS</p>
+            <p class="Home__card__header__text__name">{{last_name}} {{first_name}}</p>
+<!--            <p class="Home__card__header__text__position">KDS</p>-->
           </div>
         </nuxt-link>
         <nuxt-link to="/detail" class="Home__card__view">
@@ -171,9 +171,17 @@
             return {
                 code: '',
                 hasError: '',
+                img: '',
+                first_name: '',
+                last_name: '',
             }
         },
         mounted() {
+
+            const user = this.$auth.$storage.getState("user");
+            this.img = user.picture;
+            this.first_name = user.given_name;
+            this.last_name = user.family_name;
         },
         methods: {
             async checkCode() {
