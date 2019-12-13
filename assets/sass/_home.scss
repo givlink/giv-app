@@ -64,6 +64,15 @@
           color: $head-black-color;
         }
       }
+      &__title {
+        color: $base-font-color;
+        line-height: 1.8;
+        margin-bottom: 10px;
+        font-weight: bold;
+        font-size: 2.2em;
+        display: block;
+        text-decoration: none;
+      }
       &__text {
         color: $base-font-color;
         line-height: 1.8;
