@@ -83,6 +83,9 @@
           color: $heart-color;
           display: inline-block;
           margin-right: 5px;
+          &.on {
+            color: red;
+          }
         }
         &__text {
           font-size: 1.2em;

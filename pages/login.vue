@@ -16,6 +16,7 @@
 
 <script>
     import axios from 'axios';
+    import jwt from 'jwt-decode';
     const Cookie = process.client ? require('js-cookie') : undefined;
     export default {
         layout: 'noheader',
@@ -34,22 +35,27 @@
                 const token = this.$auth.$storage.getUniversal("_token.auth0");
                 if(token && token !== '') {
 
-                    const baseUrl = process.env.baseUrl + '/login';
-                    const getUrl = encodeURI(baseUrl);
-                    const config = {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: token
-                        }
-                    };
-                    return axios.get(baseUrl, config)
-                        .then((res) => {
-                            console.log(res);
-                            this.$router.push("/");
-                        })
-                        .catch((e) => {
-                            this.hasError = 'ログインに失敗しました。';
-                        });
+                    let decoded = jwt(token);
+                    if(decoded.exp > new Date().getTime() / 1000) {
+                        const baseUrl = process.env.baseUrl + '/login';
+                        const getUrl = encodeURI(baseUrl);
+                        const config = {
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: token
+                            }
+                        };
+                        return axios.get(baseUrl, config)
+                            .then((res) => {
+                                console.log(res);
+                                this.$router.push("/");
+                            })
+                            .catch((e) => {
+                                this.hasError = 'ログインに失敗しました。';
+                            });
+                    } else {
+                        this.$auth.loginWith('auth0');
+                    }
                 } else {
                     this.$auth.loginWith('auth0');
                 }

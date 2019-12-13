@@ -31,7 +31,7 @@
       <h3 class="User__latest__title">最近のgiv</h3>
       <div class="User__latest__wrap">
         <template v-for="item of givs">
-          <nuxt-link :to="`/giv/${item.id}`" class="User__latest__wrap__box">
+          <nuxt-link :to="`/thanks/${item.id}`" class="User__latest__wrap__box">
             <template v-if="item.images">
               <b-img :src="`https://api-dev.giv.link${item.images[0].path}`" class="User__latest__wrap__box__img" alt></b-img>
             </template>
@@ -78,27 +78,29 @@ export default {
             givs: ''
         }
     },
-    async asyncData({ app }) {
-        const baseUrl = process.env.baseUrl + '/me';
-        const getUrl = encodeURI(baseUrl);
-        const token = app.$auth.$storage.getUniversal("_token.auth0");
-        const response = await axios.get(getUrl, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
+    async asyncData({ app, params }) {
+        if(params.id) {
+            const baseUrl = process.env.baseUrl + '/users/' + params.id;
+            const getUrl = encodeURI(baseUrl);
+            const token = app.$auth.$storage.getUniversal("_token.auth0");
+            const response = await axios.get(getUrl, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token
+                }
+            });
+            const givUrl = process.env.baseUrl + '/users/' + params.id + '/received_thanks_cards';
+            const getUrl2 = encodeURI(givUrl);
+            const response2 = await axios.get(getUrl2, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token
+                }
+            });
+            return {
+                me: response.data,
+                givs: response2.data.thanks_cards,
             }
-        });
-        const givUrl = process.env.baseUrl + '/me/giv';
-        const getUrl2 = encodeURI(givUrl);
-        const response2 = await axios.get(getUrl2, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        });
-        return {
-            me: response.data,
-            givs: response2.data.givs,
         }
     },
     mounted() {

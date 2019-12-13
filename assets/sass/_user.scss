@@ -104,13 +104,21 @@
     }
     &__wrap {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       flex-wrap: wrap;
       &__box {
-        display: block;
+        border: 1px solid #ddd;
         margin: 0 1px;
         width: 106px;
         height: 106px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
       }
     }
   }

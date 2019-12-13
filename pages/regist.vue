@@ -32,6 +32,7 @@
 
 <script>
     import axios from 'axios';
+    import jwt from 'jwt-decode';
     const Cookie = process.client ? require('js-cookie') : undefined;
     export default {
         data() {
@@ -45,26 +46,31 @@
         mounted() {
             const token = this.$auth.$storage.getUniversal("_token.auth0");
             if(token && token !== '') {
-                const baseUrl = process.env.baseUrl + '/login';
-                const getUrl = encodeURI(baseUrl);
-                const config = {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: token
-                    }
-                };
-                return axios.get(baseUrl, config)
-                    .then((res) => {
-                        this.$router.push("/");
-                    })
-                    .catch((e) => {
-                        this.$auth.fetchUser();
-                        const user = this.$auth.$storage.getState("user");
-                        this.img = user.picture;
-                        this.first_name = user.given_name;
-                        this.last_name = user.family_name;
-                        this.isShow = true;
-                    });
+                let decoded = jwt(token);
+                if(decoded.exp > new Date().getTime() / 1000) {
+                    const baseUrl = process.env.baseUrl + '/login';
+                    const getUrl = encodeURI(baseUrl);
+                    const config = {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: token
+                        }
+                    };
+                    return axios.get(baseUrl, config)
+                        .then((res) => {
+                            this.$router.push("/");
+                        })
+                        .catch((e) => {
+                            this.$auth.fetchUser();
+                            const user = this.$auth.$storage.getState("user");
+                            this.img = user.picture;
+                            this.first_name = user.given_name;
+                            this.last_name = user.family_name;
+                            this.isShow = true;
+                        });
+                } else {
+                    this.$auth.loginWith('auth0');
+                }
             } else {
                 this.$auth.loginWith('auth0');
             }

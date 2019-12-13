@@ -1,160 +1,48 @@
 <template>
   <div class="Home Main">
     <div class="Home__cards">
-      <div class="Home__card">
-        <nuxt-link to="/detail" class="Home__card__header">
+      <div class="Home__card"  v-for="item in thanks_cards">
+        <nuxt-link :to="`/users/${item.user}`" class="Home__card__header">
           <div class="Home__card__header__icon">
-            <b-img :src="`${img}`" class="Home__card__header__icon__img" alt></b-img>
+            <b-img :src="`https://api-dev.giv.link${item.giv.receive_user.profile_image_path}`" class="Home__card__header__icon__img" alt></b-img>
           </div>
           <div class="Home__card__header__text">
-            <p class="Home__card__header__text__name">{{last_name}} {{first_name}}</p>
-<!--            <p class="Home__card__header__text__position">KDS</p>-->
+            <p class="Home__card__header__text__name">{{item.giv.receive_user.last_name}} {{item.giv.receive_user.first_name}}</p>
           </div>
         </nuxt-link>
-        <nuxt-link to="/detail" class="Home__card__view">
-          <img class="Home__card__view__img" src="~/assets/image/sample_img.png" alt="giv">
+        <nuxt-link :to="`/thanks/${item.id}`" class="Home__card__view" v-if="item.images.length > 0">
+          <b-img :src="`https://api-dev.giv.link${item.images[0].path}`" class="Home__card__view__img" alt></b-img>
         </nuxt-link>
         <div class="Home__card__content">
           <div class="Home__card__content__info">
             <div class="Home__card__content__info__tags">
-              <a href=""  class="Home__card__content__info__tags__tag">トレーニング</a>
+              <span class="Home__card__content__info__tags__tag">{{item.giv.kind}}</span>
             </div>
             <div class="Home__card__content__info__date">
-              2019.06.21
+              {{ item.created_at | moment }}
             </div>
           </div>
+          <h2 class="Home__card__content__title">
+            {{ item.title }}
+          </h2>
           <p class="Home__card__content__text">
-            庄司さんからDGスタッフたちに<br>
-            トレーニングのgivをいただきました
+            {{ item.message }}
           </p>
-          <nuxt-link to="/other" class="Home__card__content__person">
+          <nuxt-link :to="`/users/3`" class="Home__card__content__person">
+<!--          <nuxt-link :to="`/user/${item.giv.giv_user.id}`" class="Home__card__content__person">-->
             <div class="Home__card__content__person__icon">
-              <img class="Home__card__content__person__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
+              <b-img :src="`https://api-dev.giv.link${item.giv.giv_user.profile_image_path}`" class="Home__card__content__person__icon__img" alt></b-img>
             </div>
             <div class="Home__card__content__person__text">
               <p class="Home__card__content__person__text__head">givを贈った人</p>
-              <p class="Home__card__content__person__text__name">庄司 竜太郎</p>
-              <p class="Home__card__content__person__text__position">CO-FOUNDER & CCO</p>
+              <p class="Home__card__content__person__text__name">{{item.giv.giv_user.last_name}} {{item.giv.giv_user.first_name}}</p>
+              <!--              <p class="Home__card__content__person__text__position">CO-FOUNDER & CCO</p>-->
             </div>
           </nuxt-link>
         </div>
       </div>
-      <div class="Home__card">
-        <a href="" class="Home__card__header">
-          <div class="Home__card__header__icon">
-            <img class="Home__card__header__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
-          </div>
-          <div class="Home__card__header__text">
-            <p class="Home__card__header__text__name">山田 太郎</p>
-            <p class="Home__card__header__text__position">KDS</p>
-          </div>
-        </a>
-        <a href="" class="Home__card__view">
-          <img class="Home__card__view__img" src="~/assets/image/sample_img.png" alt="giv">
-        </a>
-        <div class="Home__card__content">
-          <div class="Home__card__content__info">
-            <div class="Home__card__content__info__tags">
-              <a href=""  class="Home__card__content__info__tags__tag">トレーニング</a>
-            </div>
-            <div class="Home__card__content__info__date">
-              2019.06.21
-            </div>
-          </div>
-          <a href="" class="Home__card__content__text">
-            庄司さんからDGスタッフたちに<br>
-            トレーニングのgivをいただきました
-          </a>
-          <nuxt-link to="/other" class="Home__card__content__person">
-            <div class="Home__card__content__person__icon">
-              <img class="Home__card__content__person__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
-            </div>
-            <div class="Home__card__content__person__text">
-              <p class="Home__card__content__person__text__head">givを贈った人</p>
-              <p class="Home__card__content__person__text__name">庄司 竜太郎</p>
-              <p class="Home__card__content__person__text__position">CO-FOUNDER & CCO</p>
-            </div>
-          </nuxt-link>
-        </div>
-      </div>
-      <div class="Home__card">
-        <a href="" class="Home__card__header">
-          <div class="Home__card__header__icon">
-            <img class="Home__card__header__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
-          </div>
-          <div class="Home__card__header__text">
-            <p class="Home__card__header__text__name">山田 太郎</p>
-            <p class="Home__card__header__text__position">KDS</p>
-          </div>
-        </a>
-        <a href="" class="Home__card__view">
-          <img class="Home__card__view__img" src="~/assets/image/sample_img.png" alt="giv">
-        </a>
-        <div class="Home__card__content">
-          <div class="Home__card__content__info">
-            <div class="Home__card__content__info__tags">
-              <a href=""  class="Home__card__content__info__tags__tag">トレーニング</a>
-            </div>
-            <div class="Home__card__content__info__date">
-              2019.06.21
-            </div>
-          </div>
-          <a href="" class="Home__card__content__text">
-            庄司さんからDGスタッフたちに<br>
-            トレーニングのgivをいただきました
-          </a>
-          <a href="" class="Home__card__content__person">
-            <div class="Home__card__content__person__icon">
-              <img class="Home__card__content__person__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
-            </div>
-            <div class="Home__card__content__person__text">
-              <p class="Home__card__content__person__text__head">givを贈った人</p>
-              <p class="Home__card__content__person__text__name">庄司 竜太郎</p>
-              <p class="Home__card__content__person__text__position">CO-FOUNDER & CCO</p>
-            </div>
-          </a>
-        </div>
-      </div>
-      <div class="Home__card">
-        <a href="" class="Home__card__header">
-          <div class="Home__card__header__icon">
-            <img class="Home__card__header__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
-          </div>
-          <div class="Home__card__header__text">
-            <p class="Home__card__header__text__name">山田 太郎</p>
-            <p class="Home__card__header__text__position">KDS</p>
-          </div>
-        </a>
-        <a href="" class="Home__card__view">
-          <img class="Home__card__view__img" src="~/assets/image/sample_img.png" alt="giv">
-        </a>
-        <div class="Home__card__content">
-          <div class="Home__card__content__info">
-            <div class="Home__card__content__info__tags">
-              <a href=""  class="Home__card__content__info__tags__tag">トレーニング</a>
-            </div>
-            <div class="Home__card__content__info__date">
-              2019.06.21
-            </div>
-          </div>
-          <a href="" class="Home__card__content__text">
-            庄司さんからDGスタッフたちに<br>
-            トレーニングのgivをいただきました
-          </a>
-          <nuxt-link to="/other" class="Home__card__content__person">
-            <div class="Home__card__content__person__icon">
-              <img class="Home__card__content__person__icon__img" src="~/assets/image/sample_profile_icon.png" alt="giv">
-            </div>
-            <div class="Home__card__content__person__text">
-              <p class="Home__card__content__person__text__head">givを贈った人</p>
-              <p class="Home__card__content__person__text__name">庄司 竜太郎</p>
-              <p class="Home__card__content__person__text__position">CO-FOUNDER & CCO</p>
-            </div>
-          </nuxt-link>
 
-          <button v-on:click="logout()" class="Invite__btn__link">ログアウト</button>
-        </div>
-      </div>
+      <button v-on:click="logout()" class="Invite__btn__link">ログアウト</button>
     </div>
   </div>
 </template>
@@ -162,6 +50,8 @@
 <script>
 
     const Cookie = process.client ? require('js-cookie') : undefined;
+    import axios from 'axios';
+    import moment from 'moment';
     export default {
         components: {
         },
@@ -174,6 +64,22 @@
                 img: '',
                 first_name: '',
                 last_name: '',
+                thanks_cards: '',
+            }
+        },
+        async asyncData({ app }) {
+            const baseUrl = process.env.baseUrl + '/thanks_cards';
+            const getUrl = encodeURI(baseUrl);
+            const token = app.$auth.$storage.getUniversal("_token.auth0");
+            const response = await axios.get(getUrl, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token
+                }
+            });
+            console.log(response.data.thanks_cards);
+            return {
+                thanks_cards: response.data.thanks_cards,
             }
         },
         mounted() {
@@ -183,13 +89,18 @@
             this.first_name = user.given_name;
             this.last_name = user.family_name;
         },
+        filters: {
+            moment: function (date) {
+                return moment(date).format('YYYY.MM.DD');
+            }
+        },
         methods: {
             async checkCode() {
             },
             logout() {
 
                 this.$auth.logout();
-            }
+            },
         }
     }
 </script>

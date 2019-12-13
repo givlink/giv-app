@@ -10,6 +10,20 @@
   &__box {
     background-color: white;
     padding: 20px 10px;
+    &__send {
+      background-color: $base-color;
+      width: 230px;
+      height: 50px;
+      display: flex;
+      border-radius: 8px;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2em;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      margin: 0 auto;
+    }
     &__label {
       font-size: 1.4em;
       font-weight: bold;
