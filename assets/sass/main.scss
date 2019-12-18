@@ -54,6 +54,13 @@ body {
   padding-top: 70px;
 }
 
+a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 @import "header";
 @import "invite";
 @import "regist";

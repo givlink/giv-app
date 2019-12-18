@@ -1,32 +1,71 @@
 <template>
   <div class="GivList Main">
-    <div class="GivList__tab">
-      <div class="GivList__tab__btn on" id="receive">
-        受け取り一覧
+    <template v-if="isGiv">
+      <div class="GivList__tab">
+        <div class="GivList__tab__btn" id="receive" v-on:click="changeTabReceive">
+          受け取り一覧
+        </div>
+        <div class="GivList__tab__btn on" id="send" v-on:click="changeTabGiv">
+          贈る一覧
+        </div>
       </div>
-      <div class="GivList__tab__btn" id="send">
-        差し出し一覧
+    </template>
+    <template v-else>
+      <div class="GivList__tab">
+        <div class="GivList__tab__btn on" id="receive" v-on:click="changeTabReceive">
+          受け取り一覧
+        </div>
+        <div class="GivList__tab__btn" id="send" v-on:click="changeTabGiv">
+          贈る一覧
+        </div>
       </div>
-    </div>
-    <div class="GivList__box" id="receiveList">
+    </template>
+    <div class="GivList__box" id="receiveList" v-if="!isGiv">
       <!--      <div class="GivList__box__term">-->
       <!--        <div class="GivList__box__term__date">-->
       <!--          2019.6.21-->
       <!--        </div>-->
       <template v-for="item of receives">
+        <div class="GivList__box__term__date">
+          {{ item.delivery_date | moment }}
+        </div>
         <div class="GivList__box__term__content">
-          <div class="GivList__box__term__content__person">
+          <nuxt-link :to="`/receive/${item.id}`" class="GivList__box__term__content__person">
             <div class="GivList__box__term__content__person__icon">
               <b-img :src="`https://api-dev.giv.link${item.giv_user.profile_image_path}`" class="GivList__box__term__content__person__icon__img" alt></b-img>
             </div>
             <div class="GivList__box__term__content__person__text">
               <p class="GivList__box__term__content__person__text__name">{{ item.giv_user.last_name}} {{ item.giv_user.first_name}}</p>
+              <p class="GivList__box__term__content__person__text__tag" v-if="item.status == 'finished'">
+                完了
+              </p>
             </div>
-          </div>
+          </nuxt-link>
           <nuxt-link v-if="item.thanks_card == null" :to="`/thanks?id=${item.id}`" class="GivList__box__term__content__thanks">
                     <span class="GivList__box__term__content__thanks__text">
                         Thanksカードを<br>書きましょう
                     </span>
+          </nuxt-link>
+        </div>
+      </template>
+    </div>
+    <div class="GivList__box" id="givList" v-if="isGiv">
+      <template v-for="item of givs">
+
+        <div class="GivList__box__term__date">
+          {{ item.delivery_date | moment }}
+        </div>
+        <div class="GivList__box__term__content">
+          <nuxt-link :to="`/giv/${item.id}`" class="GivList__box__term__content__person">
+            <div class="GivList__box__term__content__person__icon">
+              <b-img :src="`https://api-dev.giv.link${item.receive_user.profile_image_path}`" class="GivList__box__term__content__person__icon__img" alt></b-img>
+            </div>
+            <div class="GivList__box__term__content__person__text">
+              <p class="GivList__box__term__content__person__text__name">{{ item.receive_user.last_name}} {{ item.receive_user.first_name}}</p>
+              <p class="GivList__box__term__content__person__text__tag" v-if="item.status == 'finished'">
+                完了
+              </p>
+            </div>
           </nuxt-link>
         </div>
       </template>
@@ -48,6 +87,7 @@
             return {
                 code: '',
                 hasError: '',
+                isGiv: false,
             }
         },
         async asyncData({ app }) {
@@ -73,9 +113,20 @@
                 givs: response2.data.givs,
             }
         },
+        filters: {
+            moment: function (date) {
+                return moment(date).format('YYYY.MM.DD');
+            }
+        },
         mounted() {
         },
         methods: {
+            changeTabGiv() {
+                this.isGiv = true;
+            },
+            changeTabReceive() {
+                this.isGiv = false;
+            },
             async checkCode() {
             },
             logout() {

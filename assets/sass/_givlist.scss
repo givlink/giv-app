@@ -16,7 +16,8 @@
         border-right: 1px solid $select-border-color;
       }
       &.on {
-        color: $base-color;
+        color: white;
+        background-color: $base-color;
         border-bottom: 1px solid $base-color;
       }
     }
@@ -60,6 +61,15 @@
               font-size: 1.4em;
               font-weight: bold;
               color: $head-black-color;
+              margin-bottom: 5px;
+            }
+            &__tag {
+              background-color: $head-black-color;
+              color: white;
+              padding: 1px 5px;
+              border-radius: 3px;
+              text-align: center;
+              margin-bottom: 0;
             }
 
             &__position {
