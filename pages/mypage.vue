@@ -27,11 +27,38 @@
         </span>
       </div>
     </div>
+
+    <div class="User__giv">
+      <h3 class="User__giv__title">提供できる時間帯</h3>
+      <div class="User__giv__tags">
+        <span class="User__giv__tags__tag" v-for="item of me.times">
+          {{item.tag}}
+        </span>
+      </div>
+    </div>
+
+    <div class="User__giv">
+      <h3 class="User__giv__title">givを提供できる場所</h3>
+      <div class="User__giv__tags">
+        <span class="User__giv__tags__tag" v-for="item of me.areas">
+          {{item.tag}}
+        </span>
+      </div>
+    </div>
+
+    <div class="User__giv">
+      <h3 class="User__giv__title">興味・関心</h3>
+      <div class="User__giv__tags">
+        <span class="User__giv__tags__tag" v-for="item of me.interests">
+          {{item.tag}}
+        </span>
+      </div>
+    </div>
     <div class="User__latest">
       <h3 class="User__latest__title">最近のgiv</h3>
       <div class="User__latest__wrap">
         <template v-for="item of givs">
-          <nuxt-link :to="`/giv/${item.id}`" class="User__latest__wrap__box">
+          <nuxt-link :to="`/thanks/${item.id}`" class="User__latest__wrap__box">
             <template v-if="item.images">
               <b-img :src="`https://api-dev.giv.link${item.images[0].path}`" class="User__latest__wrap__box__img" alt></b-img>
             </template>
@@ -88,7 +115,7 @@ export default {
                 Authorization: token
             }
         });
-        const givUrl = process.env.baseUrl + '/me/giv';
+        const givUrl = process.env.baseUrl + '/users/' + response.data.id + '/received_thanks_cards';
         const getUrl2 = encodeURI(givUrl);
         const response2 = await axios.get(getUrl2, {
             headers: {
@@ -98,7 +125,7 @@ export default {
         });
         return {
             me: response.data,
-            givs: response2.data.givs,
+            givs: response2.data.thanks_cards,
         }
     },
     mounted() {

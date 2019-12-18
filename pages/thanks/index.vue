@@ -1,7 +1,7 @@
 <template>
   <div class="Form Main">
     <p class="Form__text">
-      「{{giv.giv_user.last_name}}} {{giv.giv_user.first_name}}}」さんとのgiv<br>
+      「{{giv.giv_user.last_name}} {{giv.giv_user.first_name}}」さんとのgiv<br>
       ありがとうございました!
     </p>
     <div class="Form__box">
@@ -16,16 +16,30 @@
         class="Form__box__textarea"
         max-rows="6"
       ></b-form-textarea>
-      <label for="image" class="Form__box__label">画像を追加しましょう（※）</label>
+      <label for="image" class="Form__box__label">画像を追加しましょう（※最大３つ）</label>
+      <label for="image" class="Form__box__label">1つ目</label>
       <b-form-file
         v-model="file"
         :state="Boolean(file)"
         placeholder="ファイルを選んでください。"
         drop-placeholder="ファイルをドロップしてください"
       ></b-form-file>
-      <div class="mt-3">選択したファイル: {{ file ? file.name : '' }}</div>
+      <label for="image" class="Form__box__label mt-3">2つ目</label>
+      <b-form-file
+        v-model="file2"
+        :state="Boolean(file2)"
+        placeholder="ファイルを選んでください。"
+        drop-placeholder="ファイルをドロップしてください"
+      ></b-form-file>
+      <label for="image" class="Form__box__label mt-3">3つ目</label>
+      <b-form-file
+        v-model="file3"
+        :state="Boolean(file3)"
+        placeholder="ファイルを選んでください。"
+        drop-placeholder="ファイルをドロップしてください"
+      ></b-form-file>
       <!-- Plain mode -->
-      <div v-on:click="send()" class="Form__box__send">送信</div>
+      <div v-on:click="send()" class="Form__box__send mt-3">送信</div>
     </div>
     <!--    <div class="Form__sns">-->
     <!--      <h2 class="Form__sns__title">SNSでシェア</h2>-->
@@ -82,15 +96,20 @@
                         Authorization: token
                     }
                 };
-                var fileData = '';
-                await this.getBase64(this.file).then(image => fileData = image);
-                console.log(fileData);
+                var fileData = [];
+                if(this.file) {
+                    await this.getBase64(this.file).then(image => fileData.push(image));
+                }
+                if(this.file2) {
+                    await this.getBase64(this.file2).then(image => fileData.push(image));
+                }
+                if(this.file3) {
+                    await this.getBase64(this.file3).then(image => fileData.push(image));
+                }
                 const data = {
                     title: this.title,
                     message: this.message,
-                    images: [
-                        fileData
-                        ]
+                    images: fileData
                 }
 
                 return axios
