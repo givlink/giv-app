@@ -47,14 +47,15 @@
 <!--        一覧へ戻る-->
 <!--      </nuxt-link>-->
 <!--    </div>-->
-<!--    <a href="" class="GivBtn">-->
-<!--      <img class="GivBtn__img" src="~/assets/image/giv_btn.png" alt="giv">-->
-<!--    </a>-->
-<!--    <div class="GivModal">-->
-<!--      <a href="" class="GivModal__btn GivModal__btn&#45;&#45;send">givをおくりたい</a>-->
-<!--      <a href="" class="GivModal__btn GivModal__btn&#45;&#45;take">givをもらいたい</a>-->
-<!--      <a href="" class="GivModal__btn GivModal__btn&#45;&#45;cancel">申請をキャンセルする</a>-->
-<!--    </div>-->
+    <div class="GivBtn" v-on:click="toggleModal">
+      <img class="GivBtn__img" src="~/assets/image/giv_btn.png" alt="giv">
+    </div>
+    <div class="GivModal" v-if="onModal">
+      <div class="GivModal__btn GivModal__btn--send" v-b-modal="'send-modal'" v-on:click="sendGiv">givをおくりたい</div>
+      <div class="GivModal__btn GivModal__btn--take" v-on:click="wantGiv">givをもらいたい</div>
+      <div class="GivModal__btn GivModal__btn--cancel" v-on:click="toggleModal">申請をキャンセルする</div>
+    </div>
+    <b-modal id="send-modal">givを送りたいと送信しました</b-modal>
   </div>
 </template>
 
@@ -75,7 +76,8 @@ export default {
             first_name: '',
             last_name: '',
             me: '',
-            givs: ''
+            givs: '',
+            onModal: false
         }
     },
     async asyncData({ app, params }) {
@@ -100,6 +102,7 @@ export default {
             return {
                 me: response.data,
                 givs: response2.data.thanks_cards,
+                id: params.id
             }
         }
     },
@@ -110,7 +113,34 @@ export default {
         this.last_name = user.family_name;
     },
     methods: {
-        async checkCode() {
+        async sendGiv() {
+            const baseUrl = process.env.baseUrl + '/users/' + this.id + '/send_giv';
+            const getUrl = encodeURI(baseUrl);
+
+            const token = this.$auth.$storage.getUniversal("_token.auth0");
+            const response = await axios.put(getUrl, {},{
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token
+                }
+            });
+            this.onModal = false;
+        },
+        async wantGiv() {
+            const baseUrl = process.env.baseUrl + '/users/' + this.id + '/want_giv';
+            const getUrl = encodeURI(baseUrl);
+
+            const token = this.$auth.$storage.getUniversal("_token.auth0");
+            const response = await axios.put(getUrl, {},{
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token
+                }
+            });
+            this.onModal = false;
+        },
+        toggleModal() {
+            this.onModal = !this.onModal
         },
         logout() {
 
