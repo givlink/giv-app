@@ -15,22 +15,26 @@
           {{thanks.giv.kind}}
         </span>
       </div>
-      <div class="Detail__box__images" v-if="thanks.images" >
+      <div class="Detail__box__images" v-if="thanks.images">
         <template v-for="item of thanks.images">
           <b-img :src="`https://api-dev.giv.link${item.path}`" class="Detail__box__images__img" alt></b-img>
         </template>
       </div>
       <div class="Detail__box__info">
-        <p class="Detail__box__info__good">
-          <template v-if="thanks.liked">
+        <template v-if="isLike && thanks.liked">
+
+          <p class="Detail__box__info__good" v-on:click="deleteLike">
+            <span class="Detail__box__info__good__heart on">♥</span>
+            <span class="Detail__box__info__good__text">いいね済</span>
+          </p>
+        </template>
+        <template v-else>
+
+          <p class="Detail__box__info__good" v-on:click="sendLike">
             <span class="Detail__box__info__good__heart">♡</span>
             <span class="Detail__box__info__good__text">いいね</span>
-          </template>
-          <template v-else>
-            <span class="Detail__box__info__good__heart on">♡</span>
-            <span class="Detail__box__info__good__text">いいね</span>
-          </template>
-        </p>
+          </p>
+        </template>
         <p class="Detail__box__info__time">{{ thanks.created_at | moment }}</p>
       </div>
       <div class="Detail__box__content">
@@ -76,6 +80,8 @@
             return {
                 code: '',
                 hasError: '',
+                isLike: '',
+                id: '',
             }
         },
         mounted() {
@@ -99,14 +105,42 @@
                 });
                 return {
                     thanks: response.data,
+                    isLike: response.data.liked,
+                    id: params.id
                 }
             }
         },
         methods: {
-            async checkCode() {
+            async sendLike() {
+                const baseUrl = process.env.baseUrl + '/thanks_cards/' + this.id + '/like';
+                const getUrl = encodeURI(baseUrl);
+
+                const token = this.$auth.$storage.getUniversal("_token.auth0");
+                const response = await axios.put(getUrl, {},{
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token
+                    }
+                });
+                if(response.status === 200) {
+                    this.isLike = true;
+                }
+            },
+            async deleteLike() {
+                const baseUrl = process.env.baseUrl + '/thanks_cards/' + this.id + '/like';
+                const getUrl = encodeURI(baseUrl);
+                const token = this.$auth.$storage.getUniversal("_token.auth0");
+                const response = await axios.delete(getUrl, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token
+                    }
+                });
+                if(response.status === 200) {
+                    this.isLike = false;
+                }
             },
             logout() {
-
                 this.$auth.logout();
             }
         }

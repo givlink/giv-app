@@ -57,9 +57,22 @@ export default {
         const getUrl = encodeURI(baseUrl);
         const response = await axios.get(getUrl, {
         });
-        console.log(response.data);
+        const baseUrl2 = process.env.baseUrl + "/users";
+
+        const token = app.$auth.$storage.getUniversal("_token.auth0");
+        const getUrl2 = encodeURI(baseUrl2);
+        const response2 = await axios.get(getUrl2, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: token
+            }
+        });
+        console.log(response2);
         return {
             skills: response.data.skill_tags,
+            data: {
+                users:  response2.data.users
+            }
         }
     },
     mounted() {
@@ -79,11 +92,8 @@ export default {
             this.$set(this.data, 'users', response.data.users);
         },
         async search () {
-            console.log("hoge");
-            console.log(this.searchWord);
             const baseUrl = process.env.baseUrl + "/users" + "?keywords=" + this.searchWord;
             const getUrl = encodeURI(baseUrl);
-            console.log(baseUrl);
             const token = this.$auth.$storage.getUniversal("_token.auth0");
             const response = await axios.get(getUrl, {
                 headers: {
