@@ -5,7 +5,7 @@
         <b-img :src="`https://api-dev.giv.link${me.profile_image_path}`" class="User__profile__icon__img" alt></b-img>
       </div>
       <p class="User__profile__name">{{me.last_name}} {{me.first_name}}</p>
-<!--      <p class="User__profile__position">KDS</p>-->
+      <p class="User__profile__position">{{me.job}}</p>
       <p class="User__profile__message">{{me.introduction}}</p>
 <!--      <div class="User__profile__sns">-->
 <!--        <a href="" class="User__profile__sns__link">-->
