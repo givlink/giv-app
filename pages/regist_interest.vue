@@ -90,7 +90,7 @@ export default {
                 giv_tags: this.$store.state.skills,
                 area_tags: this.$store.state.places,
                 interest_tags: this.$store.state.interests,
-                time_tags: this.$store.state.interests,
+                time_tags: this.$store.state.times,
                 invitation_code: this.$store.state.code, //this.$store.state.code,
             }
 
