@@ -32,7 +32,7 @@
         <div class="GivList__box__term__content">
           <nuxt-link :to="`/receive/${item.id}`" class="GivList__box__term__content__person">
             <div class="GivList__box__term__content__person__icon">
-              <b-img :src="`https://api-dev.giv.link${item.giv_user.profile_image_path}`" class="GivList__box__term__content__person__icon__img" alt></b-img>
+              <b-img :src="`${basePath}${item.giv_user.profile_image_path}`" class="GivList__box__term__content__person__icon__img" alt></b-img>
             </div>
             <div class="GivList__box__term__content__person__text">
               <p class="GivList__box__term__content__person__text__name">{{ item.giv_user.last_name}} {{ item.giv_user.first_name}}</p>
@@ -58,7 +58,7 @@
         <div class="GivList__box__term__content">
           <nuxt-link :to="`/giv/${item.id}`" class="GivList__box__term__content__person">
             <div class="GivList__box__term__content__person__icon">
-              <b-img :src="`https://api-dev.giv.link${item.receive_user.profile_image_path}`" class="GivList__box__term__content__person__icon__img" alt></b-img>
+              <b-img :src="`${basePath}${item.receive_user.profile_image_path}`" class="GivList__box__term__content__person__icon__img" alt></b-img>
             </div>
             <div class="GivList__box__term__content__person__text">
               <p class="GivList__box__term__content__person__text__name">{{ item.receive_user.last_name}} {{ item.receive_user.first_name}}</p>
@@ -120,6 +120,12 @@
         },
         mounted() {
         },
+
+      computed: {
+        basePath () {
+          return `${process.env.baseUrl}`;
+        },
+      },
         methods: {
             changeTabGiv() {
                 this.isGiv = true;

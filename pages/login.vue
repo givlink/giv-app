@@ -47,8 +47,7 @@
                         };
                         return axios.get(baseUrl, config)
                             .then((res) => {
-                                console.log(res);
-                                this.$router.push("/");
+                              this.$router.push("/");
                             })
                             .catch((e) => {
                                 this.hasError = 'ログインに失敗しました。';

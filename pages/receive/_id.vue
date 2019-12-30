@@ -4,7 +4,7 @@
       <div class="Detail__box__header">
         <nuxt-link :to="`/users/${giv.user}`" class="Detail__box__header__user">
           <div class="Detail__box__header__user__icon">
-            <b-img :src="`https://api-dev.giv.link${giv.giv_user.profile_image_path}`" class="Detail__box__header__user__icon__img" alt></b-img>
+            <b-img :src="`${basePath}${giv.giv_user.profile_image_path}`" class="Detail__box__header__user__icon__img" alt></b-img>
           </div>
 
           <div class="Detail__box__header__user__text">
@@ -21,7 +21,7 @@
         </div>
         <div class="Detail__box__images">
           <template v-for="item of giv.images">
-            <b-img :src="`https://api-dev.giv.link${item.path}`" class="Detail__box__images__img" alt></b-img>
+            <b-img :src="`${basePath}${item.path}`" class="Detail__box__images__img" alt></b-img>
           </template>
         </div>
       </div>
@@ -106,6 +106,12 @@
         },
         mounted() {
         },
+
+      computed: {
+        basePath () {
+          return `${process.env.baseUrl}`;
+        },
+      },
         async asyncData({ app, params }) {
             if(params.id) {
                 const baseUrl = process.env.baseUrl + '/me/receive/' + params.id;

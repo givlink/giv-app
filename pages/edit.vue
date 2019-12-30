@@ -2,7 +2,7 @@
   <div class="User Main">
     <div class="User__profile">
       <div class="User__profile__icon">
-        <b-img :src="`https://api-dev.giv.link${me.profile_image_path}`" class="User__profile__icon__img" alt></b-img>
+        <b-img :src="`${basePath}${me.profile_image_path}`" class="User__profile__icon__img" alt></b-img>
       </div>
       <div class="UserForm">
         <div class="UserForm__box">
@@ -14,8 +14,8 @@
           <b-form-input v-model="first_name" placeholder="名"></b-form-input>
         </div>
         <div class="UserForm__box">
-          <label class="UserForm__label">役職</label>
-          <b-form-input v-model="position" placeholder="役職"></b-form-input>
+          <label class="UserForm__label">職業</label>
+          <b-form-input v-model="position" placeholder="職業"></b-form-input>
         </div>
         <div class="UserForm__box">
           <label class="UserForm__label">紹介文</label>
@@ -28,80 +28,6 @@
           ></b-form-textarea>
         </div>
         <div class="Regist__main">
-          <div class="Regist__main__select">
-            <h3 class="Regist__main__select__text">
-              あなたのgivを選択してください
-            </h3>
-            <ul class="Regist__main__select__box">
-
-              <li class="Regist__main__select__box__li"  v-for="item in skills">
-                <p class="Regist__main__select__box__li__text">
-                  {{item.tag}}
-                </p>
-                <div class="Regist__main__select__box__li__btn">
-                  <b-form-checkbox
-                    v-model="select_skills"
-                    :key="`skill_${item.id}`"
-                    :value="item.id"
-                    name="giv"
-                    :id="`skill_${item.id}`"
-                    class="Regist__main__select__box__li__btn__check"
-                  >
-                    <span class="Regist__main__select__box__li__btn__text">選択</span>
-                  </b-form-checkbox>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div class="Regist__main__select">
-            <h3 class="Regist__main__select__text">
-              givを提供できる時間帯を選択してください
-            </h3>
-            <ul class="Regist__main__select__box">
-
-              <li class="Regist__main__select__box__li"  v-for="item in times">
-                <p class="Regist__main__select__box__li__text">
-                  {{item.tag}}
-                </p>
-                <div class="Regist__main__select__box__li__btn">
-                  <b-form-checkbox
-                    v-model="select_times"
-                    :key="`times_${item.id}`"
-                    :value="item.id"
-                    name="giv"
-                    :id="`times_${item.id}`"
-                    class="Regist__main__select__box__li__btn__check"
-                  >
-                    <span class="Regist__main__select__box__li__btn__text">選択</span>
-                  </b-form-checkbox>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div class="Regist__main__select">
-            <h3 class="Regist__main__select__text">
-              提供場所を選択してください
-            </h3>
-            <ul class="Regist__main__select__box">
-              <li class="Regist__main__select__box__li"  v-for="item in places">
-                <p class="Regist__main__select__box__li__text">
-                  {{item.tag}}
-                </p>
-                <div class="Regist__main__select__box__li__btn">
-                  <b-form-radio
-                    v-model="select_areas"
-                    :key="`place_${item.id}`"
-                    :value="item.id"
-                    name="giv"
-                    :id="`place_${item.id}`"
-                    class="Regist__main__select__box__li__btn__check"
-                  >
-                    <span class="Regist__main__select__box__li__btn__text">選択</span>
-                  </b-form-radio>
-                </div>
-              </li>
-            </ul>
-          </div>
           <div class="Regist__main__select">
             <h3 class="Regist__main__select__text">あなたの興味・関心を選択してください</h3>
             <ul class="Regist__main__select__box">
@@ -209,6 +135,12 @@
       }
     },
     mounted() {
+    },
+
+    computed: {
+      basePath () {
+        return `${process.env.baseUrl}`;
+      },
     },
     methods: {
       async checkCode() {

@@ -101,7 +101,6 @@ export default {
                     config
                 )
                 .then(res => {
-                    console.log(res);
                     this.$router.push("/");
                 })
                 .catch(e => {

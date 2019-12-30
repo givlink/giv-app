@@ -2,9 +2,9 @@
   <div class="Detail Main">
     <div class="Detail__box">
       <div class="Detail__box__header">
-        <nuxt-link :to="`/users/${thanks.giv.user}`" class="Detail__box__header__user">
+        <nuxt-link :to="`/users/${thanks.giv.receive_user.id}`" class="Detail__box__header__user">
           <div class="Detail__box__header__user__icon">
-            <b-img :src="`https://api-dev.giv.link${thanks.giv.receive_user.profile_image_path}`" class="Detail__box__header__user__icon__img" alt></b-img>
+            <b-img :src="`${basePath}${thanks.giv.receive_user.profile_image_path}`" class="Detail__box__header__user__icon__img" alt></b-img>
           </div>
 
           <div class="Detail__box__header__user__text">
@@ -17,13 +17,13 @@
       </div>
       <div class="Detail__box__images" v-if="thanks.images">
         <template v-for="item of thanks.images">
-          <b-img :src="`https://api-dev.giv.link${item.path}`" class="Detail__box__images__img" alt></b-img>
+          <b-img :src="`${basePath}${item.path}`" class="Detail__box__images__img" alt></b-img>
         </template>
       </div>
       <div class="Detail__box__info">
         <template v-if="isLike && thanks.liked">
 
-          <p class="Detail__box__info__good" v-on:click="deleteLike">
+          <p class="Detail__box__info__good">
             <span class="Detail__box__info__good__heart on">♥</span>
             <span class="Detail__box__info__good__text">いいね済</span>
           </p>
@@ -45,10 +45,10 @@
           {{ thanks.message }}
         </p>
       </div>
-      <nuxt-link :to="`/users/3`" class="Home__card__content__person">
+      <nuxt-link :to="`/users/${thanks.giv.giv_user.id}`" class="Home__card__content__person">
         <!--          <nuxt-link :to="`/user/${item.giv.giv_user.id}`" class="Home__card__content__person">-->
         <div class="Home__card__content__person__icon">
-          <b-img :src="`https://api-dev.giv.link${thanks.giv.giv_user.profile_image_path}`" class="Home__card__content__person__icon__img" alt></b-img>
+          <b-img :src="`${basePath}${thanks.giv.giv_user.profile_image_path}`" class="Home__card__content__person__icon__img" alt></b-img>
         </div>
         <div class="Home__card__content__person__text">
           <p class="Home__card__content__person__text__head">givを贈った人</p>
@@ -103,6 +103,7 @@
                         Authorization: token
                     }
                 });
+                console.log(response.data);
                 return {
                     thanks: response.data,
                     isLike: response.data.liked,
@@ -110,6 +111,12 @@
                 }
             }
         },
+
+      computed: {
+        basePath () {
+          return `${process.env.baseUrl}`;
+        },
+      },
         methods: {
             async sendLike() {
                 const baseUrl = process.env.baseUrl + '/thanks_cards/' + this.id + '/like';
@@ -126,20 +133,20 @@
                     this.isLike = true;
                 }
             },
-            async deleteLike() {
-                const baseUrl = process.env.baseUrl + '/thanks_cards/' + this.id + '/like';
-                const getUrl = encodeURI(baseUrl);
-                const token = this.$auth.$storage.getUniversal("_token.auth0");
-                const response = await axios.delete(getUrl, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: token
-                    }
-                });
-                if(response.status === 200) {
-                    this.isLike = false;
-                }
-            },
+            // async deleteLike() {
+            //     const baseUrl = process.env.baseUrl + '/thanks_cards/' + this.id + '/like';
+            //     const getUrl = encodeURI(baseUrl);
+            //     const token = this.$auth.$storage.getUniversal("_token.auth0");
+            //     const response = await axios.delete(getUrl, {
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //             Authorization: token
+            //         }
+            //     });
+            //     if(response.status === 200) {
+            //         this.isLike = false;
+            //     }
+            // },
             logout() {
                 this.$auth.logout();
             }

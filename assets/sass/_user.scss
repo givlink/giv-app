@@ -11,17 +11,19 @@
     padding: 50px 10px;
     &__edit {
       background-color: $base-color;
-      width: 230px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       display: flex;
-      border-radius: 8px;
+      border-radius: 30px;
       justify-content: center;
       align-items: center;
-      font-size: 1.2em;
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-      margin: 0 auto;
+      position: fixed;
+      bottom: 60px;
+      right: 5px;
+      &__img {
+        width: 20px;
+        height: auto;
+      }
     }
     &__text {
       font-size: 1.6em;
