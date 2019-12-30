@@ -9,11 +9,15 @@ export const state = () => ({
   last_name: '',
   img: '',
   code: '',
+  me: {}
 });
 
 export const mutations = {
   setSkills(state, skills) {
     state.skills = skills;
+  },
+  setMe(state, me) {
+    state.me = me;
   },
   setPlaces(state, places) {
     state.places = places;
@@ -43,8 +47,6 @@ export const mutations = {
 
 export const actions = {
   nuxtClientInit ({ commit }, context) {
-    console.log(Cookie.get('code'));
-    console.log(context);
     let code = '';
     let last_name = '';
     let first_name = '';

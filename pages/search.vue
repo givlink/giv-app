@@ -21,7 +21,7 @@
       <li class="Search__list__li" v-for="item of data.users">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">
           <div class="Search__list__li__link__icon">
-            <b-img :src="`https://api-dev.giv.link${item.profile_image_path}`" class="Search__list__li__link__icon__img" alt></b-img>
+            <b-img :src="`${basePath}${item.profile_image_path}`" class="Search__list__li__link__icon__img" alt></b-img>
           </div>
           <div class="Search__list__li__link__text">
             <p class="Search__list__li__link__text__name">{{item.last_name}} {{item.first_name}}さん</p>
@@ -77,6 +77,12 @@ export default {
     },
     mounted() {
     },
+
+  computed: {
+    basePath () {
+      return `${process.env.baseUrl}`;
+    },
+  },
     methods: {
         async clickTag (item) {
             const baseUrl = process.env.baseUrl + "/users" + "?giv_tags=" + item.id;

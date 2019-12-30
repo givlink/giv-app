@@ -2,25 +2,14 @@
   <div class="User Main">
     <div class="User__profile">
       <div class="User__profile__icon">
-        <b-img :src="`https://api-dev.giv.link${me.profile_image_path}`" class="User__profile__icon__img" alt></b-img>
+        <b-img :src="`${basePath}${me.profile_image_path}`" class="User__profile__icon__img" alt></b-img>
       </div>
       <p class="User__profile__name">{{me.last_name}} {{me.first_name}}</p>
       <p class="User__profile__position">{{me.job}}</p>
       <p class="User__profile__message">{{me.introduction}}</p>
       <nuxt-link to="edit" class="User__profile__edit">
-          <span class="User__profile__edit__text">編集する</span>
+        <b-img src="~/assets/image/icon_edit.png" class="User__profile__edit__img" alt></b-img>
       </nuxt-link>
-<!--      <div class="User__profile__sns">-->
-<!--        <a href="" class="User__profile__sns__link">-->
-<!--          <img class="User__profile__sns__link__img" src="~/assets/image/facebook.png" alt="facebook">-->
-<!--        </a>-->
-<!--        <a href="" class="User__profile__sns__link">-->
-<!--          <img class="User__profile__sns__link__img" src="~/assets/image/twitter.png" alt="twitter">-->
-<!--        </a>-->
-<!--        <a href="" class="User__profile__sns__link">-->
-<!--          <img class="User__profile__sns__link__img" src="~/assets/image/instagram.png" alt="instagram">-->
-<!--        </a>-->
-<!--      </div>-->
     </div>
     <div class="User__giv">
       <h3 class="User__giv__title">登録しているgiv</h3>
@@ -63,7 +52,7 @@
         <template v-for="item of givs">
           <nuxt-link :to="`/thanks/${item.id}`" class="User__latest__wrap__box">
             <template v-if="item.images">
-              <b-img :src="`https://api-dev.giv.link${item.images[0].path}`" class="User__latest__wrap__box__img" alt></b-img>
+              <b-img :src="`${basePath}${item.images[0].path}`" class="User__latest__wrap__box__img" alt></b-img>
             </template>
             <template v-else>
               <span>NO IMAGE</span>
@@ -137,6 +126,12 @@ export default {
         this.first_name = user.given_name;
         this.last_name = user.family_name;
     },
+
+  computed: {
+    basePath () {
+      return `${process.env.baseUrl}`;
+    },
+  },
     methods: {
         async checkCode() {
         },
