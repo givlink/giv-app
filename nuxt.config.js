@@ -17,7 +17,7 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
   env: {
-    baseUrl: process.env.BASE_URL || "https://api.giv.link" //検証　"https://api-dev.giv.link"
+    baseUrl: process.env.BASE_URL || "https://api-dev.giv.link"//https://api.giv.link" //検証　
   },
   /*
    ** Customize the progress-bar color
@@ -49,26 +49,26 @@ export default {
   ],
   auth: {
     //検証
-    // strategies: {
-    //   auth0: {
-    //     domain: "giv-dev.auth0.com", // 追加
-    //     client_id: "VGa2SVojtmq50NiC5I2rpV4XALrAkZql", // 追加
-    //     audience: "https://giv-dev.auth0.com/api/v2/",
-    //     scope: ["openid", "profile", "email"],
-    //     response_type: "id_token token",
-    //     token_key: "access_token"
-    //   }
-    // },
     strategies: {
       auth0: {
-        domain: "givlink.auth0.com", // 追加
-        client_id: "GTr5NAD6xw9lRF4F72iJ0g9HkjqIWvCu", // 追加
-        audience: "https://givlink.auth0.com/api/v2/",
+        domain: "giv-dev.auth0.com", // 追加
+        client_id: "VGa2SVojtmq50NiC5I2rpV4XALrAkZql", // 追加
+        audience: "https://giv-dev.auth0.com/api/v2/",
         scope: ["openid", "profile", "email"],
         response_type: "id_token token",
         token_key: "access_token"
       }
     },
+    // strategies: {
+    //   auth0: {
+    //     domain: "givlink.auth0.com", // 追加
+    //     client_id: "GTr5NAD6xw9lRF4F72iJ0g9HkjqIWvCu", // 追加
+    //     audience: "https://givlink.auth0.com/api/v2/",
+    //     scope: ["openid", "profile", "email"],
+    //     response_type: "id_token token",
+    //     token_key: "access_token"
+    //   }
+    // },
     redirect: {
       // login: "/invite", // 未ログイン時のリダイレクト先
       logout: "/login", // ログアウト処理を実行した直後のリダイレクト先
