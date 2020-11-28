@@ -4,20 +4,20 @@
       <template v-for="item of events">
         <template v-if="item.event_type == 'send_giv'">
           <li class="Notification__list__li">
-            <a href="" class="Notification__list__li__link">
+            <nuxt-link :to="`/users/${item.from_user.id}`" class="Notification__list__li__link">
               <div class="Notification__list__li__link__icon">
                 <b-img :src="`${basePath}${item.from_user.profile_image_path}`" class="Notification__list__li__link__icon__img" alt></b-img>
               </div>
               <div class="Notification__list__li__link__text">
-                <p class="Notification__list__li__link__text__info">「{{item.from_user.last_name}} {{item.from_user.first_name}}」さんからgivを送りたいのアクションがありました</p>
+                <p class="Notification__list__li__link__text__info">「{{item.from_user.last_name}} {{item.from_user.first_name}}」さんからgivを贈りたいのアクションがありました</p>
                 <p class="Notification__list__li__link__text__date">{{ item.created_at | moment }}</p>
               </div>
-            </a>
+            </nuxt-link>
           </li>
         </template>
         <template v-else-if="item.event_type == 'want_giv'">
           <li class="Notification__list__li">
-            <a href="" class="Notification__list__li__link">
+            <nuxt-link :to="`/users/${item.from_user.id}`" class="Notification__list__li__link">
               <div class="Notification__list__li__link__icon">
                 <b-img :src="`${basePath}${item.from_user.profile_image_path}`" class="Notification__list__li__link__icon__img" alt></b-img>
               </div>
@@ -25,7 +25,7 @@
                 <p class="Notification__list__li__link__text__info">「{{item.from_user.last_name}} {{item.from_user.first_name}}」さんからgivを受け取りたいのアクションがありました</p>
                 <p class="Notification__list__li__link__text__date">{{ item.created_at | moment }}</p>
               </div>
-            </a>
+            </nuxt-link>
           </li>
         </template>
         <template v-else-if="item.event_type == 'thanks_card'">
@@ -74,15 +74,18 @@
     async asyncData({ app }) {
       const baseUrl = process.env.baseUrl + '/me/events';
       const getUrl = encodeURI(baseUrl);
-      const token = app.$auth.$storage.getUniversal("_token.auth0");
-      const response = await axios.get(getUrl, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token
+      const response = await axios.get(getUrl);
+      const events = response.data.events;
+      events.map((event)=> {
+        if(event.read_at == null ) {
+          const readUrl = process.env.baseUrl + '/me/events/' + event.id + '/done/';
+          const getReadUrl = encodeURI(readUrl);
+          const response = axios.post(getReadUrl);
         }
       });
+      console.log(events);
       return {
-        events: response.data.events,
+        events: events,
       }
     },
 

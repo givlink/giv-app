@@ -14,6 +14,20 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    position: relative;
+    &__notification {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      color: white;
+      background-color: $base-blue-color;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      right: calc( 50% - 30px);
+      top: 5px;
+    }
     &__icon {
       &__img {
         height: 22px;

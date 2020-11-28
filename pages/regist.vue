@@ -31,62 +31,63 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import jwt from 'jwt-decode';
-    const Cookie = process.client ? require('js-cookie') : undefined;
-    export default {
-        data() {
-            return {
-                img: "",
-                first_name: "",
-                last_name: "",
-                isShow: false
-            };
-        },
-        mounted() {
-            const token = this.$auth.$storage.getUniversal("_token.auth0");
-            if(token && token !== '') {
-                let decoded = jwt(token);
-                if(decoded.exp > new Date().getTime() / 1000) {
-                    const baseUrl = process.env.baseUrl + '/login';
-                    const getUrl = encodeURI(baseUrl);
-                    const config = {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: token
-                        }
-                    };
-                    return axios.get(baseUrl, config)
-                        .then((res) => {
-                            this.$router.push("/");
-                        })
-                        .catch((e) => {
-                            this.$auth.fetchUser();
-                            const user = this.$auth.$storage.getState("user");
-                            this.img = user.picture;
-                            this.first_name = user.given_name;
-                            this.last_name = user.family_name;
-                            this.isShow = true;
-                        });
-                } else {
-                    this.$auth.loginWith('auth0');
-                }
-            } else {
-                this.$auth.loginWith('auth0');
-            }
-        },
-        methods: {
-            next() {
-                this.$store.commit("setImg", this.img);
-                this.$store.commit("setFirstName", this.first_name);
-                this.$store.commit("setLastName", this.last_name);
-                Cookie.set('img', this.img);
-                Cookie.set('first_name', this.first_name);
-                Cookie.set('last_name', this.last_name);
-                this.$router.push("/regist_giv");
-            }
-        }
+import axios from 'axios';
+import jwt from 'jwt-decode';
+const Cookie = process.client ? require('js-cookie') : undefined;
+export default {
+  data() {
+    return {
+      img: "",
+      first_name: "",
+      last_name: "",
+      isShow: false
     };
+  },
+  mounted() {
+    let code = Cookie.get('code');
+    const token = this.$auth.$storage.getUniversal("_token.auth0");
+    if(token && token !== '') {
+      let decoded = jwt(token);
+      if(decoded.exp > new Date().getTime() / 1000) {
+        const baseUrl = process.env.baseUrl + '/login';
+        const getUrl = encodeURI(baseUrl);
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          }
+        };
+        return axios.get(baseUrl, config)
+          .then((res) => {
+            this.$router.push("/");
+          })
+          .catch((e) => {
+            this.$auth.fetchUser();
+            const user = this.$auth.$storage.getState("user");
+            this.img = user.picture;
+            this.first_name = user.given_name;
+            this.last_name = user.family_name;
+            this.isShow = true;
+          });
+      } else {
+          this.$auth.loginWith('auth0');
+      }
+    } else {
+        this.$auth.loginWith('auth0');
+    }
+  },
+  methods: {
+    next() {
+      this.$store.commit("setImg", this.img);
+      this.$store.commit("setFirstName", this.first_name);
+      this.$store.commit("setLastName", this.last_name);
+      Cookie.set('img', this.img, { expires: 3 });
+      Cookie.set('first_name', this.first_name, { expires: 3 });
+      Cookie.set('last_name', this.last_name, { expires: 3 });
+      this.$router.push("/regist_giv");
+    }
+  }
+};
 </script>
 
 <style>
