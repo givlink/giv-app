@@ -4,7 +4,7 @@
       <div class="Invite__logo">
         <img class="Invite__logo__img" src="~/assets/image/giv_logo.png" alt="giv">
       </div>
-      <form class="Invite__form">
+      <div class="Invite__form">
         <div class="Invite__input">
           <p class="Invite__input__text">招待コードを入力してください</p>
           <b-form-input
@@ -19,7 +19,7 @@
           <button v-on:click="checkCode" class="Invite__btn__link">次へ</button>
         </div>
         <p class="Invite__error">{{hasError}}</p>
-      </form>
+      </div>
     </div>
   </div>
 </template>
