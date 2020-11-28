@@ -13,6 +13,7 @@
             v-model="code"
             placeholder="招待コード"
           ></b-form-input>
+          <a href="https://giv.link/" class="Invite__input__link">招待コードを取得するにはこちらからご登録ください。</a>
         </div>
         <div class="Invite__btn">
           <button v-on:click="checkCode" class="Invite__btn__link">次へ</button>
@@ -46,7 +47,7 @@
             return axios.get(baseUrl)
                 .then((res) => {
                     this.$store.commit("setCode", this.code);
-                    Cookie.set('code', this.code); // saving token in cookie for server rendering
+                    Cookie.set('code', this.code, { expires: 3 }); // saving token in cookie for server rendering
                     this.$auth.loginWith('auth0')
                 })
                 .catch((e) => {

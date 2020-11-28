@@ -5,6 +5,9 @@
     &--other {
       margin-bottom: 3px;
     }
+    &__thanks {
+      padding: 0 20px 20px;
+    }
     &__header {
       display: flex;
       justify-content: space-between;
@@ -79,6 +82,7 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        cursor: pointer;
         &__heart {
           font-size: 1.4em;
           color: $heart-color;
@@ -117,8 +121,10 @@
         color: $head-black-color;
       }
       &__text {
-        font-size: 1.2em;
+        font-size: 1.4em;
         color: $head-black-color;
+        white-space: pre-wrap;
+        word-wrap: break-word;
         &--other {
           height: 70px;
           overflow: hidden;
@@ -264,6 +270,57 @@
     padding: 20px 10px;
     background-color: white;
     &__btn {
+      text-decoration: none;
+      color: white;
+      font-size: 1.2em;
+      height: 50px;
+      width: 100%;
+      background-color: $base-color;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+    }
+  }
+}
+
+.Comment {
+  margin-top: 20px;
+  background-color: white;
+  padding: 10px;
+  &__title {
+    font-size: 1.8em;
+  }
+  &__box {
+    padding-bottom: 10px;
+    position: relative;
+    &__delete {
+      padding: 2px 5px;
+      background-color: red;
+      color: white;
+      font-size: 1.2em;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    &__name {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+    &__text {
+      margin-bottom: 0;
+      font-size: 1.4em;
+    }
+    margin-bottom: 10px;
+    border-bottom: 1px solid black;
+  }
+  &__send {
+    &__textarea {
+      margin-bottom: 10px;
+    }
+    &__btn {
+
       text-decoration: none;
       color: white;
       font-size: 1.2em;

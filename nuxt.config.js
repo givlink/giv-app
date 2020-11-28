@@ -14,10 +14,12 @@ export default {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [
+      { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
   env: {
-    baseUrl: process.env.BASE_URL || "https://api-dev.giv.link"//https://api.giv.link" //検証　
+    baseUrl: process.env.BASE_URL || "https://api.giv.link"//https://api-dev.giv.link"//" //検証　
   },
   /*
    ** Customize the progress-bar color
@@ -31,6 +33,8 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
+    "~/plugins/api.js",
+    { src: '~/plugins/vue-lazyload.js', ssr: false }
   ],
   /*
    ** Nuxt.js dev-modules
@@ -45,30 +49,31 @@ export default {
     "nuxt-sass-resources-loader",
     "@nuxtjs/auth",
     "@nuxtjs/axios",
-    'nuxt-client-init-module'
+    'nuxt-client-init-module',
+    'vue-sweetalert2/nuxt'
   ],
   auth: {
     //検証
-    strategies: {
-      auth0: {
-        domain: "giv-dev.auth0.com", // 追加
-        client_id: "VGa2SVojtmq50NiC5I2rpV4XALrAkZql", // 追加
-        audience: "https://giv-dev.auth0.com/api/v2/",
-        scope: ["openid", "profile", "email"],
-        response_type: "id_token token",
-        token_key: "access_token"
-      }
-    },
     // strategies: {
     //   auth0: {
-    //     domain: "givlink.auth0.com", // 追加
-    //     client_id: "GTr5NAD6xw9lRF4F72iJ0g9HkjqIWvCu", // 追加
-    //     audience: "https://givlink.auth0.com/api/v2/",
+    //     domain: "giv-dev.auth0.com", // 追加
+    //     client_id: "VGa2SVojtmq50NiC5I2rpV4XALrAkZql", // 追加
+    //     audience: "https://giv-dev.auth0.com/api/v2/",
     //     scope: ["openid", "profile", "email"],
     //     response_type: "id_token token",
     //     token_key: "access_token"
     //   }
     // },
+    strategies: {
+      auth0: {
+        domain: "givlink.auth0.com", // 追加
+        client_id: "GTr5NAD6xw9lRF4F72iJ0g9HkjqIWvCu", // 追加
+        audience: "https://givlink.auth0.com/api/v2/",
+        scope: ["openid", "profile", "email"],
+        response_type: "id_token token",
+        token_key: "access_token"
+      }
+    },
     redirect: {
       // login: "/invite", // 未ログイン時のリダイレクト先
       logout: "/login", // ログアウト処理を実行した直後のリダイレクト先

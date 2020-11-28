@@ -53,7 +53,7 @@
                                 this.hasError = 'ログインに失敗しました。';
                             });
                     } else {
-                        this.$auth.loginWith('auth0');
+                      this.$auth.loginWith('auth0');
                     }
                 } else {
                     this.$auth.loginWith('auth0');
