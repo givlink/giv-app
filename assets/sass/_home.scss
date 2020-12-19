@@ -72,7 +72,7 @@
         line-height: 1.8;
         margin-bottom: 10px;
         font-weight: bold;
-        font-size: 1.6em;
+        font-size: 1.8em;
         display: block;
         text-decoration: none;
       }
@@ -80,18 +80,19 @@
         color: $base-font-color;
         line-height: 1.8;
         margin-bottom: 20px;
-        font-size: 1.4em;
+        font-size: 1.6em;
         display: block;
         text-decoration: none;
       }
       &__person {
         border: 1px solid $select-border-color;
-        padding: 20px;
+        padding: 10px 20px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
         text-decoration: none;
         position: relative;
+        border-radius: 10px;
         &__icon {
           margin-right: 5px;
           &__img {
@@ -105,10 +106,12 @@
           &__head {
             font-weight: bold;
             color: $base-color;
+            margin-bottom: 5px;
           }
           &__name {
             font-size: 1.4em;
             font-weight: bold;
+            margin-bottom: 0;
             color: $head-black-color;
           }
           &__position {

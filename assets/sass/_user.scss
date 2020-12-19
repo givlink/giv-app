@@ -18,8 +18,9 @@
       justify-content: center;
       align-items: center;
       position: fixed;
-      bottom: 60px;
+      bottom: 65px;
       right: 5px;
+      filter: drop-shadow(3px 3px 3px rgba(0,0,0,0.6));
       &__img {
         width: 20px;
         height: auto;
@@ -41,6 +42,29 @@
         border-radius: 90px;
         object-fit: cover;
       }
+      &__change {
+        &__text {
+          font-size: 1.6em;
+        }
+        &__file {
+
+        }
+        &__btn {
+          width: 200px;
+          height: 50px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.4em;
+          font-weight: bold;
+          margin: 20px auto;
+          border-radius: 5px;
+          text-decoration: none;
+          background-color: $base-color;
+          color: white;
+          border: 1px solid $base-color;
+        }
+      }
     }
     &__name {
       font-size: 1.8em;
@@ -61,6 +85,9 @@
       font-weight: bold;
       color: $base-font-color;
       margin-bottom: 30px;
+
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
     &__sns {
       display: flex;
@@ -142,9 +169,10 @@
 
 .GivBtn {
   position: fixed;
-  bottom: 60px;
+  bottom: 65px;
   right: 5px;
   &__img {
+    filter: drop-shadow(3px 3px 3px rgba(0,0,0,0.6));
 
   }
 }

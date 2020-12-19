@@ -14,10 +14,12 @@ export default {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [
+      { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
   env: {
-    baseUrl: process.env.BASE_URL || "https://api.giv.link" //検証　"https://api-dev.giv.link"
+    baseUrl: process.env.BASE_URL || "https://api.giv.link"//https://api-dev.giv.link"//" //検証　
   },
   /*
    ** Customize the progress-bar color
@@ -31,6 +33,8 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
+    "~/plugins/api.js",
+    { src: '~/plugins/vue-lazyload.js', ssr: false }
   ],
   /*
    ** Nuxt.js dev-modules
@@ -45,7 +49,8 @@ export default {
     "nuxt-sass-resources-loader",
     "@nuxtjs/auth",
     "@nuxtjs/axios",
-    'nuxt-client-init-module'
+    'nuxt-client-init-module',
+    'vue-sweetalert2/nuxt'
   ],
   auth: {
     //検証
