@@ -2,7 +2,13 @@
   <div class="User Main">
     <div class="User__profile">
       <div class="User__profile__icon">
-        <b-img :src="`${basePath}${me.profile_image_path}`" class="User__profile__icon__img" alt></b-img>
+        <b-img :src="imageData" class="User__profile__icon__img" alt></b-img>
+        <div class="User__profile__icon__change">
+          <p class="User__profile__icon__change__text">画像を変更する</p>
+          <input class="User__profile__icon__change__file" type="file" id="image" accept="image/*" @change="onFileChange($event)">
+          <button v-on:click="sendChangeImage" class="User__profile__icon__change__btn" v-if="changeImage">画像の変更を確定</button>
+          <p class="" v-if="hasImageError != ''">{hasImageError}</p>
+        </div>
       </div>
       <div class="UserForm">
         <div class="UserForm__box">
@@ -55,6 +61,12 @@
         </div>
       </div>
     </div>
+    <div class="Spinner" v-if="sending">
+      <div class="Spinner__box">
+        <b-spinner label="Loading..." :variant="'primary'"></b-spinner>
+        <p class="Spinner__box__text">送信中</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -69,6 +81,10 @@
     layout:'logined',
     data() {
       return {
+        changeImage: false,
+        sending: false,
+        profileFile: null,
+        imageData: '',
         code: '',
         hasError: '',
         error_message: '',
@@ -78,6 +94,7 @@
         introduction: '',
         position: '',
         me: '',
+        hasImageError: '',
         givs: '',
       }
     },
@@ -118,8 +135,10 @@
         me.interests.map((value => select_interests.push(value.id)));
       }
 
+
       return {
         me: me,
+        imageData: `${process.env.baseUrl}${me.profile_image_path}`,
         skills: response2.data.skill_tags,
         times: response3.data.time_tags,
         places: response4.data.area_tags,
@@ -144,6 +163,75 @@
     },
     methods: {
       async checkCode() {
+      },
+      onFileChange(e) {
+
+        const files = e.target.files;
+
+        if(files.length > 0) {
+
+          const file = files[0];
+          const reader = new FileReader();
+          reader.onload = (e) => {
+
+            this.imageData = e.target.result;
+            this.changeImage = true;
+
+          };
+          reader.readAsDataURL(file);
+          this.profileFile = file;
+
+        }
+
+      },
+      async sendChangeImage() {
+        this.sending = true;
+        const baseUrl = process.env.baseUrl + "/me/profile_image";
+        const getUrl = encodeURI(baseUrl);
+        const token = this.$auth.$storage.getUniversal("_token.auth0");
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          }
+        };
+        var fileData = '';
+        if(this.profileFile) {
+          await this.getBase64(this.profileFile).then(image => fileData = image);
+        }
+        if(fileData != '') {
+
+          const data = {
+            profile_image: fileData
+          }
+          return axios
+            .put(
+              baseUrl,
+              data,
+              config
+            )
+            .then(res => {
+              this.sending = false;
+
+              this.$router.push("/mypage");
+            })
+            .catch(e => {
+              this.sending = false;
+              this.hasImageError = "送信に失敗しました";
+            });
+        } else {
+          this.sending = false;
+          this.hasImageError = "送信に失敗しました";
+        }
+      },
+
+      getBase64 (file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.readAsDataURL(file)
+          reader.onload = () => resolve(reader.result)
+          reader.onerror = error => reject(error)
+        })
       },
       next() {
         this.error_message = '';

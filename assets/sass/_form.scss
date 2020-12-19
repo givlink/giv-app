@@ -7,6 +7,26 @@
     font-weight: bold;
     color: $head-black-color;
   }
+  &__img {
+    width: 100%;
+    border: 1px solid gray;
+    position: relative;
+    &__img {
+      width: 100%;
+    }
+    &__delete {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background-color: white;
+      padding: 5px;
+      &__img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
   &__box {
     background-color: white;
     padding: 20px 10px;
@@ -23,6 +43,7 @@
       color: white;
       font-weight: bold;
       margin: 0 auto;
+      cursor: pointer;
     }
     &__label {
       font-size: 1.4em;
@@ -32,7 +53,7 @@
       display: block;
     }
     &__input {
-      font-size: 1.4em;
+      font-size: 1.6em;
       font-weight: bold;
       color: $head-black-color;
       margin-bottom: 20px;
@@ -43,7 +64,7 @@
       width: 100%;
     }
     &__textarea {
-      font-size: 1.4em;
+      font-size: 1.6em;
       font-weight: bold;
       color: $head-black-color;
       margin-bottom: 20px;

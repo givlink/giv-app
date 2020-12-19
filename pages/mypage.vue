@@ -6,7 +6,7 @@
       </div>
       <p class="User__profile__name">{{me.last_name}} {{me.first_name}}</p>
       <p class="User__profile__position">{{me.job}}</p>
-      <p class="User__profile__message">{{me.introduction}}</p>
+      <p class="User__profile__message" v-html=changeUrl(me.introduction)></p>
       <nuxt-link to="edit" class="User__profile__edit">
         <b-img src="~/assets/image/icon_edit.png" class="User__profile__edit__img" alt></b-img>
       </nuxt-link>
@@ -51,7 +51,7 @@
       <div class="User__latest__wrap">
         <template v-for="item of givs">
           <nuxt-link :to="`/thanks/${item.id}`" class="User__latest__wrap__box">
-            <template v-if="item.images">
+            <template v-if="item.images.length > 0">
               <b-img :src="`${basePath}${item.images[0].path}`" class="User__latest__wrap__box__img" alt></b-img>
             </template>
             <template v-else>
@@ -61,19 +61,6 @@
         </template>
       </div>
     </div>
-<!--    <div class="Back">-->
-<!--      <nuxt-link to="/" class="Back__btn">-->
-<!--        一覧へ戻る-->
-<!--      </nuxt-link>-->
-<!--    </div>-->
-<!--    <a href="" class="GivBtn">-->
-<!--      <img class="GivBtn__img" src="~/assets/image/giv_btn.png" alt="giv">-->
-<!--    </a>-->
-<!--    <div class="GivModal">-->
-<!--      <a href="" class="GivModal__btn GivModal__btn&#45;&#45;send">givをおくりたい</a>-->
-<!--      <a href="" class="GivModal__btn GivModal__btn&#45;&#45;take">givをもらいたい</a>-->
-<!--      <a href="" class="GivModal__btn GivModal__btn&#45;&#45;cancel">申請をキャンセルする</a>-->
-<!--    </div>-->
   </div>
 </template>
 
@@ -138,7 +125,11 @@ export default {
         logout() {
 
             this.$auth.logout();
-        }
+        },
+      changeUrl(text) {
+          console.log("hoge")
+          return text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,"<a href='$1'>$1</a>");
+      }
     }
 }
 </script>

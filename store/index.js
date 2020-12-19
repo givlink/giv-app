@@ -1,4 +1,7 @@
+
+import axios from 'axios'
 const cookieparser = process.server ? require('cookieparser') : undefined
+
 
 const Cookie = process.client ? require('js-cookie') : undefined;
 export const state = () => ({
@@ -9,7 +12,8 @@ export const state = () => ({
   last_name: '',
   img: '',
   code: '',
-  me: {}
+  me: {},
+  token: ''
 });
 
 export const mutations = {
@@ -42,6 +46,9 @@ export const mutations = {
   },
   isAuthenticated(state, code) {
     state.authenticated = true;
+  },
+  setToken(state, token) {
+    state.token = token;
   }
 };
 
@@ -55,10 +62,24 @@ export const actions = {
     last_name = Cookie.get('last_name');
     first_name = Cookie.get('first_name');
     img = Cookie.get('img');
+    let token = Cookie.get('auth._token.auth0');
 
     commit('setImg', img);
     commit('setFirstName',first_name);
     commit('setLastName', last_name);
     commit('setCode', code);
+    commit('setToken', token);
+
+    const baseUrl = process.env.baseUrl + '/me';
+    const getUrl = encodeURI(baseUrl);
+    axios.get(getUrl,{
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token
+        }
+      }
+    ).then((res) => {
+      commit("setMe", res.data);
+    });
   }
 }

@@ -1,8 +1,14 @@
 .Search {
+  position: relative;
   &__box {
     padding: 10px 10px 0;
     background-color: white;
     margin-bottom: 3px;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    z-index: 2;
     &__form {
       position: relative;
       &__input {
@@ -51,7 +57,9 @@
   }
   &__list {
     overflow: scroll;
-    height: calc( 100vh - 230px );
+    height: auto;
+    margin-bottom: 0;
+    padding-top: 100px;
     &__li {
       margin-bottom: 3px;
       &__link {
@@ -77,10 +85,29 @@
             font-size: 1.4em;
             font-weight: bold;
             color: $head-black-color;
+            margin-bottom: 5px;
+            line-height: 1;
           }
           &__position {
             color: $head-black-color;
             font-weight: bold;
+          }
+          &__tags {
+            margin-bottom: 0;
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            &__text {
+              margin-top: 3px;
+              margin-right: 5px;
+              display: inline-block;
+              padding: 3px 5px;
+              border-radius: 15px;
+              text-align: center;
+              color: #707070;
+              border: 1px solid #EBEBEB;
+            }
+
           }
         }
         &:after {

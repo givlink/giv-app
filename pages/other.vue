@@ -66,8 +66,8 @@
       <img class="GivBtn__img" src="~/assets/image/giv_btn.png" alt="giv">
     </a>
     <div class="GivModal">
-      <a href="" class="GivModal__btn GivModal__btn--send">givをおくりたい</a>
-      <a href="" class="GivModal__btn GivModal__btn--take">givをもらいたい</a>
+      <a href="" class="GivModal__btn GivModal__btn--send">givを贈りたい</a>
+      <a href="" class="GivModal__btn GivModal__btn--take">givを受け取りたい</a>
       <a href="" class="GivModal__btn GivModal__btn--cancel">申請をキャンセルする</a>
     </div>
   </div>
