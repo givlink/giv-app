@@ -2,11 +2,11 @@
   <div class="User Main">
     <div class="User__profile">
       <div class="User__profile__icon">
-        <b-img :src="`${basePath}${me.profile_image_path}`" class="User__profile__icon__img" alt></b-img>
+        <b-img :src="profile.photoUrl" class="User__profile__icon__img" alt></b-img>
       </div>
-      <p class="User__profile__name">{{me.last_name}} {{me.first_name}}</p>
-      <p class="User__profile__position">{{me.job}}</p>
-      <p class="User__profile__message" v-html=changeUrl(me.introduction)></p>
+      <p class="User__profile__name">{{ profile.displayName }}</p>
+      <p class="User__profile__position">{{ profile.job }}</p>
+      <p class="User__profile__message" v-html="changeUrl(profile.introduction)"></p>
       <nuxt-link to="edit" class="User__profile__edit">
         <b-img src="~/assets/image/icon_edit.png" class="User__profile__edit__img" alt></b-img>
       </nuxt-link>
@@ -14,17 +14,8 @@
     <div class="User__giv">
       <h3 class="User__giv__title">登録しているgiv</h3>
       <div class="User__giv__tags">
-        <span class="User__giv__tags__tag" v-for="item of me.skills">
-          {{item.tag}}
-        </span>
-      </div>
-    </div>
-
-    <div class="User__giv">
-      <h3 class="User__giv__title">提供できる時間帯</h3>
-      <div class="User__giv__tags">
-        <span class="User__giv__tags__tag" v-for="item of me.times">
-          {{item.tag}}
+        <span class="User__giv__tags__tag" v-for="item of profile.skills">
+          {{ item.tag }}
         </span>
       </div>
     </div>
@@ -32,8 +23,8 @@
     <div class="User__giv">
       <h3 class="User__giv__title">givを提供できる場所</h3>
       <div class="User__giv__tags">
-        <span class="User__giv__tags__tag" v-for="item of me.areas">
-          {{item.tag}}
+        <span class="User__giv__tags__tag" v-for="item of profile.areas">
+          {{ item.tag }}
         </span>
       </div>
     </div>
@@ -41,8 +32,8 @@
     <div class="User__giv">
       <h3 class="User__giv__title">興味・関心</h3>
       <div class="User__giv__tags">
-        <span class="User__giv__tags__tag" v-for="item of me.interests">
-          {{item.tag}}
+        <span class="User__giv__tags__tag" v-for="item of profile.interests">
+          {{ item.tag }}
         </span>
       </div>
     </div>
@@ -52,7 +43,11 @@
         <template v-for="item of givs">
           <nuxt-link :to="`/thanks/${item.id}`" class="User__latest__wrap__box">
             <template v-if="item.images.length > 0">
-              <b-img :src="`${basePath}${item.images[0].path}`" class="User__latest__wrap__box__img" alt></b-img>
+              <b-img
+                :src="`${basePath}${item.images[0].path}`"
+                class="User__latest__wrap__box__img"
+                alt
+              ></b-img>
             </template>
             <template v-else>
               <span>NO IMAGE</span>
@@ -65,74 +60,36 @@
 </template>
 
 <script>
-
-const Cookie = process.client ? require('js-cookie') : undefined;
-import axios from "axios";
+import firebase from "../lib/firebase";
 export default {
-    components: {
-    },
-    middleware: 'auth',
-    layout:'logined',
-    data() {
-        return {
-            code: '',
-            hasError: '',
-            img: '',
-            first_name: '',
-            last_name: '',
-            me: '',
-            givs: ''
-        }
-    },
-    async asyncData({ app }) {
-        const baseUrl = process.env.baseUrl + '/me';
-        const getUrl = encodeURI(baseUrl);
-        const token = app.$auth.$storage.getUniversal("_token.auth0");
-        const response = await axios.get(getUrl, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        });
-        const givUrl = process.env.baseUrl + '/users/' + response.data.id + '/received_thanks_cards';
-        const getUrl2 = encodeURI(givUrl);
-        const response2 = await axios.get(getUrl2, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        });
-        return {
-            me: response.data,
-            givs: response2.data.thanks_cards,
-        }
-    },
-    mounted() {
-        const user = this.$auth.$storage.getState("user");
-        this.img = user.picture;
-        this.first_name = user.given_name;
-        this.last_name = user.family_name;
-    },
-
-  computed: {
-    basePath () {
-      return `${process.env.baseUrl}`;
+  layout: "logined",
+  data() {
+    return {
+      profile: null,
+      givs: [],
+    };
+  },
+  async asyncData({ app }) {
+    //@Todo seems like there is no logout button on the app
+    //@Todo handle when no user
+    const user = firebase.auth().currentUser;
+    const doc = await firebase
+      .firestore()
+      .doc(`/users/${user.uid}`)
+      .get();
+    return {
+      profile: { ...doc.data(), id: doc.id, ...user },
+    };
+  },
+  methods: {
+    changeUrl(text) {
+      return text.replace(
+        /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi,
+        "<a href='$1'>$1</a>"
+      );
     },
   },
-    methods: {
-        async checkCode() {
-        },
-        logout() {
-
-            this.$auth.logout();
-        },
-      changeUrl(text) {
-          console.log("hoge")
-          return text.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,"<a href='$1'>$1</a>");
-      }
-    }
-}
+};
 </script>
 
-<style>
-</style>
+<style></style>
