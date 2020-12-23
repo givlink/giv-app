@@ -41,17 +41,17 @@
 
     },
     async created() {
-      const baseUrl = process.env.baseUrl + '/me/events';
-      const getUrl = encodeURI(baseUrl);
-      const response = await axios.get(getUrl);
-      const events =  response.data.events;
-      var count = 0;
-      events.map((event)=> {
-        if(event.read_at == null) {
-          count++;
-        }
-      });
-      this.count = count;
+      /* const baseUrl = process.env.baseUrl + '/me/events'; */
+      /* const getUrl = encodeURI(baseUrl); */
+      /* const response = await axios.get(getUrl); */
+      /* const events =  response.data.events; */
+      /* var count = 0; */
+      /* events.map((event)=> { */
+      /*   if(event.read_at == null) { */
+      /*     count++; */
+      /*   } */
+      /* }); */
+      /* this.count = count; */
     },
     methods: {
       deleteCount() {
