@@ -2,7 +2,7 @@
   <div class="User Main">
     <div class="User__profile">
       <div class="User__profile__icon">
-        <b-img :src="profile.photoUrl" class="User__profile__icon__img" alt></b-img>
+        <b-img :src="profile.photoURL" class="User__profile__icon__img" alt></b-img>
       </div>
       <p class="User__profile__name">{{ profile.displayName }}</p>
       <p class="User__profile__position">{{ profile.job }}</p>
@@ -77,12 +77,16 @@ export default {
       .firestore()
       .doc(`/users/${user.uid}`)
       .get();
+      const profile= { ...doc.data(), id: doc.id,  }
+      profile.photoURL =  `https://storage.googleapis.com/giv-link.appspot.com/${profile.photoURL}`
+      console.log(profile)
     return {
-      profile: { ...doc.data(), id: doc.id, ...user },
+      profile,
     };
   },
   methods: {
     changeUrl(text) {
+      if (!text) return "";
       return text.replace(
         /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi,
         "<a href='$1'>$1</a>"

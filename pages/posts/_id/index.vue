@@ -114,7 +114,7 @@
     components: {
       Slick
     },
-    middleware: 'auth',
+    /* middleware: 'auth', */
     layout:'logined',
     data() {
       return {
@@ -139,30 +139,30 @@
       },
     },
     async asyncData({ app, params }) {
-      if(params.id) {
-        const baseUrl = process.env.baseUrl + '/thanks_cards/' + params.id;
-        const getUrl = encodeURI(baseUrl);
-        const token = app.$auth.$storage.getUniversal("_token.auth0");
-        const response = await axios.get(getUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        });
-        const commentUrl = process.env.baseUrl + '/thanks_cards/' + params.id + '/comments';
-        const response2 = await axios.get(encodeURI(commentUrl), {
-        });
-        console.log(response2);
-        console.log(response2.data.comments);
-        return {
-          thanks: response.data,
-          isLike: response.data.liked,
-          comments: response2.data.comments,
-          id: params.id,
-          myId: app.store.state.me.id,
-          isMe: app.store.state.me && response.data.user == app.store.state.me.id
-        }
-      }
+      /* if(params.id) { */
+      /*   const baseUrl = process.env.baseUrl + '/thanks_cards/' + params.id; */
+      /*   const getUrl = encodeURI(baseUrl); */
+      /*   const token = app.$auth.$storage.getUniversal("_token.auth0"); */
+      /*   const response = await axios.get(getUrl, { */
+      /*     headers: { */
+      /*       "Content-Type": "application/json", */
+      /*       Authorization: token */
+      /*     } */
+      /*   }); */
+      /*   const commentUrl = process.env.baseUrl + '/thanks_cards/' + params.id + '/comments'; */
+      /*   const response2 = await axios.get(encodeURI(commentUrl), { */
+      /*   }); */
+      /*   console.log(response2); */
+      /*   console.log(response2.data.comments); */
+      /*   return { */
+      /*     thanks: response.data, */
+      /*     isLike: response.data.liked, */
+      /*     comments: response2.data.comments, */
+      /*     id: params.id, */
+      /*     myId: app.store.state.me.id, */
+      /*     isMe: app.store.state.me && response.data.user == app.store.state.me.id */
+      /*   } */
+      /* } */
     },
 
     computed: {
