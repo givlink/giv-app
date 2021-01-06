@@ -68,7 +68,7 @@
     export default {
         components: {
         },
-        middleware: 'auth',
+        /* middleware: 'auth', */
         layout:'logined',
         data() {
             return {

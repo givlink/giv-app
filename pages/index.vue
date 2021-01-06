@@ -2,22 +2,22 @@
   <div class="Home Main">
     <div class="Home__cards">
       <div class="Home__card" v-for="post in posts">
-        <nuxt-link :to="`/users/${post.author.id}`" class="Home__card__header">
+        <nuxt-link :to="`/users/${post.authorId}`" class="Home__card__header">
           <div class="Home__card__header__icon">
-            <b-img
-              :src="post.author.photoUrl"
-              class="Home__card__header__icon__img"
-              alt
-            ></b-img>
+            <b-img :src="post.authorphotoUrl" class="Home__card__header__icon__img" alt></b-img>
           </div>
           <div class="Home__card__header__text">
             <p class="Home__card__header__text__name">
-              {{ post.toUser.name }}
+              Receiver Name
             </p>
           </div>
         </nuxt-link>
-        <nuxt-link :to="`/posts/${post.id}`" class="Home__card__view" v-if="post.images.length > 0">
-          <b-img v-lazy="post.images[0].path" class="Home__card__view__img" alt></b-img>
+        <nuxt-link
+          :to="`/posts/${post.id}`"
+          class="Home__card__view"
+          v-if="post.images && post.images.length > 0"
+        >
+          <b-img v-lazy="getUrl(post.images[0])" class="Home__card__view__img" alt></b-img>
         </nuxt-link>
         <div class="Home__card__content">
           <nuxt-link :to="`/posts/${post.id}`" class="Home__card__content__info">
@@ -32,7 +32,7 @@
             {{ post.title }}
           </nuxt-link>
           <nuxt-link :to="`/posts/${post.id}`" class="Home__card__content__text">
-            <template v-if="post.message.length > 40">
+            <template v-if="post.message && post.message.length > 40">
               {{ post.message | substringText }}
               <nuxt-link :to="`/posts/${post.id}`" class="">続きを見る</nuxt-link>
             </template>
@@ -40,11 +40,11 @@
               {{ post.message }}
             </template>
           </nuxt-link>
-          <nuxt-link :to="`/users/${post.toUser.id}`" class="Home__card__content__person">
+          <nuxt-link :to="`/users/${post.toUserId}`" class="Home__card__content__person">
             <!--          <nuxt-link :to="`/user/${post.giv.giv_user.id}`" class="Home__card__content__person">-->
             <div class="Home__card__content__person__icon">
               <b-img
-                :src="post.toUser.photoUrl"
+                :src="post.toUserphotoUrl"
                 class="Home__card__content__person__icon__img"
                 alt
               ></b-img>
@@ -52,7 +52,7 @@
             <div class="Home__card__content__person__text">
               <p class="Home__card__content__person__text__head">givを贈った人</p>
               <p class="Home__card__content__person__text__name">
-                {{ post.toUser.name }}
+                Receiver Name
               </p>
               <!--              <p class="Home__card__content__person__text__position">CO-FOUNDER & CCO</p>-->
             </div>
@@ -89,17 +89,22 @@ export default {
       hasNext: true,
     };
   },
+  methods: {
+    getUrl: (path) => {
+      return `https://storage.googleapis.com/giv-link.appspot.com/${path}`;
+    },
+  },
   async asyncData({ app }) {
     const snap = await firebase
       .firestore()
       .collection("posts")
+      .limit(10)
       .get();
 
     const posts = [];
     snap.forEach((doc) => {
       posts.push({ ...doc.data(), id: doc.id });
     });
-    console.log(posts);
     return {
       posts,
     };
