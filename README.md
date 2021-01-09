@@ -1,6 +1,6 @@
-# giv-app
+# Giv Web App
 
-> My astounding Nuxt.js project
+> The main application for Giv platform
 
 ## Build Setup
 
@@ -8,7 +8,7 @@
 # install dependencies
 $ yarn install
 
-# serve with hot reload at localhost:3000
+# serve with hot reload at https://localhost:3000
 $ yarn dev
 
 # build for production and launch server
@@ -18,5 +18,3 @@ $ yarn start
 # generate static project
 $ yarn generate
 ```
-
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).

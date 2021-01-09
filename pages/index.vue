@@ -22,7 +22,7 @@
           v-if="post.images && post.images.length > 0"
         >
           <b-img
-            v-lazy="getUrl(post.images[0])"
+            :src="getUrl(post.images[0])"
             class="Home__card__view__img"
             alt
           ></b-img>
@@ -95,6 +95,40 @@
 <script>
 import moment from "moment";
 import firebase from "../lib/firebase";
+
+const getPosts = async (offset = null, limit = 20) => {
+  let snap = firebase
+    .firestore()
+    .collection("posts")
+    .orderBy("createdAt", "desc");
+
+  if (offset) snap = snap.startAfter(offset);
+
+  snap = await snap.limit(limit).get();
+
+  const posts = [];
+  snap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }));
+  return [posts, snap.docs[snap.docs.length - 1]];
+};
+const getSkills = async () => {
+  const skills = {};
+  const snap = await firebase
+    .firestore()
+    .collection("skills")
+    .get();
+  snap.forEach(doc => (skills[doc.id] = { id: doc.id, ...doc.data() }));
+  return skills;
+};
+const getAreas = async () => {
+  const areas = {};
+  const snap = await firebase
+    .firestore()
+    .collection("areas")
+    .get();
+  snap.forEach(doc => (areas[doc.id] = { id: doc.id, ...doc.data() }));
+  return areas;
+};
+
 export default {
   components: {},
   layout: "logined",
@@ -108,35 +142,27 @@ export default {
       first_name: "",
       last_name: "",
       posts: [],
-      offset: 0,
+      offset: null,
       limit: 30,
       hasNext: true
     };
   },
   methods: {
-    getUrl: path => {
-      return `https://storage.googleapis.com/giv-link.appspot.com/${path}`;
-    },
+    getUrl: path => `${process.env.cdn}/${path}`,
     async loadmore() {
-      //@Todo incomplete
+      const [posts, offset] = await getPosts(this.offset);
+      this.posts = [...this.posts, ...posts];
+      this.offset = offset;
+      console.log(this.$store.state.skillsMap);
     }
   },
+  async mounted() {
+    this.$store.commit("setSkillsMap", await getSkills());
+    this.$store.commit("setAreasMap", await getAreas());
+  },
   async asyncData({ app }) {
-    const snap = await firebase
-      .firestore()
-      .collection("posts")
-      .orderBy("createdAt", "desc")
-      .limit(10)
-      .get();
-
-    const posts = [];
-    snap.forEach(doc => {
-      posts.push({ ...doc.data(), id: doc.id });
-    });
-    return {
-      posts,
-      offset: posts.length
-    };
+    const [posts, offset] = await getPosts();
+    return { posts, offset };
   },
   filters: {
     moment: function(date) {
