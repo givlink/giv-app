@@ -16,18 +16,18 @@
       <h3 class="User__giv__title">登録しているgiv</h3>
       <div class="User__giv__tags">
         <span class="User__giv__tags__tag" v-for="item of profile.skills">
-          {{ item }}
+          {{ renderTag(item) }}
         </span>
       </div>
     </div>
     <div class="User__latest">
       <h3 class="User__latest__title">最近のgiv</h3>
       <div class="User__latest__wrap">
-        <template v-if="givs" v-for="item of givs">
-          <nuxt-link :to="`/thanks/${item.id}`" class="User__latest__wrap__box">
-            <template v-if="item.images.length > 0">
+        <template v-if="posts" v-for="item of posts">
+          <nuxt-link :to="`/posts/${item.id}`" class="User__latest__wrap__box">
+            <template v-if="item.images && item.images.length > 0">
               <b-img
-                :src="item.images[0]"
+                :src="getUrl(item.images[0])"
                 class="User__latest__wrap__box__img"
                 alt
               ></b-img>
@@ -68,12 +68,22 @@
 
 <script>
 import firebase from "../../lib/firebase";
+//@Todo copy paste
+const getSkills = async () => {
+  const skills = {};
+  const snap = await firebase
+    .firestore()
+    .collection("skills")
+    .get();
+  snap.forEach(doc => (skills[doc.id] = { id: doc.id, ...doc.data() }));
+  return skills;
+};
 export default {
   layout: "logined",
   data() {
     return {
       profile: "",
-      givs: "",
+      posts: "",
       onModal: false
     };
   },
@@ -83,22 +93,43 @@ export default {
         .firestore()
         .doc(`/users/${params.id}`)
         .get();
-      //@Todo skills convert id to tag name
-      /* if (uid === params.id) { */
-      /*   app.router.push("/mypage"); */
-      /* } */
-      return {
+
+      const postSnap = await firebase
+        .firestore()
+        .collection("posts")
+        .where("authorId", "==", params.id)
+        .limit(10)
+        .get();
+      const posts = [];
+      postSnap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }));
+
+      const result = {
         profile: { ...doc.data(), id: doc.id },
-        givs: [], //@Todo pending list of givs
+        posts,
         id: params.id
       };
+      console.log(result);
+      return result;
+    }
+  },
+  async mounted() {
+    if (
+      !this.$store.state.skillsMap ||
+      Object.keys(this.$store.state.skillsMap).length === 0
+    ) {
+      console.log("setting again");
+      this.$store.commit("setSkillsMap", await getSkills());
     }
   },
   methods: {
-    //@Todo copy paste
-    getUrl: path => {
-      return `https://storage.googleapis.com/giv-link.appspot.com/${path}`;
+    renderTag(id) {
+      try {
+        return this.$store.getters.getSkillTag(id).tag;
+      } catch (err) {
+        return id;
+      }
     },
+    getUrl: path => `${process.env.cdn}/${path}`,
     async sendGiv() {
       const baseUrl = process.env.baseUrl + "/users/" + this.id + "/send_giv";
       const getUrl = encodeURI(baseUrl);
