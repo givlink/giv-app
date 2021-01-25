@@ -1,175 +1,145 @@
 <template>
   <div class="Search Main">
     <div class="Search__box">
-      <div class="Search__box__form">
-        <b-form-input
-          id=""
-          class="Search__box__form__input"
-          v-model="searchWord"
-          placeholder="検索word"
-        ></b-form-input>
-        <span class="Search__box__form__submit" v-on:click="search()"/>
-      </div>
       <div class="Search__box__tags" v-if="skills">
-        <template  v-for="item of skills">
-          <span v-if="item.id == searchTag" v-on:click="clickTag(item.id)" class="Search__box__tags__tag on">{{ item.tag }}</span>
-          <span v-else v-on:click="clickTag(item.id)" class="Search__box__tags__tag">{{ item.tag }}</span>
+        <template v-for="item of skills">
+          <span
+            v-on:click="clickTag(item.id)"
+            :class="item.id == searchTag && 'Search__box__tags__tag__active'"
+            class="Search__box__tags__tag"
+            >{{ item.tag }}</span
+          >
         </template>
       </div>
     </div>
     <ul class="Search__list">
-      <li class="Search__list__li" v-for="item of data.users">
+      <li class="Search__list__li" v-for="item of users">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">
           <div class="Search__list__li__link__icon">
-            <b-img :src="`${basePath}${item.profile_image_path}`" class="Search__list__li__link__icon__img" alt></b-img>
+            <b-img
+              :src="getUrl(item.photoURL)"
+              class="Search__list__li__link__icon__img"
+              alt
+            ></b-img>
           </div>
           <div class="Search__list__li__link__text">
-            <p class="Search__list__li__link__text__name">{{item.last_name}} {{item.first_name}}さん</p>
+            <p class="Search__list__li__link__text__name">
+              {{ item.name }} さん
+            </p>
             <p class="Search__list__li__link__text__tags">
-              <span class="Search__list__li__link__text__tags__text" v-for="skill of item.skills">{{skill.tag}}</span>
+              <span
+                class="Search__list__li__link__text__tags__text"
+                v-for="skill of item.skills"
+              >
+                {{ renderTag(skill) }}
+              </span>
             </p>
           </div>
         </nuxt-link>
       </li>
-      <li class="Search__list__li" v-if="hasNext" v-on:click="loadmore()"><span class="Search__list__li__link" style="text-align: center;font-size: 1.6em;">さらに読み込む</span></li>
+      <li class="Search__list__li" v-if="hasNext" v-on:click="loadmore()">
+        <span
+          class="Search__list__li__link"
+          style="text-align: center;font-size: 1.6em;"
+          >さらに読み込む</span
+        >
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
+import firebase from "../lib/firebase";
 
-  import axios from 'axios'
-  const Cookie = process.client ? require('js-cookie') : undefined;
-  export default {
-    components: {
+//@Todo refactor to common lib
+const listUsers = async (offset = null, limit = 20, filter = null) => {
+  let snap = firebase.firestore().collection("users");
+  if (offset) snap = snap.startAfter(offset);
+
+  if (filter) snap = snap.where(filter[0], filter[1], filter[2]);
+  //eg
+  /* snap = snap.where("skills", "array-contains",[ "accomodation"]); */
+
+  snap = await snap.limit(limit).get(); //@Todo sec rules
+
+  const users = [];
+  snap.forEach(doc => users.push({ ...doc.data(), id: doc.id }));
+  return [users, snap.docs[snap.docs.length - 1]];
+};
+
+const listSkills = async () => {
+  const skills = {};
+  const snap = await firebase
+    .firestore()
+    .collection("skills")
+    .get();
+  snap.forEach(doc => (skills[doc.id] = { id: doc.id, ...doc.data() }));
+  return skills;
+};
+
+export default {
+  layout: "logined",
+  data() {
+    return {
+      searchTag: null,
+      offset: null,
+      limit: 30,
+      hasNext: true
+    };
+  },
+  async asyncData({ app }) {
+    const skillsMap = await listSkills();
+    const [users, offset] = await listUsers();
+    return {
+      skills: Object.values(skillsMap),
+      users,
+      offset
+    };
+  },
+  async mounted() {
+    if (
+      !this.$store.state.skillsMap ||
+      Object.keys(this.$store.state.skillsMap).length === 0
+    ) {
+      console.log("setting again");
+      this.$store.commit("setSkillsMap", await listSkills());
+    }
+  },
+  methods: {
+    makeTagFilter() {
+      if (!this.searchTag || this.searchTag == "") {
+        return null;
+      }
+      return ["skills", "array-contains", this.searchTag];
     },
-    middleware: 'auth',
-    layout:'logined',
-    data() {
-      return {
-        code: '',
-        hasError: '',
-        searchTag: '',
-        searchWord: '',
-        nowSearchWord: '',
-        offset: 0,
-        limit: 30,
-        hasNext: true,
-        loadMode: 0,
-        data: {
-          users: []
-        }
+
+    renderTag(id) {
+      try {
+        return this.$store.getters.getSkillTag(id).tag;
+      } catch (err) {
+        return id;
       }
     },
-    async asyncData({ app }) {
-      const baseUrl = process.env.baseUrl + '/skill_tags';
-      const getUrl = encodeURI(baseUrl);
-      const response = await axios.get(getUrl, {
-      });
-      const baseUrl2 = process.env.baseUrl + "/users";
+    getUrl: path => `${process.env.cdn}/${path}`,
+    async clickTag(id) {
+      this.searchTag = id;
 
-      const token = app.$auth.$storage.getUniversal("_token.auth0");
-      const getUrl2 = encodeURI(baseUrl2);
-      const response2 = await axios.get(getUrl2, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token
-        }
-      });
-      return {
-        skills: response.data.skill_tags,
-        data: {
-          users:  response2.data.users
-        }
-      }
-    },
-    mounted() {
-    },
+      const [users, offset] = await listUsers(null, 20, this.makeTagFilter());
 
-    computed: {
-      basePath () {
-        return `${process.env.baseUrl}`;
-      },
+      this.users = users;
+      this.offset = offset;
     },
-    methods: {
-      async normal () {
-        if(this.loadMode != 0 ) {
-          this.offset = 0;
-          this.data.users = [];
-        }
-        const baseUrl = process.env.baseUrl + "/users" + "?offset="+this.offset+"&limit="+this.limit;
-        const getUrl = encodeURI(baseUrl);
-        const token = this.$auth.$storage.getUniversal("_token.auth0");
-        const response = await axios.get(getUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        });
-        this.loadMode = 0;
-        this.hasNext = response.data.total > this.offset + this.limit;
-        let data = this.data.users.concat(response.data.users);
-        this.$set(this.data, 'users', data);
-      },
-      async clickTag (item) {
-        if(this.loadMode != 1 || item != this.searchTag ) {
-          this.offset = 0;
-          this.data.users = [];
-        }
-        const baseUrl = process.env.baseUrl + "/users" + "?giv_tags=" + item+"&offset="+this.offset+"&limit="+this.limit;
-        const getUrl = encodeURI(baseUrl);
-        const token = this.$auth.$storage.getUniversal("_token.auth0");
-        const response = await axios.get(getUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        });
-        this.searchTag = item;
-        this.loadMode = 1;
-        this.hasNext = response.data.total > this.offset + this.limit;
-        let data = this.data.users.concat(response.data.users);
-        this.$set(this.data, 'users', data);
-      },
-      async search () {
-        if(this.loadMode != 2 || this.nowSearchWord != this.searchWord) {
-          this.offset = 0;
-          this.data.users = [];
-        }
-        const baseUrl = process.env.baseUrl + "/users" + "?keywords=" + this.searchWord+"&offset="+this.offset+"&limit="+this.limit;
-        const getUrl = encodeURI(baseUrl);
-        const token = this.$auth.$storage.getUniversal("_token.auth0");
-        const response = await axios.get(getUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        });
-        this.loadMode = 2;
-        this.hasNext = response.data.total > this.offset + this.limit;
-        this.nowSearchWord = this.searchWord;
-        let data = this.data.users.concat(response.data.users);
-        this.$set(this.data, 'users', data);
-      },
-      loadmore() {
-        this.offset = this.offset + this.limit;
-        if(this.loadMode == 0) {
-          this.normal();
-        }else if(this.loadMode == 1) {
-          this.clickTag(this.searchTag);
-        } else if(this.loadMode == 2) {
-          this.search();
-        }
-      },
-      async checkCode() {
-      },
-      logout() {
-
-        this.$auth.logout();
-      }
+    async loadmore() {
+      const [users, offset] = await listUsers(
+        this.offset,
+        this.limit,
+        this.makeTagFilter()
+      );
+      this.users = [...this.users, ...users];
+      this.offset = offset;
     }
   }
+};
 </script>
 
-<style>
-</style>
+<style></style>
