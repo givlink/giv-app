@@ -4,7 +4,10 @@
       <template v-for="item of notifications">
         <template v-if="item.event_type == 'send_giv'">
           <li class="Notification__list__li">
-            <nuxt-link :to="`/users/${item.from_user.id}`" class="Notification__list__li__link">
+            <nuxt-link
+              :to="`/users/${item.from_user.id}`"
+              class="Notification__list__li__link"
+            >
               <div class="Notification__list__li__link__icon">
                 <b-img
                   :src="`${basePath}${item.from_user.profile_image_path}`"
@@ -15,7 +18,9 @@
               <div class="Notification__list__li__link__text">
                 <p class="Notification__list__li__link__text__info">
                   「{{ item.from_user.last_name }}
-                  {{ item.from_user.first_name }}」さんからgivを贈りたいのアクションがありました
+                  {{
+                    item.from_user.first_name
+                  }}」さんからgivを贈りたいのアクションがありました
                 </p>
                 <p class="Notification__list__li__link__text__date">
                   {{ item.created_at | moment }}
@@ -26,7 +31,10 @@
         </template>
         <template v-else-if="item.event_type == 'want_giv'">
           <li class="Notification__list__li">
-            <nuxt-link :to="`/users/${item.from_user.id}`" class="Notification__list__li__link">
+            <nuxt-link
+              :to="`/users/${item.from_user.id}`"
+              class="Notification__list__li__link"
+            >
               <div class="Notification__list__li__link__icon">
                 <b-img
                   :src="`${basePath}${item.from_user.profile_image_path}`"
@@ -37,7 +45,9 @@
               <div class="Notification__list__li__link__text">
                 <p class="Notification__list__li__link__text__info">
                   「{{ item.from_user.last_name }}
-                  {{ item.from_user.first_name }}」さんからgivを受け取りたいのアクションがありました
+                  {{
+                    item.from_user.first_name
+                  }}」さんからgivを受け取りたいのアクションがありました
                 </p>
                 <p class="Notification__list__li__link__text__date">
                   {{ item.created_at | moment }}
@@ -53,7 +63,9 @@
               class="Notification__list__li__link"
             >
               <div class="Notification__list__li__link__text">
-                <p class="Notification__list__li__link__text__info">サンクスカードを書きましょう</p>
+                <p class="Notification__list__li__link__text__info">
+                  サンクスカードを書きましょう
+                </p>
                 <p class="Notification__list__li__link__text__date">
                   {{ item.created_at | moment }}
                 </p>
@@ -69,7 +81,9 @@
               class="Notification__list__li__link"
             >
               <div class="Notification__list__li__link__text">
-                <p class="Notification__list__li__link__text__info">新しいgivがあります</p>
+                <p class="Notification__list__li__link__text__info">
+                  新しいgivがあります
+                </p>
                 <p class="Notification__list__li__link__text__date">
                   {{ item.created_at | moment }}
                 </p>
@@ -83,10 +97,10 @@
 </template>
 
 <script>
-
 //@Todo this page is incomplete
 import moment from "moment";
 import firebase from "../lib/firebase";
+
 export default {
   layout: "logined",
   async asyncData({ app }) {
@@ -98,16 +112,16 @@ export default {
       .where("userId", "==", uid)
       .get();
     const notifications = [];
-    snap.forEach((doc) => notifications.push({ ...doc.data(), id: doc.id }));
+    snap.forEach(doc => notifications.push({ ...doc.data(), id: doc.id }));
     return {
-      notifications,
+      notifications
     };
   },
 
   filters: {
     moment: function(date) {
       return moment(date).format("YYYY.MM.DD");
-    },
+    }
   },
   methods: {
     getJsonData: function(json) {
@@ -129,8 +143,8 @@ export default {
         }
       }
       return "";
-    },
-  },
+    }
+  }
 };
 </script>
 
