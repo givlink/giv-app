@@ -52,6 +52,11 @@
         color: $head-black-color;
         border: 1px solid $select-border-color;
         text-decoration: none;
+        &__active {
+          color: white;
+          background-color: #0eb9ec;
+          font-weight: bolder;
+        }
       }
     }
   }
