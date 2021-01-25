@@ -57,6 +57,9 @@ export const mutations = {
 export const getters = {
   getSkillTag: state => id => {
     return state.skillsMap[id];
+  },
+  allSkillIds: state => () => {
+    return Object.keys(state.skillsMap);
   }
 };
 

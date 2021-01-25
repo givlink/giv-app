@@ -108,7 +108,6 @@ export default {
         posts,
         id: params.id
       };
-      console.log(result);
       return result;
     }
   },

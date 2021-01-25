@@ -2,32 +2,56 @@
   <div class="User Main">
     <div class="User__profile">
       <div class="User__profile__icon">
-        <b-img :src="imageData" class="User__profile__icon__img" alt></b-img>
+        <b-img
+          v-if="imageChanged"
+          :src="newPhotoURL"
+          class="User__profile__icon__img"
+          alt
+        ></b-img>
+        <b-img
+          v-else-if="!imageChanged && imageSaved"
+          :src="photoURL"
+          class="User__profile__icon__img"
+          alt
+        ></b-img>
+        <b-img
+          v-else
+          :src="getUrl(photoURL)"
+          class="User__profile__icon__img"
+          alt
+        ></b-img>
         <div class="User__profile__icon__change">
           <p class="User__profile__icon__change__text">画像を変更する</p>
-          <input class="User__profile__icon__change__file" type="file" id="image" accept="image/*" @change="onFileChange($event)">
-          <button v-on:click="sendChangeImage" class="User__profile__icon__change__btn" v-if="changeImage">画像の変更を確定</button>
-          <p class="" v-if="hasImageError != ''">{hasImageError}</p>
+          <input
+            class="User__profile__icon__change__file"
+            type="file"
+            id="image"
+            accept="image/*"
+            @change="onFileChange($event)"
+          />
+          <button
+            v-on:click="sendChangeImage"
+            class="User__profile__icon__change__btn"
+            v-if="imageChanged"
+          >
+            画像の変更を確定
+          </button>
         </div>
       </div>
       <div class="UserForm">
         <div class="UserForm__box">
-          <label class="UserForm__label">姓</label>
-          <b-form-input v-model="last_name" placeholder="姓"></b-form-input>
-        </div>
-        <div class="UserForm__box">
-          <label class="UserForm__label">名</label>
-          <b-form-input v-model="first_name" placeholder="名"></b-form-input>
+          <label class="UserForm__label">名前</label>
+          <b-form-input v-model="name" placeholder="名前"></b-form-input>
         </div>
         <div class="UserForm__box">
           <label class="UserForm__label">職業</label>
-          <b-form-input v-model="position" placeholder="職業"></b-form-input>
+          <b-form-input v-model="job" placeholder="職業"></b-form-input>
         </div>
         <div class="UserForm__box">
           <label class="UserForm__label">紹介文</label>
           <b-form-textarea
             id="textarea"
-            v-model="introduction"
+            v-model="intro"
             placeholder="紹介文"
             rows="3"
             max-rows="6"
@@ -35,33 +59,44 @@
         </div>
         <div class="Regist__main">
           <div class="Regist__main__select">
-            <h3 class="Regist__main__select__text">あなたの興味・関心を選択してください</h3>
+            <h3 class="Regist__main__select__text">
+              あなたの興味・関心を選択してください
+            </h3>
             <ul class="Regist__main__select__box">
-              <li class="Regist__main__select__box__li" v-for="item in interests">
-                <p class="Regist__main__select__box__li__text">{{item.tag}}</p>
+              <li
+                class="Regist__main__select__box__li"
+                v-for="item in all_interests"
+              >
+                <p class="Regist__main__select__box__li__text">
+                  {{ renderTag(item.id) }}
+                </p>
                 <div class="Regist__main__select__box__li__btn">
                   <b-form-checkbox
-                    v-model="select_interests"
+                    v-model="interests"
                     :key="`interest_${item.id}`"
                     :value="item.id"
                     name="giv"
                     :id="`interest_${item.id}`"
                     class="Regist__main__select__box__li__btn__check"
                   >
-                    <span class="Regist__main__select__box__li__btn__text">選択</span>
+                    <span class="Regist__main__select__box__li__btn__text"
+                      >選択</span
+                    >
                   </b-form-checkbox>
                 </div>
               </li>
             </ul>
           </div>
           <div class="UserForm__regist">
-            <button v-on:click="next" class="UserForm__regist__btn">変更する</button>
-            <p class="UserForm__regist__error">{{error_message}}</p>
+            <button v-on:click="next" class="UserForm__regist__btn">
+              変更する
+            </button>
+            <p class="UserForm__regist__error">{{ error }}</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="Spinner" v-if="sending">
+    <div class="Spinner" v-if="loading">
       <div class="Spinner__box">
         <b-spinner label="Loading..." :variant="'primary'"></b-spinner>
         <p class="Spinner__box__text">送信中</p>
@@ -71,245 +106,162 @@
 </template>
 
 <script>
+import firebase from "../lib/firebase";
+const getCurrentUser = async () => {
+  const user = firebase.auth().currentUser;
+  if (!user) return null;
+  const doc = await firebase
+    .firestore()
+    .doc(`/users/${user.uid}`)
+    .get();
+  const profile = { ...doc.data(), id: doc.id };
+  return profile;
+};
 
-  const Cookie = process.client ? require('js-cookie') : undefined;
-  import axios from "axios";
-  export default {
-    components: {
-    },
-    middleware: 'auth',
-    layout:'logined',
-    data() {
-      return {
-        changeImage: false,
-        sending: false,
-        profileFile: null,
-        imageData: '',
-        code: '',
-        hasError: '',
-        error_message: '',
-        img: '',
-        first_name: '',
-        last_name: '',
-        introduction: '',
-        position: '',
-        me: '',
-        hasImageError: '',
-        givs: '',
+const getSkills = async () => {
+  const skills = [];
+  const snap = await firebase
+    .firestore()
+    .collection("skills")
+    .get();
+  snap.forEach(doc => skills.push({ id: doc.id, ...doc.data() }));
+  return skills;
+};
+
+export default {
+  components: {},
+  layout: "logined",
+  data() {
+    return {
+      photoURL: null,
+      intro: "",
+      interests: [],
+      skills: [],
+      area: null,
+      loading: false,
+      error: null,
+      imageChanged: false,
+      imageSaved: false
+    };
+  },
+  async asyncData({ app }) {
+    //@Todo get user data, skills, times, areas, interests
+
+    const user = await getCurrentUser();
+    const skills = await getSkills();
+    console.log(user);
+    return {
+      ...user,
+      all_skills: skills,
+      all_interests: skills
+    };
+  },
+  async mounted() {
+    if (
+      !this.$store.state.skillsMap ||
+      Object.keys(this.$store.state.skillsMap).length === 0
+    ) {
+      this.$store.commit("setSkillsMap", await getSkills());
+    }
+  },
+  methods: {
+    getUrl: path => `${process.env.cdn}/${path}`,
+    renderTag(id) {
+      try {
+        return this.$store.getters.getSkillTag(id).tag;
+      } catch (err) {
+        return id;
       }
     },
-    async asyncData({ app }) {
-      const baseUrl = process.env.baseUrl + '/me';
-      const getUrl = encodeURI(baseUrl);
-      const token = app.$auth.$storage.getUniversal("_token.auth0");
-      const response = await axios.get(getUrl, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token
-        }
+    onFileChange(e) {
+      this.imageChanged = false;
+      const files = e.target.files;
+      if (files.length > 0) {
+        const file = files[0];
+        this.newPhotoURL = this.photoURL;
+        this.imageChanged = true;
+        this.newPhotoFile = file;
+        this.newPhotoURL = URL.createObjectURL(file);
+      }
+    },
+    async sendChangeImage() {
+      this.loading = true;
+
+      const ref = firebase
+        .storage()
+        .ref()
+        .child(this.photoURL);
+
+      ref.put(this.newPhotoFile).then(snapshot => {
+        this.loading = false;
+        this.imageChanged = false;
+        this.imageSaved = true;
+        this.photoURL = this.newPhotoURL;
+        //@Todo bust the image cache as the old one stays
       });
-      const skilUrl = process.env.baseUrl + '/skill_tags';
-      const response2 = await axios.get(encodeURI(skilUrl), {
-      });
-      const baseUrl_time = process.env.baseUrl + '/time_tags';
-      const getUrl_time = encodeURI(baseUrl_time);
-      const response3 = await axios.get(getUrl_time, {
-      });
-      const areaUrl = process.env.baseUrl + '/area_tags';
-      const response4 = await axios.get(encodeURI(areaUrl), {
-      });
-      const me = response.data;
-      let select_skills = [];
-      let select_areas = '';
-      let select_times = [];
-      let select_interests = [];
-      if(me.skills) {
-        me.skills.map((value => select_skills.push(value.id)));
-      }
-      if(me.areas) {
-        me.areas.map((value => select_areas = value.id));
-      }if(me.times) {
-        me.times.map((value => select_times.push(value.id)));
-      }
-      if(me.interests) {
-        me.interests.map((value => select_interests.push(value.id)));
-      }
-
-
-      return {
-        me: me,
-        imageData: `${process.env.baseUrl}${me.profile_image_path}`,
-        skills: response2.data.skill_tags,
-        times: response3.data.time_tags,
-        places: response4.data.area_tags,
-        interests: response2.data.skill_tags,
-        first_name: response.data.first_name,
-        last_name: response.data.last_name,
-        introduction: response.data.introduction,
-        position: response.data.position,
-        select_skills: select_skills,
-        select_times: select_times,
-        select_areas: select_areas,
-        select_interests: select_interests,
-      }
     },
-    mounted() {
-    },
-
-    computed: {
-      basePath () {
-        return `${process.env.baseUrl}`;
-      },
-    },
-    methods: {
-      async checkCode() {
-      },
-      onFileChange(e) {
-
-        const files = e.target.files;
-
-        if(files.length > 0) {
-
-          const file = files[0];
-          const reader = new FileReader();
-          reader.onload = (e) => {
-
-            this.imageData = e.target.result;
-            this.changeImage = true;
-
-          };
-          reader.readAsDataURL(file);
-          this.profileFile = file;
-
-        }
-
-      },
-      async sendChangeImage() {
-        this.sending = true;
-        const baseUrl = process.env.baseUrl + "/me/profile_image";
-        const getUrl = encodeURI(baseUrl);
-        const token = this.$auth.$storage.getUniversal("_token.auth0");
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        };
-        var fileData = '';
-        if(this.profileFile) {
-          await this.getBase64(this.profileFile).then(image => fileData = image);
-        }
-        if(fileData != '') {
-
-          const data = {
-            profile_image: fileData
-          }
-          return axios
-            .put(
-              baseUrl,
-              data,
-              config
-            )
-            .then(res => {
-              this.sending = false;
-
-              this.$router.push("/mypage");
-            })
-            .catch(e => {
-              this.sending = false;
-              this.hasImageError = "送信に失敗しました";
-            });
-        } else {
-          this.sending = false;
-          this.hasImageError = "送信に失敗しました";
-        }
-      },
-
-      getBase64 (file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader()
-          reader.readAsDataURL(file)
-          reader.onload = () => resolve(reader.result)
-          reader.onerror = error => reject(error)
-        })
-      },
-      next() {
-        this.error_message = '';
-        let hasError = false;
-
-        if(this.last_name == '') {
-          this.error_message += '姓を入力してください<br>';
-          hasError = true;
-        }
-        if(this.first_name == '') {
-          this.error_message += '名を入力してください<br>';
-          hasError = true;
-        }
-        if(this.select_skills.length < 1) {
-          this.error_message += '自分のgivは最低一つ選択してください<br>';
-          hasError = true;
-        }
-        if(this.select_times.length < 1) {
-          this.error_message += 'givを提供できる時間は最低一つ選択してください<br>';
-          hasError = true;
-        }
-        if(this.select_areas.length < 1) {
-          this.error_message += '提供場所を一つ選択してください。<br>';
-          hasError = true;
-        }
-        if(this.select_interests.length < 1) {
-          this.error_message += '興味・関心は最低一つ選択してください。<br>';
-          hasError = true;
-        }
-
-        if(!hasError) {
-          const baseUrl = process.env.baseUrl + "/me";
-          const getUrl = encodeURI(baseUrl);
-
-          const token = this.$auth.$storage.getUniversal("_token.auth0");
-          const config = {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token
-            }
-          };
-          const data = {
-            first_name: this.first_name,
-            last_name: this.last_name,
-            job: this.position,
-            introduction: this.introduction,
-            giv_tags: this.select_skills,
-            area_tags: [this.select_areas],
-            interest_tags: this.select_interests,
-            time_tags: this.select_times,
-          }
-
-          console.log(data);
-
-          return axios
-            .put(
-              baseUrl,
-              data,
-              config
-            )
-            .then(res => {
-              console.log(res);
-              this.$router.push("mypage");
-            })
-            .catch(e => {
-              this.hasError = "もう一度はじめからやり直してください";
-            });
-        }
-
-
-      },
-      logout() {
-
-        this.$auth.logout();
-      }
+    next() {
+      /* this.error_message = ""; */
+      /* let hasError = false; */
+      /* if (this.last_name == "") { */
+      /*   this.error_message += "姓を入力してください<br>"; */
+      /*   hasError = true; */
+      /* } */
+      /* if (this.first_name == "") { */
+      /*   this.error_message += "名を入力してください<br>"; */
+      /*   hasError = true; */
+      /* } */
+      /* if (this.select_skills.length < 1) { */
+      /*   this.error_message += "自分のgivは最低一つ選択してください<br>"; */
+      /*   hasError = true; */
+      /* } */
+      /* if (this.select_times.length < 1) { */
+      /*   this.error_message += */
+      /*     "givを提供できる時間は最低一つ選択してください<br>"; */
+      /*   hasError = true; */
+      /* } */
+      /* if (this.select_areas.length < 1) { */
+      /*   this.error_message += "提供場所を一つ選択してください。<br>"; */
+      /*   hasError = true; */
+      /* } */
+      /* if (this.select_interests.length < 1) { */
+      /*   this.error_message += "興味・関心は最低一つ選択してください。<br>"; */
+      /*   hasError = true; */
+      /* } */
+      /* if (!hasError) { */
+      /*   const baseUrl = process.env.baseUrl + "/me"; */
+      /*   const getUrl = encodeURI(baseUrl); */
+      /*   const token = this.$auth.$storage.getUniversal("_token.auth0"); */
+      /*   const config = { */
+      /*     headers: { */
+      /*       "Content-Type": "application/json", */
+      /*       Authorization: token */
+      /*     } */
+      /*   }; */
+      /*   const data = { */
+      /*     first_name: this.first_name, */
+      /*     last_name: this.last_name, */
+      /*     job: this.position, */
+      /*     introduction: this.introduction, */
+      /*     giv_tags: this.select_skills, */
+      /*     area_tags: [this.select_areas], */
+      /*     interest_tags: this.select_interests, */
+      /*     time_tags: this.select_times */
+      /*   }; */
+      /*   console.log(data); */
+      /*   return axios */
+      /*     .put(baseUrl, data, config) */
+      /*     .then(res => { */
+      /*       console.log(res); */
+      /*       this.$router.push("mypage"); */
+      /*     }) */
+      /*     .catch(e => { */
+      /*       this.hasError = "もう一度はじめからやり直してください"; */
+      /*     }); */
+      /* } */
     }
   }
+};
 </script>
 
-<style>
-</style>
+<style></style>
