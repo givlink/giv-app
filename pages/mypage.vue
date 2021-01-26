@@ -10,10 +10,7 @@
       </div>
       <p class="User__profile__name">{{ profile.displayName }}</p>
       <p class="User__profile__position">{{ profile.job }}</p>
-      <p
-        class="User__profile__message"
-        v-html="changeUrl(profile.introduction)"
-      ></p>
+      <p class="User__profile__message" v-html="changeUrl(profile.intro)"></p>
       <nuxt-link to="edit" class="User__profile__edit">
         <b-img
           src="~/assets/image/icon_edit.png"

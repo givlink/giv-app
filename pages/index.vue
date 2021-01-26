@@ -153,7 +153,6 @@ export default {
       const [posts, offset] = await getPosts(this.offset);
       this.posts = [...this.posts, ...posts];
       this.offset = offset;
-      console.log(this.$store.state.skillsMap);
     }
   },
   async mounted() {
