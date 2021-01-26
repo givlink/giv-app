@@ -118,6 +118,34 @@ const getCurrentUser = async () => {
   return profile;
 };
 
+const updateCurrentUser = async ({
+  interests = null,
+  name = null,
+  job = null,
+  intro = null
+}) => {
+  const user = firebase.auth().currentUser;
+  if (!user) return null;
+  let payload = {};
+  if (interests && interests.length > 0) {
+    payload.interests = interests;
+  }
+  if (intro && intro !== "") {
+    payload.intro = intro;
+  }
+  if (name && name !== "") {
+    payload.name = name;
+  }
+  if (job && job !== "") {
+    payload.job = job;
+  }
+
+  await firebase
+    .firestore()
+    .doc(`/users/${user.uid}`)
+    .set(payload, { merge: true });
+};
+
 const getSkills = async () => {
   const skills = [];
   const snap = await firebase
@@ -135,6 +163,8 @@ export default {
     return {
       photoURL: null,
       intro: "",
+      name: "",
+      job: "",
       interests: [],
       skills: [],
       area: null,
@@ -200,7 +230,16 @@ export default {
         //@Todo bust the image cache as the old one stays
       });
     },
-    next() {
+    async next() {
+      this.loading = true;
+
+      await updateCurrentUser({
+        interests: this.interests,
+        job: this.job,
+        intro: this.intro,
+        name: this.name
+      });
+      this.loading = false;
       /* this.error_message = ""; */
       /* let hasError = false; */
       /* if (this.last_name == "") { */

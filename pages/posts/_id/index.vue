@@ -41,8 +41,8 @@
         </template>
       </slick>
       <div class="Detail__box__info">
-        <template v-if="isLike || post.liked">
-          <p class="Detail__box__info__good">
+        <template v-if="isLike">
+          <p class="Detail__box__info__good" v-on:click="deleteLike">
             <span class="Detail__box__info__good__heart on">♥</span>
             <span class="Detail__box__info__good__text">いいね済</span>
             <span class="Detail__box__info__good__text ml-2" v-if="isMe"
@@ -102,10 +102,10 @@
     <div class="Comment">
       <p class="Comment__title">コメント</p>
       <template v-for="item of comments">
-        <div class="Comment__box" v-if="!item.is_delete">
+        <div class="Comment__box" v-if="!item.deleted">
           <div
             class="Comment__box__delete"
-            v-on:click="deleteComments(item.uuid)"
+            v-on:click="deleteComments(item.id)"
             v-if="myId == item.authorId"
           >
             削除
@@ -153,6 +153,111 @@ import "../../../node_modules/slick-carousel/slick/slick-theme.css"; // Slickの
 import moment from "moment";
 import firebase from "../../../lib/firebase";
 
+const checkLiked = async ({ postId, userId }) => {
+  if (!postId) {
+    console.log("No postId in checklike");
+    return;
+  }
+  if (!userId) {
+    console.log("No userId in checklike");
+    return;
+  }
+  const resp = await firebase
+    .firestore()
+    .doc(`/users/${userId}/likes/${postId}`)
+    .get();
+  return resp.exists;
+};
+const likePost = async ({ postId, userId }) => {
+  if (!postId) {
+    console.log("No postId in like");
+    return;
+  }
+  if (!userId) {
+    console.log("No userId in like");
+    return;
+  }
+
+  //@Todo need a function to aggregate likes on a post
+  //When this happens
+  await firebase
+    .firestore()
+    .doc(`/users/${userId}/likes/${postId}`)
+    .set({ liked: true });
+};
+const unlikePost = async ({ postId, userId }) => {
+  if (!postId) {
+    console.log("No postId in unlike");
+    return;
+  }
+  if (!userId) {
+    console.log("No userId in unlike");
+    return;
+  }
+
+  //@Todo need a function to aggregate likes on a post
+  //When this happens
+  await firebase
+    .firestore()
+    .doc(`/users/${userId}/likes/${postId}`)
+    .delete();
+};
+
+const getCurrentUser = async () => {
+  const user = firebase.auth().currentUser;
+  if (!user) return null;
+  const doc = await firebase
+    .firestore()
+    .doc(`/users/${user.uid}`)
+    .get();
+  const profile = { ...doc.data(), id: doc.id };
+  return profile;
+};
+
+const deleteComment = async ({ id = null }) => {
+  if (!id) {
+    console.log("No id in delete comment");
+    return;
+  }
+  await firebase
+    .firestore()
+    .doc(`/comments/${id}`)
+    .delete();
+};
+const postComment = async ({ message = "", author = null, postId = null }) => {
+  if (!author) {
+    console.log("No author");
+    return null;
+  }
+  if (!postId) {
+    console.log("No postid");
+    return null;
+  }
+
+  const payload = {
+    author: {
+      id: author.id,
+      name: author.name,
+      photoURL: author.photoURL
+    },
+    authorId: author.id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    message,
+    parentCommentId: null,
+    postId
+  };
+
+  console.log("Creating payload:", payload);
+  const response = await firebase
+    .firestore()
+    .collection(`/comments`)
+    .add(payload);
+
+  console.log(response);
+  console.log(response.id);
+};
+
 export default {
   components: {
     Slick
@@ -169,7 +274,7 @@ export default {
       },
       code: "",
       hasError: "",
-      isLike: "",
+      isLike: false,
       id: ""
     };
   },
@@ -182,6 +287,7 @@ export default {
   },
   async asyncData({ app, params }) {
     if (params.id) {
+      const currentUser = await getCurrentUser();
       const doc = await firebase
         .firestore()
         .doc(`posts/${params.id}`)
@@ -199,12 +305,21 @@ export default {
         .get();
       const comments = [];
       commentsSnap.forEach(d => comments.push({ ...d.data(), id: d.id }));
+
+      const hasLiked = await checkLiked({
+        postId: params.id,
+        userId: currentUser && currentUser.id
+      });
+
       return {
         post,
         giv: { ...givDoc.data(), id: givDoc.id },
-        isLike: false, //@Todo incomplete
+        isLike: hasLiked,
         comments,
-        id: params.id
+        id: params.id,
+        isMe: false, //@Todo no support for edit post atm
+        myId: currentUser && currentUser.id,
+        currentUser
         /* myId: app.store.state.me.id, */
         /* isMe: app.store.state.me && response.data.user == app.store.state.me.id */
       };
@@ -220,83 +335,42 @@ export default {
         alert("コメントが何も記入されていません。");
         return;
       }
-      const baseUrl =
-        process.env.baseUrl + "/thanks_cards/" + this.id + "/comments";
-      const getUrl = encodeURI(baseUrl);
-      const response = await axios.post(
-        getUrl,
-        {
-          message: this.message
-        },
-        {}
-      );
-      console.log(response);
-      if (response.status === 201) {
-        alert("コメントを送信しました");
-        this.message = "";
-        const commentUrl =
-          process.env.baseUrl + "/thanks_cards/" + this.id + "/comments";
-        const response2 = await axios.get(encodeURI(commentUrl), {});
-        this.comments = response2.data.comments;
+      if (!this.currentUser) {
+        this.currentUser = await getCurrentUser();
       }
+
+      await postComment({
+        message: this.message,
+        author: this.currentUser,
+        postId: this.id
+      });
+
+      //@Todo feedback user for success/failure
     },
-    async deleteComments(uuid) {
+    async deleteComments(id) {
       var confirm = window.confirm("本当に削除しますか？");
       if (confirm) {
-        const baseUrl =
-          process.env.baseUrl +
-          "/thanks_cards/" +
-          this.id +
-          "/comments/" +
-          uuid;
-        const getUrl = encodeURI(baseUrl);
-        const response = await axios.delete(getUrl, {});
-        if (response.status === 200) {
-          alert("コメントを削除しました");
-          const commentUrl =
-            process.env.baseUrl + "/thanks_cards/" + this.id + "/comments";
-          const response2 = await axios.get(encodeURI(commentUrl), {});
-          this.comments = response2.data.comments;
-        }
+        await deleteComment({ id });
+        alert("コメントを削除しました");
+
+        this.comments = this.comments.filter(c => c.id !== id);
       }
     },
     async sendLike() {
       this.isLike = true;
-      const baseUrl =
-        process.env.baseUrl + "/thanks_cards/" + this.id + "/like";
-      const getUrl = encodeURI(baseUrl);
 
-      const token = this.$auth.$storage.getUniversal("_token.auth0");
-      const response = await axios.put(
-        getUrl,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        }
-      );
-      // if(response.status === 200) {
-      //   this.isLike = true;
-      // }
+      if (!this.currentUser) {
+        this.currentUser = await getCurrentUser();
+      }
+      await likePost({ postId: this.id, userId: this.currentUser.id });
     },
-    // async deleteLike() {
-    //     const baseUrl = process.env.baseUrl + '/thanks_cards/' + this.id + '/like';
-    //     const getUrl = encodeURI(baseUrl);
-    //     const token = this.$auth.$storage.getUniversal("_token.auth0");
-    //     const response = await axios.delete(getUrl, {
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             Authorization: token
-    //         }
-    //     });
-    //     if(response.status === 200) {
-    //         this.isLike = false;
-    //     }
-    // },
-    logout() {
-      this.$auth.logout();
+    async deleteLike() {
+      this.isLike = false;
+
+      if (!this.currentUser) {
+        this.currentUser = await getCurrentUser();
+      }
+      await unlikePost({ postId: this.id, userId: this.currentUser.id });
     }
   }
 };
