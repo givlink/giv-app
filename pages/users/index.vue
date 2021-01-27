@@ -49,33 +49,7 @@
 </template>
 
 <script>
-import firebase from "../lib/firebase";
-
-//@Todo refactor to common lib
-const listUsers = async (offset = null, limit = 20, filter = null) => {
-  let snap = firebase.firestore().collection("users");
-  if (offset) snap = snap.startAfter(offset);
-
-  if (filter) snap = snap.where(filter[0], filter[1], filter[2]);
-  //eg
-  /* snap = snap.where("skills", "array-contains",[ "accomodation"]); */
-
-  snap = await snap.limit(limit).get(); //@Todo sec rules
-
-  const users = [];
-  snap.forEach(doc => users.push({ ...doc.data(), id: doc.id }));
-  return [users, snap.docs[snap.docs.length - 1]];
-};
-
-const listSkills = async () => {
-  const skills = {};
-  const snap = await firebase
-    .firestore()
-    .collection("skills")
-    .get();
-  snap.forEach(doc => (skills[doc.id] = { id: doc.id, ...doc.data() }));
-  return skills;
-};
+import api from "../../lib/api";
 
 export default {
   layout: "logined",
@@ -88,8 +62,8 @@ export default {
     };
   },
   async asyncData({ app }) {
-    const skillsMap = await listSkills();
-    const [users, offset] = await listUsers();
+    const skillsMap = await api.listSkills();
+    const [users, offset] = await api.listUsers();
     return {
       skills: Object.values(skillsMap),
       users,
@@ -102,7 +76,7 @@ export default {
       Object.keys(this.$store.state.skillsMap).length === 0
     ) {
       console.log("setting again");
-      this.$store.commit("setSkillsMap", await listSkills());
+      this.$store.commit("setSkillsMap", await api.listSkills());
     }
   },
   methods: {
@@ -124,13 +98,17 @@ export default {
     async clickTag(id) {
       this.searchTag = id;
 
-      const [users, offset] = await listUsers(null, 20, this.makeTagFilter());
+      const [users, offset] = await api.listUsers(
+        null,
+        20,
+        this.makeTagFilter()
+      );
 
       this.users = users;
       this.offset = offset;
     },
     async loadmore() {
-      const [users, offset] = await listUsers(
+      const [users, offset] = await api.listUsers(
         this.offset,
         this.limit,
         this.makeTagFilter()
