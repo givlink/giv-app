@@ -10,7 +10,7 @@
       </div>
       <p class="Footer__box__text">タイムライン</p>
     </nuxt-link>
-    <nuxt-link to="/search" class="Footer__box">
+    <nuxt-link to="/users" class="Footer__box">
       <div class="Footer__box__icon">
         <img
           class="Footer__box__icon__img"

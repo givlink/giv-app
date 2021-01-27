@@ -2,7 +2,11 @@
   <div v-if="isShow" class="Regist Main">
     <div class="Regist__flow">
       <div class="Regist__flow__position">
-        <img class="Regist__flow__position__img" src="~/assets/image/regist_flow_01.png" alt="giv" />
+        <img
+          class="Regist__flow__position__img"
+          src="~/assets/image/regist_flow_01.png"
+          alt="giv"
+        />
       </div>
       <div class="Regist__flow__text">
         <p class="Regist__flow__text__box">
@@ -18,9 +22,15 @@
       <div class="Regist__main__profile">
         <h3 class="Regist__main__profile__text">プロフィールの確認</h3>
         <div class="Regist__main__profile__icon">
-          <b-img :src="`${img}`" class="Regist__main__profile__icon__img" alt></b-img>
+          <b-img
+            :src="`${img}`"
+            class="Regist__main__profile__icon__img"
+            alt
+          ></b-img>
         </div>
-        <p class="Regist__main__profile__name">{{last_name}} {{first_name}}</p>
+        <p class="Regist__main__profile__name">
+          {{ last_name }} {{ first_name }}
+        </p>
         <!--        <p class="Regist__main__profile__position">KDS</p>-->
       </div>
       <div class="Regist__main__bottom">
@@ -31,9 +41,9 @@
 </template>
 
 <script>
-import axios from 'axios';
-import jwt from 'jwt-decode';
-const Cookie = process.client ? require('js-cookie') : undefined;
+import axios from "axios";
+import jwt from "jwt-decode";
+const Cookie = process.client ? require("js-cookie") : undefined;
 export default {
   data() {
     return {
@@ -44,13 +54,13 @@ export default {
     };
   },
   mounted() {
-    let code = Cookie.get('code');
+    let code = Cookie.get("code");
     const token = this.$auth.$storage.getUniversal("_token.auth0");
-    if(token && token !== '') {
+    if (token && token !== "") {
       let decoded = jwt(token);
       console.log("hoa");
-      if(decoded.exp > new Date().getTime() / 1000) {
-        const baseUrl = process.env.baseUrl + '/login';
+      if (decoded.exp > new Date().getTime() / 1000) {
+        const baseUrl = process.env.baseUrl + "/login";
         const getUrl = encodeURI(baseUrl);
         const config = {
           headers: {
@@ -58,12 +68,13 @@ export default {
             Authorization: token
           }
         };
-        return axios.get(baseUrl, config)
-          .then((res) => {
+        return axios
+          .get(baseUrl, config)
+          .then(res => {
             this.$router.push("/");
           })
-          .catch((e) => {
-            if(code && code != '') {
+          .catch(e => {
+            if (code && code != "") {
               this.$auth.fetchUser();
               const user = this.$auth.$storage.getState("user");
               this.img = user.picture;
@@ -73,13 +84,12 @@ export default {
             } else {
               this.$router.push("/invite");
             }
-
           });
       } else {
-          this.$auth.loginWith('auth0');
+        this.$auth.loginWith("auth0");
       }
     } else {
-        this.$auth.loginWith('auth0');
+      this.$auth.loginWith("auth0");
     }
   },
   methods: {
@@ -87,14 +97,13 @@ export default {
       this.$store.commit("setImg", this.img);
       this.$store.commit("setFirstName", this.first_name);
       this.$store.commit("setLastName", this.last_name);
-      Cookie.set('img', this.img, { expires: 3 });
-      Cookie.set('first_name', this.first_name, { expires: 3 });
-      Cookie.set('last_name', this.last_name, { expires: 3 });
+      Cookie.set("img", this.img, { expires: 3 });
+      Cookie.set("first_name", this.first_name, { expires: 3 });
+      Cookie.set("last_name", this.last_name, { expires: 3 });
       this.$router.push("/regist_giv");
     }
   }
 };
 </script>
 
-<style>
-</style>
+<style></style>

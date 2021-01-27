@@ -11,6 +11,17 @@
       <p class="User__profile__name">{{ profile.name }}</p>
       <p class="User__profile__position">{{ profile.job }}</p>
       <p class="User__profile__message" v-html="changeUrl(profile.intro)"></p>
+      <nuxt-link
+        to="/edit"
+        class="User__profile__edit"
+        v-show="currentUserId == id"
+      >
+        <b-img
+          src="~/assets/image/icon_edit.png"
+          class="User__profile__edit__img"
+          alt
+        ></b-img>
+      </nuxt-link>
     </div>
     <div class="User__giv">
       <h3 class="User__giv__title">登録しているgiv</h3>
@@ -39,7 +50,7 @@
         </template>
       </div>
     </div>
-    <div class="GivBtn" v-on:click="toggleModal">
+    <div class="GivBtn" v-on:click="toggleModal" v-show="currentUserId !== id">
       <img class="GivBtn__img" src="~/assets/image/giv_btn.png" alt="giv" />
     </div>
     <div class="GivModal" v-if="onModal">
@@ -67,46 +78,29 @@
 </template>
 
 <script>
-import firebase from "../../lib/firebase";
-//@Todo copy paste
-const getSkills = async () => {
-  const skills = {};
-  const snap = await firebase
-    .firestore()
-    .collection("skills")
-    .get();
-  snap.forEach(doc => (skills[doc.id] = { id: doc.id, ...doc.data() }));
-  return skills;
-};
+import api from "../../lib/api";
 export default {
   layout: "logined",
   data() {
     return {
       profile: "",
       posts: "",
-      onModal: false
+      onModal: false,
+      currentUserId: "",
+      id: null
     };
   },
   async asyncData({ app, params }) {
     if (params.id) {
-      const doc = await firebase
-        .firestore()
-        .doc(`/users/${params.id}`)
-        .get();
-
-      const postSnap = await firebase
-        .firestore()
-        .collection("posts")
-        .where("authorId", "==", params.id)
-        .limit(10)
-        .get();
-      const posts = [];
-      postSnap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }));
+      const currentUser = api.getCurrentUser();
+      const profile = await api.getUserProfile(params.id);
+      const posts = await api.getUserPosts(params.id);
 
       const result = {
-        profile: { ...doc.data(), id: doc.id },
+        profile,
         posts,
-        id: params.id
+        id: params.id,
+        currentUserId: currentUser.uid
       };
       return result;
     }
@@ -117,7 +111,7 @@ export default {
       Object.keys(this.$store.state.skillsMap).length === 0
     ) {
       console.log("setting again");
-      this.$store.commit("setSkillsMap", await getSkills());
+      this.$store.commit("setSkillsMap", await api.listSkills());
     }
   },
   methods: {

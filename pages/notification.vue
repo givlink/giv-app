@@ -97,24 +97,15 @@
 </template>
 
 <script>
-//@Todo this page is incomplete
 import moment from "moment";
-import firebase from "../lib/firebase";
+import api from "../lib/api";
 
 export default {
   layout: "logined",
   async asyncData({ app }) {
-    //@Todo handle null currentUser
     const { uid } = firebase.auth().currentUser;
-    const snap = await firebase
-      .firestore()
-      .collection("notifications")
-      .where("userId", "==", uid)
-      .get();
-    const notifications = [];
-    snap.forEach(doc => notifications.push({ ...doc.data(), id: doc.id }));
     return {
-      notifications
+      notifications: await api.listNotifications(uid)
     };
   },
 
