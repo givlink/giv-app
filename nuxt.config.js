@@ -35,8 +35,12 @@ export default {
   },
   loading: { color: "#fff" },
   css: [{ src: "~/assets/sass/main.scss", lang: "scss" }],
+  router: {
+    middleware: "router"
+  },
   plugins: [
     "~/plugins/api.js",
+    "~/plugins/auth.js",
     { src: "~/plugins/vue-lazyload.js", ssr: false }
   ],
   buildModules: [],

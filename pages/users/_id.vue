@@ -50,6 +50,15 @@
         </template>
       </div>
     </div>
+    <div class="LogoutBtn_Container">
+      <button
+        class="LogoutBtn"
+        v-on:click="logout"
+        v-show="currentUserId === id"
+      >
+        Logout
+      </button>
+    </div>
     <div class="GivBtn" v-on:click="toggleModal" v-show="currentUserId !== id">
       <img class="GivBtn__img" src="~/assets/image/giv_btn.png" alt="giv" />
     </div>
@@ -166,6 +175,10 @@ export default {
         /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi,
         "<a target='_blank' href='$1'>$1</a>"
       );
+    },
+    async logout() {
+      await api.logout();
+      this.$router.push({ path: "/login" });
     }
   }
 };

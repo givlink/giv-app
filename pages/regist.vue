@@ -41,9 +41,6 @@
 </template>
 
 <script>
-import axios from "axios";
-import jwt from "jwt-decode";
-const Cookie = process.client ? require("js-cookie") : undefined;
 export default {
   data() {
     return {
@@ -58,7 +55,6 @@ export default {
     const token = this.$auth.$storage.getUniversal("_token.auth0");
     if (token && token !== "") {
       let decoded = jwt(token);
-      console.log("hoa");
       if (decoded.exp > new Date().getTime() / 1000) {
         const baseUrl = process.env.baseUrl + "/login";
         const getUrl = encodeURI(baseUrl);
