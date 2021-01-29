@@ -1,3 +1,4 @@
+import firebase from "../lib/firebase";
 export const state = () => ({
   skills: [],
   places: [],
@@ -9,12 +10,20 @@ export const state = () => ({
   me: {},
   token: "",
   skillsMap: {},
-  areasMap: {}
+  areasMap: {},
+  authLoading: true,
+  user: null
 });
 
 export const mutations = {
   setSkills(state, skills) {
     state.skills = skills;
+  },
+  setAuthLoading(state, loading) {
+    state.authLoading = loading;
+  },
+  setUser(state, user) {
+    state.user = user;
   },
   setMe(state, me) {
     state.me = me;
@@ -65,6 +74,19 @@ export const getters = {
 
 export const actions = {
   nuxtClientInit({ commit }, context) {
-    //@Todo set user from firebase auth
+    commit("setAuthLoading", true);
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const u = {
+          uid: user.uid,
+          photoURL: user.photoURL,
+          name: user.displayName
+        };
+        commit("setUser", u);
+      } else {
+        commit("setUser", null);
+      }
+      commit("setAuthLoading", false);
+    });
   }
 };

@@ -1,15 +1,25 @@
 <template>
   <div class="Invite">
-    <div class="Inner Invite__inner">
+    <div class="Spinner" v-show="loading">
+      <div class="Spinner__box">
+        <b-spinner label="Loading..." :variant="'primary'"></b-spinner>
+      </div>
+    </div>
+    <div class="Inner Invite__inner" v-show="!loading">
       <div class="Invite__logo">
-        <img class="Invite__logo__img" src="~/assets/image/giv_logo.png" alt="giv" />
+        <img
+          class="Invite__logo__img"
+          src="~/assets/image/giv_logo.png"
+          alt="giv"
+        />
       </div>
       <div class="Invite__form">
         <div class="Invite__btn">
-          <button v-on:click="login()" class="Invite__btn__link">ログインする</button>
+          <button v-on:click="login()" class="Invite__btn__link">
+            ログインする
+          </button>
         </div>
         <p class="Invite__error">{{ hasError }}</p>
-        <p class="Invite__error">{{ hasUser }}</p>
       </div>
     </div>
   </div>
@@ -22,11 +32,11 @@ export default {
   data() {
     return {
       hasError: "",
-      hasUser: "",
+      loading: true
     };
   },
   mounted() {
-    // ここから追加
+    this.loading = this.$store.state.authLoading;
   },
   methods: {
     login() {
@@ -34,15 +44,19 @@ export default {
       firebase
         .auth()
         .signInWithPopup(provider)
-        .then((result) => {
-        console.log("Redirecting", result.user)
-          this.$router.push({path:"/"});
+        .then(({ user }) => {
+          const u = {
+            name: user.displayName,
+            id: user.uid
+          };
+          this.$store.commit("setUser", u);
+          this.$router.push({ path: "/" });
         })
-        .catch((error) => {
+        .catch(error => {
           this.hasError = error.message;
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
