@@ -133,37 +133,22 @@ export default {
     },
     getUrl: path => `${process.env.cdn}/${path}`,
     async sendGiv() {
-      const baseUrl = process.env.baseUrl + "/users/" + this.id + "/send_giv";
-      const getUrl = encodeURI(baseUrl);
+      const senderId = this.currentUserId;
+      const receiverId = this.id;
+      const type = "send";
 
-      const token = this.$auth.$storage.getUniversal("_token.auth0");
-      const response = await axios.put(
-        getUrl,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        }
-      );
+      //@Todo err handling
+      await api.createGivRequest(senderId, receiverId, type);
       this.onModal = false;
     },
     async wantGiv() {
-      const baseUrl = process.env.baseUrl + "/users/" + this.id + "/want_giv";
-      const getUrl = encodeURI(baseUrl);
+      const senderId = this.id;
+      const receiverId = this.currentUserId;
+      const type = "receive";
 
-      const token = this.$auth.$storage.getUniversal("_token.auth0");
-      const response = await axios.put(
-        getUrl,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        }
-      );
+      //@Todo loading spinner?
+      //@Todo err handling
+      await api.createGivRequest(senderId, receiverId, type);
       this.onModal = false;
     },
     toggleModal() {

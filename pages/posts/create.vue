@@ -1,7 +1,7 @@
 <template>
   <div class="Form Main">
     <p class="Form__text">
-      「{{ giv.sender.name }} 」さんからのgiv<br />
+      「{{ giv.giver.name }} 」さんからのgiv<br />
       ありがとうございました!
     </p>
     <div class="Form__box">
@@ -51,13 +51,6 @@
       <!-- Plain mode -->
       <div v-on:click="send()" class="Form__box__send mt-3">送信</div>
     </div>
-    <!--    <div class="Form__sns">-->
-    <!--      <h2 class="Form__sns__title">SNSでシェア</h2>-->
-    <!--      <a href="" class="Form__sns__share"><span class="Form__sns__share__text">Facebookでシェアする</span></a>-->
-    <!--      <a href="" class="Form__sns__share"><span class="Form__sns__share__text">Twitterでシェアする</span></a>-->
-    <!--      <a href="" class="Form__sns__share"><span class="Form__sns__share__text">Instagramでシェアする</span></a>-->
-    <!--    </div>-->
-
     <div class="Spinner" v-if="sending">
       <div class="Spinner__box">
         <b-spinner label="Loading..." :variant="'primary'"></b-spinner>
@@ -68,6 +61,7 @@
 </template>
 
 <script>
+import api from "../../lib/api";
 export default {
   components: {},
   /* middleware: 'auth', */
@@ -83,41 +77,61 @@ export default {
   },
   mounted() {},
   async asyncData({ app, query }) {
+    const givId = query.givId;
+    const giv = await api.getGiv(givId);
+    const giver = await api.getUserProfile(giv.giverId);
+    //@Todo handle when giv or giver not found
     return {
-      id: query.id,
-      file1: null,
+      id: query.givId,
+      file: null,
       file2: null,
       file3: null,
       giv: {
-        sender: {
-          name: "Test user"
-        },
-        status: "finished"
-      } //@Todo get giv data
+        ...giv,
+        giver: {
+          id: giver.id,
+          name: giver.name,
+          photoURL: giver.photoURL
+        }
+      }
     };
   },
   methods: {
+    getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    },
     async send() {
-      //@Todo create post for the giv
-      //@Todo upload images
       this.sending = true;
-      /* const data = { */
-      /*   title: this.title, */
-      /*   message: this.message, */
-      /*   images: fileData */
-      /* }; */
+      const images = [];
+      //@Todo more dynamic way to handle file1, file2, file3 etc...
+      if (this.file) images.push(this.file);
+      if (this.file2) images.push(this.file2);
+      if (this.file3) images.push(this.file3);
 
-      /* return axios */
-      /*   .post(baseUrl, data, config) */
-      /*   .then(res => { */
-      /*     this.sending = false; */
-      /*     this.$router.push("/"); */
-      /*   }) */
-      /*   .catch(e => { */
-      /*     this.sending = false; */
-      /*     this.hasError = "送信に失敗しました"; */
-      /*   }); */
-      //@Todo upload images
+      const data = {
+        title: this.title,
+        message: this.message,
+        images,
+        authorId: api.getCurrentUser().uid,
+        giv: this.giv
+      };
+
+      try {
+        this.post = await api.createPost(data);
+      } catch (err) {
+        console.log("Got err:", err);
+        this.hasError = "送信に失敗しました";
+      }
+
+      this.sending = false;
+      if (this.post) {
+        this.$router.push({ path: `/posts/${this.post.id}` });
+      }
     }
   }
 };

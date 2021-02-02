@@ -282,7 +282,13 @@ export default {
 
   filters: {
     moment: function(date) {
-      return moment.unix(date / 1000).format("YYYY.MM.DD");
+      let str = moment.unix(date / 1000).format("YYYY.MM.DD");
+      if (str === "Invalid date") {
+        str = moment(date)
+          .utc()
+          .format("YYYY.MM.DD");
+      }
+      return str;
     }
   },
   async asyncData({ app, params }) {
