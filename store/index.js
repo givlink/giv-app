@@ -64,6 +64,9 @@ export const mutations = {
 };
 
 export const getters = {
+  getAreaTag: state => id => {
+    return state.areasMap[id];
+  },
   getSkillTag: state => id => {
     return state.skillsMap[id];
   },
