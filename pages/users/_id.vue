@@ -31,6 +31,14 @@
         </span>
       </div>
     </div>
+
+    <div class="User__giv" v-show="currentUserId == id">
+      <h3 class="User__giv__title">givを提供できる場所</h3>
+      <span class="User__giv__tags__tag">
+        {{ renderAreaTag(profile.area) }}
+      </span>
+    </div>
+
     <div class="User__latest">
       <h3 class="User__latest__title">最近のgiv</h3>
       <div class="User__latest__wrap">
@@ -122,8 +130,22 @@ export default {
       console.log("setting again");
       this.$store.commit("setSkillsMap", await api.listSkills());
     }
+    if (
+      !this.$store.state.areasMap ||
+      Object.keys(this.$store.state.areasMap).length === 0
+    ) {
+      console.log("setting again");
+      this.$store.commit("setAreasMap", await api.listAreas());
+    }
   },
   methods: {
+    renderAreaTag(id) {
+      try {
+        return this.$store.getters.getAreaTag(id).tag;
+      } catch (err) {
+        return id;
+      }
+    },
     renderTag(id) {
       try {
         return this.$store.getters.getSkillTag(id).tag;
