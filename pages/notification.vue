@@ -103,7 +103,7 @@ import api from "../lib/api";
 export default {
   layout: "logined",
   async asyncData({ app }) {
-    const { uid } = firebase.auth().currentUser;
+    const { uid } = api.getCurrentUser();
     return {
       notifications: await api.listNotifications(uid)
     };
