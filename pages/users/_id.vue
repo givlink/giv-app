@@ -32,8 +32,8 @@
       </div>
     </div>
 
-    <div class="User__giv" v-show="currentUserId == id">
-      <h3 class="User__giv__title">givを提供できる場所</h3>
+    <div class="User__giv">
+      <h3 class="User__giv__title">登録してる場所</h3>
       <span class="User__giv__tags__tag">
         {{ renderAreaTag(profile.area) }}
       </span>
