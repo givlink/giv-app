@@ -31,7 +31,7 @@ export default {
   },
   env: {
     baseUrl: process.env.BASE_URL || "https://api.giv.link", //https://api-dev.giv.link"//" //検証
-    cdn: "https://storage.googleapis.com/giv-link.appspot.com" //@Todo migrate to a proper cdn
+    cdn: "https://storage.googleapis.com/givlink.appspot.com" //@Todo migrate to a proper cdn
   },
   loading: { color: "#fff" },
   css: [{ src: "~/assets/sass/main.scss", lang: "scss" }],
