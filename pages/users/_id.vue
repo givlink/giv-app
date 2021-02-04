@@ -38,6 +38,14 @@
         {{ renderAreaTag(profile.area) }}
       </span>
     </div>
+    <div class="User__giv">
+      <h3 class="User__giv__title">興味・関心</h3>
+      <div class="User__giv__tags">
+        <span class="User__giv__tags__tag" v-for="item of profile.interests">
+          {{ renderTag(item) }}
+        </span>
+      </div>
+    </div>
 
     <div class="User__latest">
       <h3 class="User__latest__title">最近のgiv</h3>
