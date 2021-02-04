@@ -333,9 +333,7 @@ export default {
   },
 
   methods: {
-    getUrl: path => {
-      return `https://storage.googleapis.com/giv-link.appspot.com/${path}`;
-    },
+    getUrl: path => `${process.env.cdn}/${path}`,
     async sendComments() {
       if (this.message == "") {
         alert("コメントが何も記入されていません。");
