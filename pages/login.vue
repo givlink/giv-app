@@ -39,22 +39,33 @@ export default {
     this.loading = this.$store.state.authLoading;
   },
   methods: {
-    login() {
+    async login() {
       const provider = new firebase.auth.FacebookAuthProvider();
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then(({ user }) => {
-          const u = {
-            name: user.displayName,
-            id: user.uid
-          };
-          this.$store.commit("setUser", u);
-          this.$router.push({ path: "/" });
-        })
-        .catch(error => {
+      try {
+        const user = await firebase.auth().signInWithPopup(provider);
+        const u = {
+          name: user.displayName,
+          id: user.uid
+        };
+        this.$store.commit("setUser", u);
+        this.$router.push({ path: "/" });
+      } catch (err) {
+        if (err.code === "auth/popup-blocked") {
+          try {
+            const user = await firebase.auth().signInWithRedirect(provider);
+            const u = {
+              name: user.displayName,
+              id: user.uid
+            };
+            this.$store.commit("setUser", u);
+            this.$router.push({ path: "/" });
+          } catch (err) {
+            this.hasError = err.message;
+          }
+        } else {
           this.hasError = error.message;
-        });
+        }
+      }
     }
   }
 };

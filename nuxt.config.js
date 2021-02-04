@@ -45,6 +45,7 @@ export default {
   ],
   buildModules: [],
   modules: [
+    "@nuxtjs/sentry",
     "bootstrap-vue/nuxt",
     "nuxt-sass-resources-loader",
     "@nuxtjs/auth",
@@ -52,6 +53,11 @@ export default {
     "nuxt-client-init-module",
     "vue-sweetalert2/nuxt"
   ],
+  sentry: {
+    dsn:
+      "https://f9986109c421440d877bec0ed85a899d@o516148.ingest.sentry.io/5622239",
+    config: {}
+  },
   build: {
     extend(config, ctx) {}
   }
