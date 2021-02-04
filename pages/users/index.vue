@@ -100,12 +100,17 @@ export default {
 
       const [users, offset] = await api.listUsers(
         null,
-        20,
+        this.limit,
         this.makeTagFilter()
       );
 
       this.users = users;
       this.offset = offset;
+    },
+    dedupeUser(users) {
+      const map = [];
+      users.forEach(u => (map[u.id] = u));
+      return Object.values(map);
     },
     async loadmore() {
       const [users, offset] = await api.listUsers(
@@ -113,7 +118,7 @@ export default {
         this.limit,
         this.makeTagFilter()
       );
-      this.users = [...this.users, ...users];
+      this.users = this.dedupeUser([...this.users, ...users]);
       this.offset = offset;
     }
   }
