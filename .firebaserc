@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "givlink"
+  },
+  "targets": {
+    "giv-link": {
+      "hosting": {
+        "givlink": [
+          "givlink"
+        ]
+      }
+    }
   }
 }
