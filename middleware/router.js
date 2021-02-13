@@ -1,4 +1,21 @@
 export default function({ store, redirect, route }) {
-  store.state.user && route.name === "login" ? redirect("/") : "";
-  !store.state.user && route.name !== "login" ? redirect("/login") : "";
+  if (store.state.user && route.name === "login") {
+    if (route.query && route.query.next) {
+      let url = route.query.next;
+      if (!!route.hash) {
+        url += route.hash;
+      }
+      redirect(url);
+    } else {
+      redirect("/");
+    }
+  }
+
+  if (!store.state.user && route.name !== "login") {
+    let url = `/login?next=${route.path}`;
+    if (!!route.hash) {
+      url += route.hash;
+    }
+    redirect(url);
+  }
 }

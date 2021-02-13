@@ -106,7 +106,13 @@ export default {
     return { giv };
   },
   methods: {
-    getUrl: path => `${process.env.cdn}/${path}`,
+    getUrl(path) {
+      if (path && path.startsWith("http")) {
+        return path;
+      } else {
+        return `${process.env.cdn}/${path}`;
+      }
+    },
     async checkCode() {},
     logout() {
       this.$auth.logout();

@@ -148,7 +148,13 @@ export default {
     };
   },
   methods: {
-    getUrl: path => `${process.env.cdn}/${path}`,
+    getUrl(path) {
+      if (path && path.startsWith("http")) {
+        return path;
+      } else {
+        return `${process.env.cdn}/${path}`;
+      }
+    },
     async loadmore() {
       const [posts, offset] = await getPosts(this.offset);
       this.posts = [...this.posts, ...posts];

@@ -195,7 +195,13 @@ export default {
     }
   },
   methods: {
-    getUrl: path => `${process.env.cdn}/${path}`,
+    getUrl(path) {
+      if (path && path.startsWith("http")) {
+        return path;
+      } else {
+        return `${process.env.cdn}/${path}`;
+      }
+    },
     renderTag(id) {
       try {
         return this.$store.getters.getSkillTag(id).tag;

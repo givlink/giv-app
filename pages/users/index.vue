@@ -94,7 +94,13 @@ export default {
         return id;
       }
     },
-    getUrl: path => `${process.env.cdn}/${path}`,
+    getUrl(path) {
+      if (path && path.startsWith("http")) {
+        return path;
+      } else {
+        return `${process.env.cdn}/${path}`;
+      }
+    },
     async clickTag(id) {
       this.searchTag = id;
 
