@@ -333,7 +333,13 @@ export default {
   },
 
   methods: {
-    getUrl: path => `${process.env.cdn}/${path}`,
+    getUrl(path) {
+      if (path && path.startsWith("http")) {
+        return path;
+      } else {
+        return `${process.env.cdn}/${path}`;
+      }
+    },
     async sendComments() {
       if (this.message == "") {
         alert("コメントが何も記入されていません。");

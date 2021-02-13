@@ -161,7 +161,13 @@ export default {
         return id;
       }
     },
-    getUrl: path => `${process.env.cdn}/${path}`,
+    getUrl(path) {
+      if (path && path.startsWith("http")) {
+        return path;
+      } else {
+        return `${process.env.cdn}/${path}`;
+      }
+    },
     async sendGiv() {
       const senderId = this.currentUserId;
       const receiverId = this.id;
