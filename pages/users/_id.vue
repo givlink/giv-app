@@ -48,7 +48,26 @@
     </div>
 
     <div class="User__latest">
-      <h3 class="User__latest__title">最近のgiv</h3>
+      <h3 class="User__latest__title">贈ったgiv</h3>
+      <div class="User__latest__wrap">
+        <template v-if="posts" v-for="item of received">
+          <nuxt-link :to="`/posts/${item.id}`" class="User__latest__wrap__box">
+            <template v-if="item.images && item.images.length > 0">
+              <b-img
+                :src="getUrl(item.images[0])"
+                class="User__latest__wrap__box__img"
+                alt
+              ></b-img>
+            </template>
+            <template v-else>
+              <span>NO IMAGE</span>
+            </template>
+          </nuxt-link>
+        </template>
+      </div>
+    </div>
+    <div class="User__latest">
+      <h3 class="User__latest__title">受け取ったgiv</h3>
       <div class="User__latest__wrap">
         <template v-if="posts" v-for="item of posts">
           <nuxt-link :to="`/posts/${item.id}`" class="User__latest__wrap__box">
@@ -110,6 +129,7 @@ export default {
     return {
       profile: "",
       posts: "",
+      received: "",
       onModal: false,
       currentUserId: "",
       id: null
@@ -120,10 +140,12 @@ export default {
       const currentUser = api.getCurrentUser();
       const profile = await api.getUserProfile(params.id);
       const posts = await api.getUserPosts(params.id);
+      const receivedPosts = await api.getUserReceivedPosts(params.id);
 
       const result = {
         profile,
         posts,
+        received: receivedPosts,
         id: params.id,
         currentUserId: currentUser.uid
       };
