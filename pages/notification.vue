@@ -6,13 +6,29 @@
           :to="`/posts/create?givId=${item.id}`"
           class="Notification__list__li__link"
         >
-          <div class="Notification__list__li__link__text">
+          <div class="Notification__list__li__link__text" style="width:100%;">
             <p class="Notification__list__li__link__text__info">
               サンクスカードを書きましょう
             </p>
-            <p class="Notification__list__li__link__text__date">
-              {{ item.createdAt | moment }}
-            </p>
+            <div
+              style="display:flex; justify-content: space-between; align-items: center;"
+            >
+              <p class="Notification__list__li__link__text__date">
+                {{ item.createdAt | moment }}
+              </p>
+              <div
+                style="display:flex; justify-content:center; align-items:center;"
+              >
+                <b-img
+                  :src="getUrl(item.giver.photoURL)"
+                  alt="Giver Name"
+                  style="height:30px; width:30px;border-radius:100%;"
+                ></b-img>
+                <span class="" style="margin-left:5px;">
+                  {{ item.giver.name }} さん
+                </span>
+              </div>
+            </div>
           </div>
         </nuxt-link>
       </li>
@@ -110,6 +126,7 @@ export default {
         pendingPostGivs.push(giv);
       }
     });
+
     return {
       notifications: await api.listNotifications(uid),
       pendingPostGivs,
@@ -118,10 +135,25 @@ export default {
       givRequests
     };
   },
+  methods: {
+    getUrl(path) {
+      if (path && path.startsWith("http")) {
+        return path;
+      } else {
+        return `${process.env.cdn}/${path}`;
+      }
+    }
+  },
 
   filters: {
     moment: function(date) {
-      return moment(date).format("YYYY.MM.DD");
+      let str = moment.unix(date / 1000).format("YYYY.MM.DD");
+      if (str === "Invalid date") {
+        str = moment(date)
+          .utc()
+          .format("YYYY.MM.DD");
+      }
+      return str;
     }
   }
 };
