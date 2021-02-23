@@ -1,7 +1,7 @@
 <template>
   <div class="User Main">
     <div class="User__profile">
-      <div class="User__profile__icon">
+      <div class="User__profile__icon" v-if="profile">
         <b-img
           :src="getUrl(profile.photoURL)"
           class="User__profile__icon__img"
