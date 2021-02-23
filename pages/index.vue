@@ -95,6 +95,7 @@
 <script>
 import moment from "moment";
 import firebase from "../lib/firebase";
+import api from "../lib/api";
 
 const getPosts = async (offset = null, limit = 20) => {
   let snap = firebase
@@ -162,6 +163,7 @@ export default {
     }
   },
   async mounted() {
+    api.setupNotifications();
     this.$store.commit("setSkillsMap", await getSkills());
     this.$store.commit("setAreasMap", await getAreas());
   },
