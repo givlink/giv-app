@@ -4,7 +4,17 @@
       <div class="Search__box__tags" v-if="skills">
         <template v-for="item of skills">
           <span
-            v-on:click="clickTag(item.id)"
+            v-on:click="clickTag(item.id, 'skills')"
+            :class="item.id == searchTag && 'Search__box__tags__tag__active'"
+            class="Search__box__tags__tag"
+            >{{ item.tag }}</span
+          >
+        </template>
+      </div>
+      <div class="Search__box__tags" v-if="areas">
+        <template v-for="item of areas">
+          <span
+            v-on:click="clickTag(item.id, 'area')"
             :class="item.id == searchTag && 'Search__box__tags__tag__active'"
             class="Search__box__tags__tag"
             >{{ item.tag }}</span
@@ -12,7 +22,7 @@
         </template>
       </div>
     </div>
-    <ul class="Search__list">
+    <ul class="Search__list" style="margin-top:50px;">
       <li class="Search__list__li" v-for="item of users">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">
           <div class="Search__list__li__link__icon">
@@ -55,6 +65,7 @@ export default {
   layout: "logined",
   data() {
     return {
+      searchField: null,
       searchTag: null,
       offset: null,
       limit: 30,
@@ -63,9 +74,11 @@ export default {
   },
   async asyncData({ app }) {
     const skillsMap = await api.listSkills();
+    const areasMap = await api.listAreas();
     const [users, offset] = await api.listUsers();
     return {
       skills: Object.values(skillsMap),
+      areas: Object.values(areasMap),
       users,
       offset
     };
@@ -81,10 +94,15 @@ export default {
   },
   methods: {
     makeTagFilter() {
-      if (!this.searchTag || this.searchTag == "") {
+      if (!this.searchTag || this.searchTag == "" || !this.searchField) {
         return null;
       }
-      return ["skills", "array-contains", this.searchTag];
+
+      let result = [this.searchField, "array-contains", this.searchTag];
+      if (this.searchField === "area") {
+        result = [this.searchField, "==", this.searchTag];
+      }
+      return result;
     },
 
     renderTag(id) {
@@ -101,8 +119,9 @@ export default {
         return `${process.env.cdn}/${path}`;
       }
     },
-    async clickTag(id) {
+    async clickTag(id, field) {
       this.searchTag = id;
+      this.searchField = field;
 
       const [users, offset] = await api.listUsers(
         null,
