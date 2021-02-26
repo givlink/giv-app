@@ -254,8 +254,7 @@ const postComment = async ({ message = "", author = null, postId = null }) => {
     .collection(`/comments`)
     .add(payload);
 
-  console.log(response);
-  console.log(response.id);
+  return payload;
 };
 
 export default {
@@ -282,9 +281,13 @@ export default {
 
   filters: {
     moment: function(date) {
-      let str = moment.unix(date / 1000).format("YYYY.MM.DD");
+      let d;
+      try {
+        d = date.toDate();
+      } catch (err) {}
+      let str = moment.unix(d / 1000).format("YYYY.MM.DD");
       if (str === "Invalid date") {
-        str = moment(date)
+        str = moment(d)
           .utc()
           .format("YYYY.MM.DD");
       }
@@ -349,21 +352,34 @@ export default {
         this.currentUser = await getCurrentUser();
       }
 
-      await postComment({
-        message: this.message,
-        author: this.currentUser,
-        postId: this.id
-      });
+      try {
+        const comment = await postComment({
+          message: this.message,
+          author: this.currentUser,
+          postId: this.id
+        });
+        this.comments.push(comment);
+      } catch (err) {
+        console.log("ERR creating comment:", err);
+        alert(err.message);
+        return;
+      }
 
       //@Todo feedback user for success/failure
     },
     async deleteComments(id) {
       var confirm = window.confirm("本当に削除しますか？");
       if (confirm) {
-        await deleteComment({ id });
-        alert("コメントを削除しました");
+        try {
+          await deleteComment({ id });
+          alert("コメントを削除しました");
 
-        this.comments = this.comments.filter(c => c.id !== id);
+          this.comments = this.comments.filter(c => c.id !== id);
+        } catch (err) {
+          console.log("ERR deleting comment:", err);
+          alert(err.message);
+          return;
+        }
       }
     },
     async sendLike() {

@@ -1,0 +1,8 @@
+@tailwind base;
+
+.debug {
+  background: red !important;
+}
+
+@tailwind components;
+@tailwind utilities;
