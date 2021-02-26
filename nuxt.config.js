@@ -43,7 +43,7 @@ export default {
     "~/plugins/auth.js",
     { src: "~/plugins/vue-lazyload.js", ssr: false }
   ],
-  buildModules: [],
+  buildModules: ["@nuxtjs/tailwindcss"],
   modules: [
     "@nuxtjs/sentry",
     "bootstrap-vue/nuxt",
