@@ -12,7 +12,7 @@ export default function({ store, redirect, route }) {
   }
 
   if (!store.state.user && route.name !== "login") {
-    let url = `/login?next=${route.path}`;
+    let url = `/login?next=${route.fullPath}`;
     if (!!route.hash) {
       url += route.hash;
     }

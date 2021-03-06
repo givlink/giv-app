@@ -160,10 +160,22 @@ export default {
       const [posts, offset] = await getPosts(this.offset);
       this.posts = [...this.posts, ...posts];
       this.offset = offset;
+    },
+
+    async registerPushToken(token) {
+      try {
+        await api.setupNotifications(token);
+        this.$router.replace({ "query.pushToken": null });
+      } catch (err) {
+        console.error("Err register push token:", err);
+        this.error = err.message;
+      }
     }
   },
   async mounted() {
-    api.setupNotifications();
+    if (this.$route.query.pushToken) {
+      await this.registerPushToken(this.$route.query.pushToken);
+    }
     this.$store.commit("setSkillsMap", await getSkills());
     this.$store.commit("setAreasMap", await getAreas());
   },
