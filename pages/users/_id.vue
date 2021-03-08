@@ -1,6 +1,6 @@
 <template>
   <div class="User Main">
-    <div class="User__profile">
+    <div class="User__profile" v-if="profile">
       <div class="User__profile__icon" v-if="profile">
         <b-img
           :src="getUrl(profile.photoURL)"
@@ -25,20 +25,20 @@
     </div>
     <div class="User__giv">
       <h3 class="User__giv__title">登録しているgiv</h3>
-      <div class="User__giv__tags">
+      <div class="User__giv__tags" v-if="profile">
         <span class="User__giv__tags__tag" v-for="item of profile.skills">
           {{ renderTag(item) }}
         </span>
       </div>
     </div>
 
-    <div class="User__giv">
+    <div class="User__giv" v-if="profile">
       <h3 class="User__giv__title">登録してる場所</h3>
       <span class="User__giv__tags__tag">
         {{ renderAreaTag(profile.area) }}
       </span>
     </div>
-    <div class="User__giv">
+    <div class="User__giv" v-if="profile">
       <h3 class="User__giv__title">興味・関心</h3>
       <div class="User__giv__tags">
         <span class="User__giv__tags__tag" v-for="item of profile.interests">
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div class="User__latest">
+    <div class="User__latest" v-if="profile">
       <h3 class="User__latest__title">贈ったgiv</h3>
       <div class="User__latest__wrap">
         <template v-if="posts" v-for="item of received">
@@ -66,7 +66,7 @@
         </template>
       </div>
     </div>
-    <div class="User__latest">
+    <div class="User__latest" v-if="profile">
       <h3 class="User__latest__title">受け取ったgiv</h3>
       <div class="User__latest__wrap">
         <template v-if="posts" v-for="item of posts">
