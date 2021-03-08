@@ -21,6 +21,16 @@
         </div>
         <p class="Invite__error">{{ hasError }}</p>
       </div>
+      <div
+        class="fixed flex items-center justify-center bottom-0 left-0 right-0 mb-12"
+      >
+        <button
+          v-on:click="login('apple')"
+          class="font-semibold text-gray-700 text-sm border-b-4 border-solid border-gray-500 px-1 py-1"
+        >
+          Sign in with Apple
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -49,21 +59,12 @@ export default {
       });
   },
   methods: {
-    async login() {
-      const provider = new firebase.auth.FacebookAuthProvider();
+    async login(prov) {
+      let provider = new firebase.auth.FacebookAuthProvider();
+      if (prov && prov === "apple") {
+        provider = new firebase.auth.OAuthProvider("apple.com");
+      }
       firebase.auth().signInWithRedirect(provider);
-      //Below has issues on mobile
-      /* try { */
-      /*   const user = await firebase.auth().signInWithPopup(provider); */
-      /*   const u = { */
-      /*     name: user.displayName, */
-      /*     id: user.uid */
-      /*   }; */
-      /*   this.$store.commit("setUser", u); */
-      /*   this.$router.push({ path: "/" }); */
-      /* } catch (err) { */
-      /*     this.hasError = error.message; */
-      /* } */
     }
   }
 };
