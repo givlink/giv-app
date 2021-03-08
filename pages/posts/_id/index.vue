@@ -282,10 +282,13 @@ export default {
   filters: {
     moment: function(date) {
       let d;
+      let str;
       try {
         d = date.toDate();
-      } catch (err) {}
-      let str = moment.unix(d / 1000).format("YYYY.MM.DD");
+        str = moment.unix(d / 1000).format("YYYY.MM.DD");
+      } catch (err) {
+        str = moment(new Date(date)).format("YYYY.MM.DD");
+      }
       if (str === "Invalid date") {
         str = moment(d)
           .utc()
