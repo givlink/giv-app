@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="Inner Invite__inner" v-show="!loading">
-      <div class="Invite__logo flex justify-center">
+      <div class="Invite__logo mx-auto">
         <img
           class="Invite__logo__img"
           src="~/assets/image/giv_logo.png"
