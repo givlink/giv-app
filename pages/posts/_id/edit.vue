@@ -21,15 +21,14 @@
       <label for="image" class="Form__box__label mt-4"
         >画像一覧（※最大３つ）</label
       >
-      <label for="image" class="Form__box__label mt-3">1つ目</label>
-      <template v-if="images.length > 0 && image1">
-        <div class="Form__img">
+      <template v-if="image1">
+        <div class="Form__img mt-2">
           <b-img
-            :src="`${basePath}${images[0].path}`"
-            class="Form__img__img"
+            :src="getUrl(image1)"
+            class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
-          <div class="Form__img__delete" v-on:click="deleteImage(1)">
+          <div class="Form__img__delete" v-on:click="deleteImage('image1')">
             <b-img
               src="~/assets/image/icon_delete.png"
               class="Form__img__delete__img"
@@ -40,24 +39,22 @@
       </template>
       <template v-else>
         <b-form-file
-          v-model="file"
-          :state="Boolean(file)"
+          v-model="image1"
+          :state="Boolean(image1)"
           placeholder="ファイルを選んでください。"
           drop-placeholder="ファイルをドロップしてください"
+          class="mt-2"
         ></b-form-file>
-        <div v-on:click="sendImage(1)" class="Form__box__send mt-3">
-          1つ目の画像を設定
-        </div>
       </template>
-      <label for="image" class="Form__box__label mt-3">2つ目</label>
-      <template v-if="images.length > 1 && image2">
-        <div class="Form__img">
+
+      <template v-if="image2">
+        <div class="Form__img mt-2">
           <b-img
-            :src="`${basePath}${images[1].path}`"
-            class="Form__img__img"
+            :src="getUrl(image2)"
+            class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
-          <div class="Form__img__delete" v-on:click="deleteImage(2)">
+          <div class="Form__img__delete" v-on:click="deleteImage('image2')">
             <b-img
               src="~/assets/image/icon_delete.png"
               class="Form__img__delete__img"
@@ -68,24 +65,22 @@
       </template>
       <template v-else>
         <b-form-file
-          v-model="file2"
-          :state="Boolean(file2)"
+          v-model="image2"
+          :state="Boolean(image2)"
           placeholder="ファイルを選んでください。"
           drop-placeholder="ファイルをドロップしてください"
+          class="mt-2"
         ></b-form-file>
-        <div v-on:click="sendImage(2)" class="Form__box__send mt-3">
-          2つ目の画像を設定
-        </div>
       </template>
-      <label for="image" class="Form__box__label mt-3">3つ目</label>
-      <template v-if="images.length > 2 && image2">
-        <div class="Form__img">
+
+      <template v-if="image3">
+        <div class="Form__img mt-2">
           <b-img
-            :src="`${basePath}${images[2].path}`"
-            class="Form__img__img"
+            :src="getUrl(image3)"
+            class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
-          <div class="Form__img__delete" v-on:click="deleteImage(3)">
+          <div class="Form__img__delete" v-on:click="deleteImage('image3')">
             <b-img
               src="~/assets/image/icon_delete.png"
               class="Form__img__delete__img"
@@ -96,44 +91,57 @@
       </template>
       <template v-else>
         <b-form-file
-          v-model="file3"
-          :state="Boolean(file3)"
+          v-model="image3"
+          :state="Boolean(image3)"
           placeholder="ファイルを選んでください。"
           drop-placeholder="ファイルをドロップしてください"
+          class="mt-2"
         ></b-form-file>
-        <div v-on:click="sendImage(3)" class="Form__box__send mt-3">
-          3つ目の画像を設定
-        </div>
       </template>
+      <div v-on:click="updateImages()" class="Form__box__send mt-3">
+        画像を更新
+      </div>
+    </div>
+    <div class="flex items-center justify-center">
+      <button
+        v-on:click="deletePost()"
+        class="text-center my-4 font-bold bg-gray-100 rounded-sm text-red-500 border border-red-600 px-3 py-2"
+      >
+        ポストを削除する
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 import api from "~/lib/api";
+import shortId from "short-uuid";
 export default {
   layout: "logined",
   data() {
     return {
-      title: "",
-      message: "",
-      file: "",
-      file2: "",
-      file3: "",
-      id: "",
-      images: []
+      image1: null,
+      image2: null,
+      image3: null,
+      id: ""
     };
   },
   mounted() {
     this.id = this.$route.params.id;
   },
   async asyncData({ app, params }) {
-    console.log(params);
     if (params.id) {
       const post = await api.getPostById(params.id);
-      return {
+      const images = post && post.images ? post.images : [];
+
+      const payload = {
         post
       };
+      if (images[0]) payload.image1 = images[0];
+      if (images[1]) payload.image2 = images[1];
+      if (images[2]) payload.image3 = images[2];
+
+      return payload;
     }
   },
   computed: {
@@ -143,65 +151,84 @@ export default {
   },
   methods: {
     async updateText() {
-      /* const baseUrl = */
-      /*   process.env.baseUrl + */
-      /*   "/me/receive/" + */
-      /*   this.thanks.giv.id + */
-      /*   "/thanks_card/" + */
-      /*   this.thanks.id; */
-      /* const getUrl = encodeURI(baseUrl); */
-      /* const data = { */
-      /*   title: this.title, */
-      /*   message: this.message */
-      /* }; */
-      /* return axios */
-      /*   .put(baseUrl, data) */
-      /*   .then(res => { */
-      /*     alert("変更しました"); */
-      /*     this.$router.push("/thanks/" + this.thanks.id); */
-      /*   }) */
-      /*   .catch(e => { */
-      /*     this.hasError = "送信に失敗しました"; */
-      /*   }); */
+      try {
+        await api.updatePost({
+          id: this.id,
+          title: this.post.title,
+          message: this.post.message
+        });
+        this.$router.push(`/posts/${this.id}`);
+      } catch (err) {
+        this.hasError = `送信に失敗しました: ${err.message}`;
+      }
     },
-    async deleteImage(num) {
-      /* var result = confirm("本当に画像" + num + "を削除しますか？"); */
-      /* if (result) { */
-      /*   //はいを選んだときの処理 */
-      /*   const baseUrl = */
-      /*     process.env.baseUrl + */
-      /*     "/me/receive/" + */
-      /*     this.thanks.giv.id + */
-      /*     "/thanks_card/" + */
-      /*     this.thanks.id + */
-      /*     "/image/" + */
-      /*     this.thanks.images[num - 1].id; */
-      /*   const getUrl = encodeURI(baseUrl); */
-      /*   return axios */
-      /*     .delete(baseUrl) */
-      /*     .then(res => { */
-      /*       alert("画像を削除しました"); */
-      /*       switch (num) { */
-      /*         case 1: */
-      /*           this.image1 = false; */
-      /*           break; */
-      /*         case 2: */
-      /*           this.image2 = false; */
-      /*           break; */
-      /*         case 3: */
-      /*           this.image3 = false; */
-      /*           break; */
-      /*       } */
-      /*     }) */
-      /*     .catch(e => { */
-      /*       this.hasError = "削除に失敗しました"; */
-      /*     }); */
-      /* } else { */
-      /*   //いいえを選んだときの処理 */
-      /*   alert("キャンセルしました"); */
-      /* } */
+    async deleteImage(imgId) {
+      var result = confirm("本当に画像を削除しますか？");
+      if (result) {
+        this[imgId] = null;
+      }
     },
-    async sendImage(num) {
+    async deletePost() {
+      var result = confirm("本当にこのポストを削除しますか？");
+      if (result) {
+        await api.deletePost(this.id);
+        this.$router.push("/");
+      }
+    },
+    async updateImages() {
+      try {
+        if (!this.image1 && !this.image2 && !this.image3) {
+          alert("画像が設定されていません");
+          return;
+        }
+        //Handle user deleted images
+        if (!this.image1) {
+          await api.deleteImage(this.post.images[0]);
+          this.post.images[0] = null;
+        }
+        if (!this.image2) {
+          await api.deleteImage(this.post.images[1]);
+          this.post.images[1] = null;
+        }
+        if (!this.image3) {
+          await api.deleteImage(this.post.images[2]);
+          this.post.images[2] = null;
+        }
+
+        if (this.image1 && typeof this.image1 !== "string") {
+          //upload image 1 and replace
+
+          const path = `images/${this.post.authorId}/posts/${
+            this.post.id
+          }/images/${shortId.generate()}`;
+          await api.uploadImage(this.image1, path);
+          await api.deleteImage(this.post.images[0]);
+          this.post.images[0] = path;
+        }
+        if (this.image2 && typeof this.image2 !== "string") {
+          //upload image 2 and replace
+          const path = `images/${this.post.authorId}/posts/${
+            this.post.id
+          }/images/${shortId.generate()}`;
+          await api.uploadImage(this.image2, path);
+          this.post.images[1] = path;
+        }
+        if (this.image3 && typeof this.image3 !== "string") {
+          //upload image 3 and replace
+          const path = `images/${this.post.authorId}/posts/${
+            this.post.id
+          }/images/${shortId.generate()}`;
+          await api.uploadImage(this.image3, path);
+          this.post.images[2] = path;
+        }
+
+        this.post.images = this.post.images.filter(i => i !== null);
+        await api.updatePost({ id: this.id, images: this.post.images });
+      } catch (err) {
+        const msg = `送信に失敗しました${err.message}`;
+        alert(msg);
+        this.hasError = msg;
+      }
       /* const baseUrl = */
       /*   process.env.baseUrl + */
       /*   "/me/receive/" + */
@@ -287,6 +314,17 @@ export default {
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
       });
+    },
+    getUrl(path) {
+      try {
+        if (path && path.startsWith("http")) {
+          return path;
+        } else {
+          return `${process.env.cdn}/${path}`;
+        }
+      } catch (err) {
+        return URL.createObjectURL(path);
+      }
     }
   }
 };
