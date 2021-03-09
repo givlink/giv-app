@@ -329,7 +329,7 @@ export default {
         isLike: hasLiked,
         comments,
         id: params.id,
-        isMe: false, //@Todo no support for edit post atm
+        isMe: post.authorId == currentUser.id,
         myId: currentUser && currentUser.id,
         currentUser
         /* myId: app.store.state.me.id, */
