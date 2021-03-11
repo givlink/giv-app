@@ -11,7 +11,7 @@ module.exports = {
     extend: {}
   },
   variants: {
-    extend: {}
+    boxShadow: ["hover", "group-hover", "focus", "active"]
   },
   plugins: []
 };

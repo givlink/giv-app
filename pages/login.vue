@@ -26,9 +26,14 @@
       >
         <button
           v-on:click="login('apple')"
-          class="font-semibold text-gray-700 text-sm border-b-4 border-solid border-gray-500 px-1 py-1"
+          class="flex items-center leading-0 text-sm shadow-sm hover:shadow-xl transition duration-150 rounded-md px-4 py-2 bg-gray-900 font-semibold text-white"
         >
-          Sign in with Apple
+          <img
+            class="h-5 w-5 mr-2"
+            src="~/assets/image/apple_logo.svg"
+            alt="apple"
+          />
+          <span class="mt-1">Sign in with Apple</span>
         </button>
       </div>
     </div>
