@@ -153,7 +153,11 @@ export default {
         d = date.toDate();
         str = moment.unix(d / 1000).format("YYYY.MM.DD");
       } catch (err) {
-        str = moment(new Date(date)).format("YYYY.MM.DD");
+        try {
+          str = moment.unix(parseFloat(date) / 1000).format("YYYY.MM.DD");
+        } catch (err) {
+          str = moment(new Date(date)).format("YYYY.MM.DD");
+        }
       }
       if (str === "Invalid date") {
         str = moment(d)
