@@ -177,6 +177,7 @@ export default {
     },
     async updateImages() {
       try {
+        throw new Error("test");
         if (!this.image1 && !this.image2 && !this.image3) {
           alert("画像が設定されていません");
           return;
@@ -225,95 +226,11 @@ export default {
         this.post.images = this.post.images.filter(i => i !== null);
         await api.updatePost({ id: this.id, images: this.post.images });
       } catch (err) {
+        this.$sentry.captureException(err);
         const msg = `送信に失敗しました${err.message}`;
         alert(msg);
         this.hasError = msg;
       }
-      /* const baseUrl = */
-      /*   process.env.baseUrl + */
-      /*   "/me/receive/" + */
-      /*   this.thanks.giv.id + */
-      /*   "/thanks_card/" + */
-      /*   this.thanks.id + */
-      /*   "/image"; */
-      /* const getUrl = encodeURI(baseUrl); */
-      /* var imageData = ""; */
-      /* switch (num) { */
-      /*   case 1: */
-      /*     if (this.file) { */
-      /*       await this.getBase64(this.file).then(image => (imageData = image)); */
-      /*     } */
-      /*     break; */
-      /*   case 2: */
-      /*     if (this.file2) { */
-      /*       await this.getBase64(this.file2).then(image => (imageData = image)); */
-      /*     } */
-      /*     break; */
-      /*   case 3: */
-      /*     if (this.file3) { */
-      /*       await this.getBase64(this.file3).then(image => (imageData = image)); */
-      /*     } */
-      /*     break; */
-      /* } */
-      /* if (!imageData || imageData == "") { */
-      /*   alert("画像が設定されていません"); */
-      /*   return; */
-      /* } */
-      /* const data = { */
-      /*   image: imageData */
-      /* }; */
-      /* return axios */
-      /*   .post(baseUrl, data) */
-      /*   .then(res => { */
-      /*     alert("画像を追加しました"); */
-      /*     this.$router.push("/thanks/" + this.thanks.id); */
-      /*   }) */
-      /*   .catch(e => { */
-      /*     this.hasError = "送信に失敗しました"; */
-      /*   }); */
-    },
-    async send() {
-      /* const baseUrl = */
-      /*   process.env.baseUrl + "/me/receive/" + this.id + "/thanks_card"; */
-      /* const getUrl = encodeURI(baseUrl); */
-      /* const token = this.$auth.$storage.getUniversal("_token.auth0"); */
-      /* const config = { */
-      /*   headers: { */
-      /*     "Content-Type": "application/json", */
-      /*     Authorization: token */
-      /*   } */
-      /* }; */
-      /* var fileData = []; */
-      /* if (this.file) { */
-      /*   await this.getBase64(this.file).then(image => fileData.push(image)); */
-      /* } */
-      /* if (this.file2) { */
-      /*   await this.getBase64(this.file2).then(image => fileData.push(image)); */
-      /* } */
-      /* if (this.file3) { */
-      /*   await this.getBase64(this.file3).then(image => fileData.push(image)); */
-      /* } */
-      /* const data = { */
-      /*   title: this.title, */
-      /*   message: this.message, */
-      /*   images: fileData */
-      /* }; */
-      /* return axios */
-      /*   .post(baseUrl, data, config) */
-      /*   .then(res => { */
-      /*     this.$router.push("/"); */
-      /*   }) */
-      /*   .catch(e => { */
-      /*     this.hasError = "送信に失敗しました"; */
-      /*   }); */
-    },
-    getBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
     },
     getUrl(path) {
       try {
