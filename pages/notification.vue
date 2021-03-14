@@ -147,9 +147,16 @@ export default {
 
   filters: {
     moment: function(date) {
-      let str = moment.unix(date / 1000).format("YYYY.MM.DD");
+      let d;
+      let str;
+      try {
+        d = date.toDate();
+        str = moment.unix(d / 1000).format("YYYY.MM.DD");
+      } catch (err) {
+        str = moment(new Date(date)).format("YYYY.MM.DD");
+      }
       if (str === "Invalid date") {
-        str = moment(date)
+        str = moment(d)
           .utc()
           .format("YYYY.MM.DD");
       }
