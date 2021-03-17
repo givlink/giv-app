@@ -174,6 +174,7 @@ export default {
   },
   async mounted() {
     if (this.$route.query.pushToken) {
+      this.$store.commit("setPushToken", this.$route.query.pushToken);
       await this.registerPushToken(this.$route.query.pushToken);
     }
     this.$store.commit("setSkillsMap", await getSkills());
