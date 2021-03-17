@@ -164,10 +164,12 @@ export default {
 
     async registerPushToken(token) {
       try {
+        localStorage.setItem("pushToken", token);
         await api.setupNotifications(token);
         this.$router.replace({ "query.pushToken": null });
       } catch (err) {
         console.error("Err register push token:", err);
+        this.$store.commit("setLastError", err);
         this.error = err.message;
       }
     }
