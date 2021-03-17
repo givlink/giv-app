@@ -9,6 +9,7 @@ export const state = () => ({
   code: "",
   me: {},
   token: "",
+  pushToken: null,
   skillsMap: {},
   areasMap: {},
   authLoading: true,
@@ -16,6 +17,9 @@ export const state = () => ({
 });
 
 export const mutations = {
+  setPushToken(state, pushToken) {
+    state.pushToken = pushToken;
+  },
   setSkills(state, skills) {
     state.skills = skills;
   },
@@ -69,6 +73,9 @@ export const getters = {
   },
   getSkillTag: state => id => {
     return state.skillsMap[id];
+  },
+  getPushToken: state => () => {
+    return state.pushToken;
   },
   allSkillIds: state => () => {
     return Object.keys(state.skillsMap);
