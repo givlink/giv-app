@@ -26,7 +26,9 @@
         <label class="uppercase text-xs tracking-widest text-gray-500"
           >LastError</label
         >
-        <code class="text-base">{{ JSON.stringify(lastError, null, 2) }}</code>
+        <pre
+          class="text-base"
+        ><code>{{ JSON.stringify(lastError, null, 2) }}</code></pre>
       </div>
     </div>
   </div>
