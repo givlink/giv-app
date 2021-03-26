@@ -19,6 +19,15 @@
             ログインする
           </button>
         </div>
+        <div class="mt-12 text-xs font-medium">
+          <a
+            href="https://giv.link/privacy-policy/"
+            target="_blank"
+            class="border-b border-gray-400"
+          >
+            プライバシーポリシー
+          </a>
+        </div>
         <p class="Invite__error">{{ hasError }}</p>
       </div>
       <div
