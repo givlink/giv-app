@@ -1,5 +1,12 @@
 <template>
   <div class="Home Main">
+    <div class="flex items-center justify-center mb-6 space-x-1">
+      <span class="border border-gray-300 px-3 py-1 rounded-full">全体</span>
+      <span class="Search__box__tags__tag Search__box__tags__tag__active"
+        >泉北ニュータウン</span
+      >
+    </div>
+
     <div class="Home__cards">
       <div class="Home__card" v-for="post in posts">
         <nuxt-link :to="`/users/${post.authorId}`" class="Home__card__header">
