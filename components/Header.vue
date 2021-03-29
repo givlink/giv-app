@@ -1,5 +1,6 @@
 <template>
   <header class="Header">
+    <div class="Header__inner">
     <nuxt-link to="/" class="Header__logo"
       ><img
         class="Header__logo__img"
@@ -13,6 +14,7 @@
         alt="giv"
       />
     </button>
+    </div>
   </header>
 </template>
 

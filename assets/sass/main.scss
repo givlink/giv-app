@@ -3,7 +3,8 @@
 
 
 body {
-  width: 375px;
+  width: 100%;
+  max-width: $window-base-width;
   margin: 0 auto;
   background-color: #EDF3F7;
   overflow: hidden;
