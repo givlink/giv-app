@@ -190,7 +190,10 @@ export default {
     this.$store.commit("setAreasMap", await getAreas());
   },
   async asyncData({ app }) {
-    const [posts, offset] = await getPosts();
+    let [posts, offset] = await getPosts();
+    //For demo
+    const post = await api.getPostById("CzdlKFFHAiLjdxnwIYFO");
+    posts = [post, ...posts];
     return { posts, offset };
   },
   filters: {
