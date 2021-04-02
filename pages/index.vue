@@ -21,28 +21,46 @@
           class="Home__card__view"
           v-if="post.images && post.images.length > 0"
         >
-          <b-img :src="getUrl(post.images[0])" class="Home__card__view__img" alt></b-img>
+          <b-img
+            :src="getUrl(post.images[0])"
+            class="Home__card__view__img"
+            alt
+          ></b-img>
         </nuxt-link>
         <div class="Home__card__content">
-          <nuxt-link :to="`/posts/${post.id}`" class="Home__card__content__info">
+          <nuxt-link
+            :to="`/posts/${post.id}`"
+            class="Home__card__content__info"
+          >
             <div class="Home__card__content__info__tags"></div>
             <div class="Home__card__content__info__date">
               {{ post.createdAt | moment }}
             </div>
           </nuxt-link>
-          <nuxt-link :to="`/posts/${post.id}`" class="Home__card__content__title">
+          <nuxt-link
+            :to="`/posts/${post.id}`"
+            class="Home__card__content__title"
+          >
             {{ post.title }}
           </nuxt-link>
-          <nuxt-link :to="`/posts/${post.id}`" class="Home__card__content__text">
+          <nuxt-link
+            :to="`/posts/${post.id}`"
+            class="Home__card__content__text"
+          >
             <template v-if="post.message && post.message.length > 40">
               {{ post.message | substringText }}
-              <nuxt-link :to="`/posts/${post.id}`" class="">続きを見る</nuxt-link>
+              <nuxt-link :to="`/posts/${post.id}`" class=""
+                >続きを見る</nuxt-link
+              >
             </template>
             <template v-else>
               {{ post.message }}
             </template>
           </nuxt-link>
-          <nuxt-link :to="`/users/${post.giver.id}`" class="Home__card__content__person">
+          <nuxt-link
+            :to="`/users/${post.giver.id}`"
+            class="Home__card__content__person"
+          >
             <!--          <nuxt-link :to="`/user/${post.giv.giv_user.id}`" class="Home__card__content__person">-->
             <div class="Home__card__content__person__icon">
               <b-img
@@ -64,7 +82,9 @@
         </div>
       </div>
       <div class="Search__list__li" v-if="hasNext" v-on:click="loadmore()">
-        <span class="Search__list__li__link" style="text-align: center;font-size: 1.6em;"
+        <span
+          class="Search__list__li__link"
+          style="text-align: center;font-size: 1.6em;"
           >さらに読み込む</span
         >
       </div>
@@ -88,7 +108,7 @@ const getPosts = async (offset = null, limit = 20) => {
   snap = await snap.limit(limit).get();
 
   const posts = [];
-  snap.forEach((doc) => posts.push({ ...doc.data(), id: doc.id }));
+  snap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }));
   return [posts, snap.docs[snap.docs.length - 1]];
 };
 const getSkills = async () => {
@@ -97,7 +117,7 @@ const getSkills = async () => {
     .firestore()
     .collection("skills")
     .get();
-  snap.forEach((doc) => (skills[doc.id] = { id: doc.id, ...doc.data() }));
+  snap.forEach(doc => (skills[doc.id] = { id: doc.id, ...doc.data() }));
   return skills;
 };
 const getAreas = async () => {
@@ -106,7 +126,7 @@ const getAreas = async () => {
     .firestore()
     .collection("areas")
     .get();
-  snap.forEach((doc) => (areas[doc.id] = { id: doc.id, ...doc.data() }));
+  snap.forEach(doc => (areas[doc.id] = { id: doc.id, ...doc.data() }));
   return areas;
 };
 
@@ -125,7 +145,7 @@ export default {
       posts: [],
       offset: null,
       limit: 30,
-      hasNext: true,
+      hasNext: true
     };
   },
   methods: {
@@ -144,26 +164,26 @@ export default {
 
     async registerPushToken(token) {
       try {
-        localStorage.setItem("pushToken", token);
+        console.log("setting token:", token);
         await api.setupNotifications(token);
-        this.$router.replace({ "query.pushtoken": null });
       } catch (err) {
         console.error("Err register push token:", err);
         this.$store.commit("setLastError", err);
         this.error = err.message;
       }
-    },
+    }
   },
   async mounted() {
-    let token;
-    if (this.$route.query.pushtoken) {
-      token = this.$route.query.pushtoken;
+    const qToken = this.$route.query.pushtoken;
+    if (qToken) {
+      //Query token takes priority
+      console.log("Test:", qToken);
+      await this.registerPushToken(qToken);
     } else {
-      token = localStorage.getItem("pushToken");
-    }
-    if (token) {
-      this.$store.commit("setPushToken", token);
-      await this.registerPushToken(token);
+      const token = localStorage.getItem("pushToken");
+      if (token) {
+        await this.registerPushToken(token);
+      }
     }
 
     this.$store.commit("setSkillsMap", await getSkills());
@@ -190,8 +210,8 @@ export default {
         subText += "…";
       }
       return subText;
-    },
-  },
+    }
+  }
 };
 </script>
 

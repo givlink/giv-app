@@ -1,21 +1,13 @@
 export default function({ store, redirect, route }) {
   if (store.state.user && route.name === "login") {
-    if (route.query && route.query.next) {
-      let url = route.query.next;
-      if (!!route.hash) {
-        url += route.hash;
-      }
-      redirect(url);
-    } else {
-      redirect("/");
-    }
+    redirect("/");
   }
 
   if (!store.state.user && route.name !== "login") {
-    let url = `/login?next=${route.fullPath}`;
-    if (!!route.hash) {
-      url += route.hash;
+    if (route.query.pushtoken) {
+      localStorage.setItem("pushToken", route.query.pushtoken);
     }
+    let url = `/login`;
     redirect(url);
   }
 }
