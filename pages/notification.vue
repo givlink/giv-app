@@ -3,8 +3,7 @@
     <ul class="Notification__list">
       <li class="Notification__list__li" v-for="item of notifications">
         <nuxt-link
-          :to="`/posts/create?givId=${item.givId}`"
-          v-on:click.native="markAsRead(item.id)"
+          :to="`/posts/create?givId=${item.givId}&notId=${item.id}`"
           class="Notification__list__li__link"
           v-if="item.type === 'givFinished'"
         >
