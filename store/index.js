@@ -1,4 +1,5 @@
 import firebase from "../lib/firebase";
+import api from "../lib/api";
 export const state = () => ({
   skills: [],
   places: [],
@@ -12,12 +13,16 @@ export const state = () => ({
   pushToken: null,
   lastError: null,
   skillsMap: {},
+  notifications: [],
   areasMap: {},
   authLoading: true,
   user: null
 });
 
 export const mutations = {
+  setNotifications(state, nots) {
+    state.notifications = nots;
+  },
   setLastError(state, err) {
     state.lastError = err;
   },
@@ -72,6 +77,9 @@ export const mutations = {
 };
 
 export const getters = {
+  getNotifications: state => () => {
+    return state.notifications;
+  },
   getAreaTag: state => id => {
     return state.areasMap[id];
   },
@@ -92,6 +100,7 @@ export const getters = {
 export const actions = {
   nuxtClientInit({ commit }, context) {
     commit("setAuthLoading", true);
+    let listener;
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         const u = {
@@ -100,8 +109,13 @@ export const actions = {
           name: user.displayName
         };
         commit("setUser", u);
+
+        listener = api.watchNotifications(u.uid, nots => {
+          commit("setNotifications", nots);
+        });
       } else {
         commit("setUser", null);
+        this.listener && this.listener();
       }
       commit("setAuthLoading", false);
     });

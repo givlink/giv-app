@@ -1,10 +1,12 @@
 <template>
   <div class="Notification Main">
     <ul class="Notification__list">
-      <li class="Notification__list__li" v-for="item of pendingPostGivs">
+      <li class="Notification__list__li" v-for="item of notifications">
         <nuxt-link
-          :to="`/posts/create?givId=${item.id}`"
+          :to="`/posts/create?givId=${item.givId}`"
+          v-on:click.native="markAsRead(item.id)"
           class="Notification__list__li__link"
+          v-if="item.type === 'givFinished'"
         >
           <div class="Notification__list__li__link__text" style="width:100%;">
             <p class="Notification__list__li__link__text__info">
@@ -21,7 +23,7 @@
               >
                 <b-img
                   :src="getUrl(item.giver.photoURL)"
-                  alt="Giver Name"
+                  alt="item.giver.name"
                   style="height:30px; width:30px;border-radius:100%;"
                 ></b-img>
                 <span class="" style="margin-left:5px;">
@@ -31,32 +33,15 @@
             </div>
           </div>
         </nuxt-link>
-      </li>
-    </ul>
-    <ul class="Notification__list" v-for="item of newGivs">
-      <li class="Notification__list__li">
-        <nuxt-link :to="`/giv/${item.id}`" class="Notification__list__li__link">
-          <div class="Notification__list__li__link__text">
-            <p class="Notification__list__li__link__text__info">
-              新しいgivがあります
-            </p>
-            <p class="Notification__list__li__link__text__date">
-              {{ item.createdAt | moment }}
-            </p>
-          </div>
-        </nuxt-link>
-      </li>
-    </ul>
-    <ul class="Notification__list">
-      <li class="Notification__list__li" v-for="item of givRequests">
         <nuxt-link
           :to="`/users/${item.senderId}`"
+          v-on:click.native="markAsRead(item.id)"
           class="Notification__list__li__link"
-          v-if="item.type == 'send'"
+          v-if="item.type === 'givRequest' && item.requestType == 'send'"
         >
           <div class="Notification__list__li__link__icon">
             <b-img
-              :src="`${item.sender.photoURL}`"
+              :src="getUrl(item.sender.photoURL)"
               class="Notification__list__li__link__icon__img"
               alt
             ></b-img>
@@ -73,13 +58,14 @@
           </div>
         </nuxt-link>
         <nuxt-link
-          :to="`/users/${item.senderId}`"
+          :to="`/users/${item.receiverId}`"
+          v-on:click.native="markAsRead(item.id)"
           class="Notification__list__li__link"
-          v-if="item.type == 'receive'"
+          v-if="item.type === 'givRequest' && item.requestType == 'receive'"
         >
           <div class="Notification__list__li__link__icon">
             <b-img
-              :src="`${item.receiver.photoURL}`"
+              :src="getUrl(item.receiver.photoURL)"
               class="Notification__list__li__link__icon__img"
               alt
             ></b-img>
@@ -88,7 +74,22 @@
             <p class="Notification__list__li__link__text__info">
               「{{
                 item.receiver.name
-              }}」さんからgivを贈りたいのアクションがありました
+              }}」さんからgivを受け取りたいのアクションがありました
+            </p>
+            <p class="Notification__list__li__link__text__date">
+              {{ item.createdAt | moment }}
+            </p>
+          </div>
+        </nuxt-link>
+        <nuxt-link
+          :to="`/giv/${item.givId}`"
+          v-on:click.native="markAsRead(item.id)"
+          class="Notification__list__li__link"
+          v-if="item.type === 'givCreated'"
+        >
+          <div class="Notification__list__li__link__text">
+            <p class="Notification__list__li__link__text__info">
+              新しいgivがあります
             </p>
             <p class="Notification__list__li__link__text__date">
               {{ item.createdAt | moment }}
@@ -113,26 +114,15 @@ export default {
       givs: []
     };
   },
+  computed: {
+    notifications() {
+      return this.$store.getters.getNotifications();
+    }
+  },
   async asyncData({ app }) {
     const { uid } = api.getCurrentUser();
-    const finishedGivs = await api.getFinishedGivs(uid);
-    const newGivs = await api.getNewGivs(uid);
-    const givRequests = await api.getGivRequests(uid);
-    const postsForMe = await api.getPostsForMe(uid);
-    const pendingPostGivs = [];
-    finishedGivs.forEach(async giv => {
-      const post = await api.getPostByGivId(giv.id);
-      if (!post) {
-        pendingPostGivs.push(giv);
-      }
-    });
-
     return {
-      notifications: await api.listNotifications(uid),
-      pendingPostGivs,
-      postsForMe,
-      newGivs,
-      givRequests
+      uid
     };
   },
   methods: {
@@ -142,6 +132,9 @@ export default {
       } else {
         return `${process.env.cdn}/${path}`;
       }
+    },
+    markAsRead(id) {
+      api.updateNotification({ userId: this.uid, id, status: "read" });
     }
   },
 
