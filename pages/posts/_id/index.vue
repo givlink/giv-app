@@ -362,6 +362,7 @@ export default {
           postId: this.id
         });
         this.comments.push(comment);
+        this.message = "";
       } catch (err) {
         console.log("ERR creating comment:", err);
         alert(err.message);
