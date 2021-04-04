@@ -3,7 +3,7 @@
     <div class="User__profile" v-if="profile">
       <div class="User__profile__icon" v-if="profile">
         <b-img
-          :src="getUrl(profile.photoURL)"
+          :src="getUrl(profile.photoURL+`?height=500`)"
           class="User__profile__icon__img"
           alt
         ></b-img>
