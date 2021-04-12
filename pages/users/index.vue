@@ -1,6 +1,15 @@
 <template>
   <div class="Search Main">
     <div class="Search__box">
+      <form v-on:submit.prevent="search" class="Search__box__form">
+        <b-form-input
+          id=""
+          class="Search__box__form__input"
+          v-model="searchQuery"
+          placeholder="ユーザー検索"
+        ></b-form-input>
+        <span class="Search__box__form__submit" v-on:click="search()" />
+      </form>
       <div class="Search__box__tags" v-if="skills">
         <template v-for="item of skills">
           <span
@@ -67,10 +76,24 @@ export default {
     return {
       searchField: null,
       searchTag: null,
+      searchQuery: "",
       offset: null,
       limit: 30,
       hasNext: true
     };
+  },
+  watch: {
+    searchQuery: async function(val, oldVal) {
+      if (val !== "") {
+        this.searchTag = "";
+        this.searchField = "";
+      }
+      if (val === "" && !this.searchTag && !this.searchField) {
+        const [users, offset] = await api.listUsers();
+        this.users = users;
+        this.offset = offset;
+      }
+    }
   },
   async asyncData({ app }) {
     const skillsMap = await api.listSkills();
@@ -88,7 +111,6 @@ export default {
       !this.$store.state.skillsMap ||
       Object.keys(this.$store.state.skillsMap).length === 0
     ) {
-      console.log("setting again");
       this.$store.commit("setSkillsMap", await api.listSkills());
     }
   },
@@ -120,6 +142,7 @@ export default {
       }
     },
     async clickTag(id, field) {
+      this.searchQuery = "";
       this.searchTag = id;
       this.searchField = field;
 
@@ -145,6 +168,21 @@ export default {
       );
       this.users = this.dedupeUser([...this.users, ...users]);
       this.offset = offset;
+    },
+    async search() {
+      if (this.searchQuery !== "") {
+        const [users, offset] = await api.listUsers(null, 5, [
+          "name",
+          ">",
+          this.searchQuery
+        ]);
+        this.users = users;
+        this.offset = offset;
+      } else {
+        const [users, offset] = await api.listUsers();
+        this.users = users;
+        this.offset = offset;
+      }
     }
   }
 };
