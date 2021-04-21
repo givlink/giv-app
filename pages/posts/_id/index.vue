@@ -151,6 +151,7 @@ import "../../../node_modules/slick-carousel/slick/slick.css"; // Slickのcss読
 import "../../../node_modules/slick-carousel/slick/slick-theme.css"; // Slickのcss読み込み
 
 import moment from "moment";
+import { parseDate } from "../../../lib/utils";
 import firebase from "../../../lib/firebase";
 
 const checkLiked = async ({ postId, userId }) => {
@@ -280,21 +281,9 @@ export default {
   mounted() {},
 
   filters: {
-    moment: function(date) {
-      let d;
-      let str;
-      try {
-        d = date.toDate();
-        str = moment.unix(d / 1000).format("YYYY.MM.DD");
-      } catch (err) {
-        str = moment(new Date(date)).format("YYYY.MM.DD");
-      }
-      if (str === "Invalid date") {
-        str = moment(d)
-          .utc()
-          .format("YYYY.MM.DD");
-      }
-      return str;
+    moment: function(dateStr) {
+      const date = parseDate(dateStr);
+      return moment(date).format("YYYY.MM.DD");
     }
   },
   async asyncData({ app, params }) {
