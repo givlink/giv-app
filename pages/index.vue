@@ -1,6 +1,6 @@
 <template>
   <div class="Home Main">
-    <vue-pull-refresh :on-refresh="refreshPosts" :config="pullConfig">
+    <vue-pull-refresh :top-load-method="refreshPosts" :topConfig="pullConfig">
       <AreaSwitch />
       <div class="Home__cards">
         <div class="Home__card" v-for="post in posts">
@@ -102,11 +102,14 @@ export default {
       limit: 30,
       hasNext: true,
       pullConfig: {
-        errorLabel: "err",
-        startLabel: "start",
-        readyLabel: "Pull to Refresh",
-        loadingLabel: "Loading...",
-        pullDownHeight: 50
+        pullText: "Pull to Refresh", // The text is displayed when you pull down
+        triggerText: "Release", // The text that appears when the trigger distance is pulled down
+        loadingText: "Loading....", // The text in the load
+        doneText: "", // Load the finished text
+        failText: "Error", // Load failed text
+        loadedStayTime: 400, // Time to stay after loading ms
+        stayDistance: 50, // Trigger the distance after the refresh
+        triggerDistance: 70 //
       }
     };
   },
@@ -127,13 +130,14 @@ export default {
       return result;
     },
     //@Todo copy paste from below
-    async refreshPosts() {
+    async refreshPosts(loaded) {
       const [posts, offset] = await api.listPosts({
         area: this.filterArea,
         offset: null
       });
       this.$store.commit("setPosts", posts);
       this.$utils.setGlobalOffset(offset);
+      loaded("done");
       //@Todo show empty posts component if list empty
     },
     async loadPosts(refresh = false) {
