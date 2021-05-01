@@ -7,11 +7,11 @@
           class="Detail__box__header__user"
         >
           <div class="Detail__box__header__user__icon">
-            <b-img
-              :src="getUrl(post.author.photoURL)"
+            <img
+              v-lazy="$utils.parseUrl(post.author.photoURL)"
               class="Detail__box__header__user__icon__img"
               alt
-            ></b-img>
+            ></img>
           </div>
 
           <div class="Detail__box__header__user__text">
@@ -32,11 +32,11 @@
       >
         <template v-for="item of post.images">
           <div>
-            <b-img
-              :src="getUrl(item)"
+            <img
+              v-lazy="$utils.parseUrl(item)"
               class="Detail__box__images__img"
               alt
-            ></b-img>
+            ></img>
           </div>
         </template>
       </slick>
@@ -59,7 +59,9 @@
             >
           </p>
         </template>
-        <p class="Detail__box__info__time">{{ post.createdAt | moment }}</p>
+        <p class="Detail__box__info__time">
+          {{ $utils.parseDate(post.createdAt) }}
+        </p>
       </div>
       <div class="Detail__box__content">
         <h2 class="Detail__box__content__title">
@@ -74,11 +76,11 @@
         >
           <!--          <nuxt-link :to="`/user/${item.giv.giv_user.id}`" class="Home__card__content__person">-->
           <div class="Home__card__content__person__icon">
-            <b-img
-              :src="getUrl(post.giver.photoURL)"
+            <img
+              v-lazy="$utils.parseUrl(post.giver.photoURL)"
               class="Home__card__content__person__icon__img"
               alt
-            ></b-img>
+            ></img>
           </div>
           <div class="Home__card__content__person__text">
             <p class="Home__card__content__person__text__head">givを贈った人</p>
@@ -92,11 +94,11 @@
     </div>
     <template v-if="isMe">
       <nuxt-link :to="`/posts/${post.id}/edit`" class="User__profile__edit">
-        <b-img
+        <img
           src="~/assets/image/icon_edit.png"
           class="User__profile__edit__img"
           alt
-        ></b-img>
+        ></img>
       </nuxt-link>
     </template>
     <div class="Comment">
@@ -112,13 +114,13 @@
           </div>
           <p class="Comment__box__name">
             <nuxt-link :to="`/users/${item.authorId}`">
-              <b-img
-                :src="getUrl(item.author && item.author.photoURL)"
+              <img
+                v-lazy="$utils.parseUrl(item.author && item.author.photoURL)"
                 class="Detail__box__header__user__icon__img"
                 alt
-              ></b-img>
+              ></img>
             </nuxt-link>
-            {{ item.authorName }} 投稿日:{{ item.updatedAt | moment }}
+            {{ item.authorName }} 投稿日:{{ $utils.parseDate(item.updatedAt) }}
           </p>
           <p class="Comment__box__text">{{ item.message }}</p>
         </div>
@@ -136,22 +138,18 @@
       </div>
     </div>
     <div class="Back">
-      <nuxt-link to="/" class="Back__btn">
+      <button @click="$router.go(-1)"class="Back__btn focus:outline-none">
         一覧へ戻る
-      </nuxt-link>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-const Cookie = process.client ? require("js-cookie") : undefined;
 import Slick from "vue-slick"; // Slick読み込み
 import "../../../node_modules/slick-carousel/slick/slick.css"; // Slickのcss読み込み
 import "../../../node_modules/slick-carousel/slick/slick-theme.css"; // Slickのcss読み込み
 
-import moment from "moment";
-import { parseDate } from "../../../lib/utils";
 import firebase from "../../../lib/firebase";
 
 const checkLiked = async ({ postId, userId }) => {
@@ -280,12 +278,6 @@ export default {
   },
   mounted() {},
 
-  filters: {
-    moment: function(dateStr) {
-      const date = parseDate(dateStr);
-      return moment(date).format("YYYY.MM.DD");
-    }
-  },
   async asyncData({ app, params }) {
     if (params.id) {
       const currentUser = await getCurrentUser();
@@ -328,13 +320,6 @@ export default {
   },
 
   methods: {
-    getUrl(path) {
-      if (path && path.startsWith("http")) {
-        return path;
-      } else {
-        return `${process.env.cdn}/${path}`;
-      }
-    },
     async sendComments() {
       if (this.message == "") {
         alert("コメントが何も記入されていません。");

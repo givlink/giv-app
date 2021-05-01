@@ -1,170 +1,161 @@
 <template>
   <div class="Home Main">
-    <div class="Home__cards">
-      <div class="Home__card" v-for="post in posts">
-        <nuxt-link :to="`/users/${post.authorId}`" class="Home__card__header">
-          <div class="Home__card__header__icon">
-            <b-img
-              :src="getUrl(post.author.photoURL)"
-              class="Home__card__header__icon__img"
-              alt
-            ></b-img>
-          </div>
-          <div class="Home__card__header__text">
-            <p class="Home__card__header__text__name">
-              {{ post.author.name }}
-            </p>
-          </div>
-        </nuxt-link>
-        <nuxt-link
-          :to="`/posts/${post.id}`"
-          class="Home__card__view"
-          v-if="post.images && post.images.length > 0"
-        >
-          <b-img
-            :src="getUrl(post.images[0])"
-            class="Home__card__view__img"
-            alt
-          ></b-img>
-        </nuxt-link>
-        <div class="Home__card__content">
-          <nuxt-link
-            :to="`/posts/${post.id}`"
-            class="Home__card__content__info"
-          >
-            <div class="Home__card__content__info__tags"></div>
-            <div class="Home__card__content__info__date">
-              {{ post.createdAt | moment }}
-            </div>
-          </nuxt-link>
-          <nuxt-link
-            :to="`/posts/${post.id}`"
-            class="Home__card__content__title"
-          >
-            {{ post.title }}
-          </nuxt-link>
-          <nuxt-link
-            :to="`/posts/${post.id}`"
-            class="Home__card__content__text"
-          >
-            <template v-if="post.message && post.message.length > 40">
-              {{ post.message | substringText }}
-              <nuxt-link :to="`/posts/${post.id}`" class=""
-                >続きを見る</nuxt-link
-              >
-            </template>
-            <template v-else>
-              {{ post.message }}
-            </template>
-          </nuxt-link>
-          <nuxt-link
-            :to="`/users/${post.giver.id}`"
-            class="Home__card__content__person"
-          >
-            <!--          <nuxt-link :to="`/user/${post.giv.giv_user.id}`" class="Home__card__content__person">-->
-            <div class="Home__card__content__person__icon">
-              <b-img
-                :src="getUrl(post.giver.photoURL)"
-                class="Home__card__content__person__icon__img"
+    <vue-pull-refresh :on-refresh="refreshPosts" :config="pullConfig">
+      <AreaSwitch />
+      <div class="Home__cards">
+        <div class="Home__card" v-for="post in posts">
+          <nuxt-link :to="`/users/${post.authorId}`" class="Home__card__header">
+            <div class="Home__card__header__icon">
+              <img
+                v-lazy="$utils.parseUrl(post.author.photoURL)"
+                class="Home__card__header__icon__img"
                 alt
-              ></b-img>
+                lazy
+              />
             </div>
-            <div class="Home__card__content__person__text">
-              <p class="Home__card__content__person__text__head">
-                givを贈った人
+            <div class="Home__card__header__text">
+              <p class="Home__card__header__text__name">
+                {{ post.author.name }}
               </p>
-              <p class="Home__card__content__person__text__name">
-                {{ post.giver.name }}
-              </p>
-              <!--              <p class="Home__card__content__person__text__position">CO-FOUNDER & CCO</p>-->
             </div>
           </nuxt-link>
+          <nuxt-link
+            :to="`/posts/${post.id}`"
+            class="Home__card__view"
+            v-if="post.images && post.images.length > 0"
+          >
+            <img
+              v-lazy="$utils.parseUrl(post.images[0])"
+              class="Home__card__view__img"
+              alt
+              lazy
+            />
+          </nuxt-link>
+          <div class="Home__card__content">
+            <nuxt-link
+              :to="`/posts/${post.id}`"
+              class="Home__card__content__info"
+            >
+              <div class="Home__card__content__info__tags"></div>
+              <div class="Home__card__content__info__date">
+                {{ $utils.parseDate(post.createdAt) }}
+              </div>
+            </nuxt-link>
+            <nuxt-link
+              :to="`/posts/${post.id}`"
+              class="Home__card__content__title"
+            >
+              {{ post.title }}
+            </nuxt-link>
+            <nuxt-link
+              :to="`/posts/${post.id}`"
+              class="Home__card__content__text"
+            >
+              {{ $utils.snipText(post.message) }}
+            </nuxt-link>
+            <nuxt-link
+              :to="`/users/${post.giver.id}`"
+              class="Home__card__content__person"
+            >
+              <div class="Home__card__content__person__icon">
+                <img
+                  v-lazy="$utils.parseUrl(post.giver.photoURL)"
+                  class="Home__card__content__person__icon__img"
+                  alt
+                />
+              </div>
+              <div class="Home__card__content__person__text">
+                <p class="Home__card__content__person__text__head">
+                  givを贈った人
+                </p>
+                <p class="Home__card__content__person__text__name">
+                  {{ post.giver.name }}
+                </p>
+              </div>
+            </nuxt-link>
+          </div>
+        </div>
+        <div class="Search__list__li" v-if="hasNext" v-on:click="loadPosts()">
+          <span
+            class="Search__list__li__link"
+            style="text-align: center;font-size: 1.6em;"
+            >さらに読み込む</span
+          >
         </div>
       </div>
-      <div class="Search__list__li" v-if="hasNext" v-on:click="loadmore()">
-        <span
-          class="Search__list__li__link"
-          style="text-align: center;font-size: 1.6em;"
-          >さらに読み込む</span
-        >
-      </div>
-    </div>
+    </vue-pull-refresh>
   </div>
 </template>
 
 <script>
-import moment from "moment";
-import firebase from "../lib/firebase";
 import api from "../lib/api";
-
-const getPosts = async (offset = null, limit = 20) => {
-  let snap = firebase
-    .firestore()
-    .collection("posts")
-    .orderBy("createdAt", "desc");
-
-  if (offset) snap = snap.startAfter(offset);
-
-  snap = await snap.limit(limit).get();
-
-  const posts = [];
-  snap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }));
-  return [posts, snap.docs[snap.docs.length - 1]];
-};
-const getSkills = async () => {
-  const skills = {};
-  const snap = await firebase
-    .firestore()
-    .collection("skills")
-    .get();
-  snap.forEach(doc => (skills[doc.id] = { id: doc.id, ...doc.data() }));
-  return skills;
-};
-const getAreas = async () => {
-  const areas = {};
-  const snap = await firebase
-    .firestore()
-    .collection("areas")
-    .get();
-  snap.forEach(doc => (areas[doc.id] = { id: doc.id, ...doc.data() }));
-  return areas;
-};
+import AreaSwitch from "../components/AreaSwitch";
+import RefreshPosts from "../components/RefreshPosts";
+import { mapState } from "vuex";
 
 export default {
-  components: {},
+  components: { AreaSwitch, RefreshPosts },
   layout: "logined",
   data() {
     return {
-      posts: [],
       error: null,
-      code: "",
-      hasError: "",
-      img: "",
-      first_name: "",
-      last_name: "",
-      posts: [],
-      offset: null,
       limit: 30,
-      hasNext: true
+      hasNext: true,
+      pullConfig: {
+        errorLabel: "err",
+        startLabel: "start",
+        readyLabel: "Pull to Refresh",
+        loadingLabel: "Loading...",
+        pullDownHeight: 50
+      }
     };
   },
+  computed: mapState(["filterArea", "posts"]),
+  watch: {
+    filterArea(newValue, oldValue) {
+      console.log(`Updating from ${oldValue} to ${newValue}`);
+      this.loadPosts();
+    }
+  },
   methods: {
-    getUrl(path) {
-      if (path && path.startsWith("http")) {
-        return path;
-      } else {
-        return `${process.env.cdn}/${path}`;
-      }
+    dedupePosts(posts) {
+      const map = {};
+      this.posts.forEach(p => (map[p.id] = p));
+      posts.forEach(p => (map[p.id] = p));
+      const result = Object.values(map);
+      result.sort((a, b) => a.createdAt > b.createdAt);
+      return result;
     },
-    async loadmore() {
-      const [posts, offset] = await getPosts(this.offset);
-      this.posts = [...this.posts, ...posts];
-      this.offset = offset;
+    //@Todo copy paste from below
+    async refreshPosts() {
+      const [posts, offset] = await api.listPosts({
+        area: this.filterArea,
+        offset: null
+      });
+      this.$store.commit("setPosts", posts);
+      this.$utils.setGlobalOffset(offset);
+      //@Todo show empty posts component if list empty
+    },
+    async loadPosts(refresh = false) {
+      //@Todo do all this inside store instead of here.
+      const [posts, offset] = await api.listPosts({
+        area: this.filterArea,
+        offset: this.$utils.getGlobalOffset()
+      });
+      if (posts.length === 0 && this.filterArea !== "all") {
+        //@Hack to check for end of post for sakai shi
+        this.$store.commit("setPosts", posts);
+      } else {
+        this.$store.commit("setPosts", this.dedupePosts(posts));
+      }
+      if (!refresh) {
+        this.$utils.setGlobalOffset(offset);
+      }
+      //@Todo show empty posts component if list empty
     },
 
     async registerPushToken(token) {
       try {
-        console.log("setting token:", token);
         await api.setupNotifications(token);
       } catch (err) {
         console.error("Err register push token:", err);
@@ -177,39 +168,12 @@ export default {
     const qToken = this.$route.query.pushtoken;
     if (qToken) {
       //Query token takes priority
-      console.log("Test:", qToken);
       await this.registerPushToken(qToken);
     } else {
       const token = localStorage.getItem("pushToken");
       if (token) {
         await this.registerPushToken(token);
       }
-    }
-
-    this.$store.commit("setSkillsMap", await getSkills());
-    this.$store.commit("setAreasMap", await getAreas());
-  },
-  async asyncData({ app }) {
-    const [posts, offset] = await getPosts();
-    return { posts, offset };
-  },
-  filters: {
-    moment: function(date) {
-      let str = moment.unix(date / 1000).format("YYYY.MM.DD");
-      if (str === "Invalid date") {
-        str = moment(date)
-          .utc()
-          .format("YYYY.MM.DD");
-      }
-      return str;
-    },
-    substringText: function(text) {
-      let subText = text;
-      if (text.length > 130) {
-        subText = text.substring(0, 130);
-        subText += "…";
-      }
-      return subText;
     }
   }
 };

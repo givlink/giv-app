@@ -16,7 +16,7 @@
         ></b-img>
         <b-img
           v-else
-          :src="getUrl(photoURL)"
+          :src="$utils.parseUrl(photoURL)"
           class="User__profile__icon__img"
           alt
         ></b-img>
@@ -195,13 +195,6 @@ export default {
     }
   },
   methods: {
-    getUrl(path) {
-      if (path && path.startsWith("http")) {
-        return path;
-      } else {
-        return `${process.env.cdn}/${path}`;
-      }
-    },
     renderTag(id) {
       try {
         return this.$store.getters.getSkillTag(id).tag;

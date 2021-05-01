@@ -31,12 +31,12 @@
         </template>
       </div>
     </div>
-    <ul class="Search__list" style="margin-top:50px;">
+    <ul class="Search__list" style="margin-top:75px;">
       <li class="Search__list__li" v-for="item of users">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">
           <div class="Search__list__li__link__icon">
             <b-img
-              :src="getUrl(item.photoURL)"
+              :src="$utils.parseUrl(item.photoURL)"
               class="Search__list__li__link__icon__img"
               alt
             ></b-img>
@@ -132,13 +132,6 @@ export default {
         return this.$store.getters.getSkillTag(id).tag;
       } catch (err) {
         return id;
-      }
-    },
-    getUrl(path) {
-      if (path && path.startsWith("http")) {
-        return path;
-      } else {
-        return `${process.env.cdn}/${path}`;
       }
     },
     async clickTag(id, field) {

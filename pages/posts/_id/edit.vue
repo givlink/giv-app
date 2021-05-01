@@ -24,7 +24,7 @@
       <template v-if="image1">
         <div class="Form__img mt-2">
           <b-img
-            :src="getUrl(image1)"
+            :src="makeOrParseUrl(image1)"
             class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
@@ -50,7 +50,7 @@
       <template v-if="image2">
         <div class="Form__img mt-2">
           <b-img
-            :src="getUrl(image2)"
+            :src="makeOrParseUrl(image2)"
             class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
@@ -76,7 +76,7 @@
       <template v-if="image3">
         <div class="Form__img mt-2">
           <b-img
-            :src="getUrl(image3)"
+            :src="makeOrParseUrl(image3)"
             class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
@@ -232,7 +232,7 @@ export default {
         this.hasError = msg;
       }
     },
-    getUrl(path) {
+    makeOrParseUrl(path) {
       try {
         if (path && path.startsWith("http")) {
           return path;
@@ -240,6 +240,8 @@ export default {
           return `${process.env.cdn}/${path}`;
         }
       } catch (err) {
+        //@Todo seems this catch will never hit.
+        //Possible bug
         return URL.createObjectURL(path);
       }
     }

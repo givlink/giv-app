@@ -1,12 +1,17 @@
 <template>
   <div class="User Main">
+    <div class="Back">
+      <button @click="$router.go(-1)"class="Back__btn focus:outline-none">
+        一覧へ戻る
+      </button>
+    </div>
     <div class="User__profile" v-if="profile">
       <div class="User__profile__icon" v-if="profile">
-        <b-img
-          :src="getUrl(profile.photoURL+`?height=500`)"
+        <img
+          :src="$utils.parseUrl(profile.photoURL + `?height=500`)"
           class="User__profile__icon__img"
           alt
-        ></b-img>
+        ></img>
       </div>
       <p class="User__profile__name">{{ profile.name }}</p>
       <p class="User__profile__position">{{ profile.job }}</p>
@@ -16,11 +21,11 @@
         class="User__profile__edit"
         v-show="currentUserId == id"
       >
-        <b-img
+        <img
           src="~/assets/image/icon_edit.png"
           class="User__profile__edit__img"
           alt
-        ></b-img>
+        ></img>
       </nuxt-link>
     </div>
     <div class="User__giv">
@@ -53,11 +58,11 @@
         <template v-if="posts" v-for="item of received">
           <nuxt-link :to="`/posts/${item.id}`" class="User__latest__wrap__box">
             <template v-if="item.images && item.images.length > 0">
-              <b-img
-                :src="getUrl(item.images[0])"
+              <img
+                :src="$utils.parseUrl(item.images[0])"
                 class="User__latest__wrap__box__img"
                 alt
-              ></b-img>
+              ></img>
             </template>
             <template v-else>
               <span>NO IMAGE</span>
@@ -72,11 +77,11 @@
         <template v-if="posts" v-for="item of posts">
           <nuxt-link :to="`/posts/${item.id}`" class="User__latest__wrap__box">
             <template v-if="item.images && item.images.length > 0">
-              <b-img
-                :src="getUrl(item.images[0])"
+              <img
+                :src="$utils.parseUrl(item.images[0])"
                 class="User__latest__wrap__box__img"
                 alt
-              ></b-img>
+              ></img>
             </template>
             <template v-else>
               <span>NO IMAGE</span>
@@ -181,13 +186,6 @@ export default {
         return this.$store.getters.getSkillTag(id).tag;
       } catch (err) {
         return id;
-      }
-    },
-    getUrl(path) {
-      if (path && path.startsWith("http")) {
-        return path;
-      } else {
-        return `${process.env.cdn}/${path}`;
       }
     },
     async sendGiv() {

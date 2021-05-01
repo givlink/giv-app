@@ -3,6 +3,7 @@ import fs from "fs";
 
 export default {
   server: {
+    host: "0.0.0.0",
     https: {
       key: fs.readFileSync(path.resolve(__dirname, "localhost.key")),
       cert: fs.readFileSync(path.resolve(__dirname, "localhost.crt"))
@@ -13,7 +14,10 @@ export default {
     title: process.env.npm_package_name || "",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1, maximum-scale=1"
+      },
       {
         hid: "description",
         name: "description",
@@ -40,6 +44,9 @@ export default {
   },
   plugins: [
     "~/plugins/api.js",
+    "~/plugins/utils.js",
+    "~/plugins/scroll.js",
+    "~/plugins/pull-refresh.js",
     "~/plugins/auth.js",
     { src: "~/plugins/vue-lazyload.js", ssr: false }
   ],
@@ -55,7 +62,9 @@ export default {
   ],
   sentry: {
     dsn:
-      "https://f9986109c421440d877bec0ed85a899d@o516148.ingest.sentry.io/5622239",
+      process.env.NODE_ENV === "production"
+        ? "https://f9986109c421440d877bec0ed85a899d@o516148.ingest.sentry.io/5622239"
+        : "",
     config: {}
   },
   build: {

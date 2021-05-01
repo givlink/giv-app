@@ -15,13 +15,13 @@
               style="display:flex; justify-content: space-between; align-items: center;"
             >
               <p class="Notification__list__li__link__text__date">
-                {{ item.createdAt | moment }}
+                {{ $utils.parseDate(item.createdAt) }}
               </p>
               <div
                 style="display:flex; justify-content:center; align-items:center;"
               >
                 <b-img
-                  :src="getUrl(item.giver.photoURL)"
+                  :src="$utils.parseUrl(item.giver.photoURL)"
                   alt="item.giver.name"
                   style="height:30px; width:30px;border-radius:100%;"
                 ></b-img>
@@ -40,7 +40,7 @@
         >
           <div class="Notification__list__li__link__icon">
             <b-img
-              :src="getUrl(item.sender.photoURL)"
+              :src="$utils.parseUrl(item.sender.photoURL)"
               class="Notification__list__li__link__icon__img"
               alt
             ></b-img>
@@ -52,7 +52,7 @@
               }}」さんからgivを贈りたいのアクションがありました
             </p>
             <p class="Notification__list__li__link__text__date">
-              {{ item.createdAt | moment }}
+              {{ $utils.parseDate(item.createdAt) }}
             </p>
           </div>
         </nuxt-link>
@@ -64,7 +64,7 @@
         >
           <div class="Notification__list__li__link__icon">
             <b-img
-              :src="getUrl(item.receiver.photoURL)"
+              :src="$utils.parseUrl(item.receiver.photoURL)"
               class="Notification__list__li__link__icon__img"
               alt
             ></b-img>
@@ -76,7 +76,7 @@
               }}」さんからgivを受け取りたいのアクションがありました
             </p>
             <p class="Notification__list__li__link__text__date">
-              {{ item.createdAt | moment }}
+              {{ $utils.parseDate(item.createdAt) }}
             </p>
           </div>
         </nuxt-link>
@@ -91,7 +91,7 @@
               新しいgivがあります
             </p>
             <p class="Notification__list__li__link__text__date">
-              {{ item.createdAt | moment }}
+              {{ $utils.parseDate(item.createdAt) }}
             </p>
           </div>
         </nuxt-link>
@@ -101,7 +101,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import api from "../lib/api";
 
 export default {
@@ -125,38 +124,8 @@ export default {
     };
   },
   methods: {
-    getUrl(path) {
-      if (path && path.startsWith("http")) {
-        return path;
-      } else {
-        return `${process.env.cdn}/${path}`;
-      }
-    },
     markAsRead(id) {
       api.updateNotification({ userId: this.uid, id, status: "read" });
-    }
-  },
-
-  filters: {
-    moment: function(date) {
-      let d;
-      let str;
-      try {
-        d = date.toDate();
-        str = moment.unix(d / 1000).format("YYYY.MM.DD");
-      } catch (err) {
-        try {
-          str = moment.unix(parseFloat(date) / 1000).format("YYYY.MM.DD");
-        } catch (err) {
-          str = moment(new Date(date)).format("YYYY.MM.DD");
-        }
-      }
-      if (str === "Invalid date") {
-        str = moment(d)
-          .utc()
-          .format("YYYY.MM.DD");
-      }
-      return str;
     }
   }
 };

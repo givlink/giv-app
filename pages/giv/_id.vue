@@ -8,7 +8,7 @@
         >
           <div class="Detail__box__header__user__icon">
             <b-img
-              :src="getUrl(giv.receiver.photoURL)"
+              :src="$utils.parseUrl(giv.receiver.photoURL)"
               class="Detail__box__header__user__icon__img"
               alt
             ></b-img>
@@ -31,7 +31,7 @@
         <div class="Detail__box__images">
           <template v-for="item of giv.post.images">
             <b-img
-              :src="getUrl(item)"
+              :src="$utils.parseUrl(item)"
               class="Detail__box__images__img"
               alt
             ></b-img>
@@ -51,7 +51,9 @@
             <span class="Detail__box__info__good__text">いいね</span>
           </div>
         </template>
-        <p class="Detail__box__info__time">{{ giv.created_at | moment }}</p>
+        <p class="Detail__box__info__time">
+          {{ $utils.parseDate(giv.created_at) }}
+        </p>
       </div>
       <div class="Detail__box__content">
         <h2 class="Detail__box__content__title">
@@ -71,7 +73,7 @@
           alt="カレンダー"
         />
         <span class="Detail__date__info__text"
-          >{{ giv.meetup_date | moment }}{{ giv.start_time }}〜{{
+          >{{ $utils.parseDate(giv.meetup_date) }}{{ giv.start_time }}〜{{
             giv.end_time
           }}</span
         >
@@ -82,7 +84,6 @@
 
 <script>
 import api from "../../lib/api";
-import moment from "moment";
 
 export default {
   components: {},
@@ -94,25 +95,11 @@ export default {
     };
   },
 
-  filters: {
-    moment: function(date) {
-      return moment(date).format("YYYY.MM.DD");
-    }
-  },
-  mounted() {},
-
   async asyncData({ app, params }) {
     const giv = await api.getGiv(params.id);
     return { giv };
   },
   methods: {
-    getUrl(path) {
-      if (path && path.startsWith("http")) {
-        return path;
-      } else {
-        return `${process.env.cdn}/${path}`;
-      }
-    },
     async checkCode() {},
     logout() {
       this.$auth.logout();

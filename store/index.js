@@ -11,15 +11,30 @@ export const state = () => ({
   me: {},
   token: "",
   pushToken: null,
+  postLimit: 20,
+  posts: [],
   lastError: null,
   skillsMap: {},
   notifications: [],
   areasMap: {},
   authLoading: true,
-  user: null
+  user: null,
+  filterArea: localStorage.getItem("filterArea") || "all"
 });
 
 export const mutations = {
+  setFilterArea(state, area) {
+    if (state.filterArea === area) return;
+
+    const VALID_AREAS = ["all", "sakai"];
+    if (!VALID_AREAS.includes(area)) return; //@Todo log err
+
+    //@Change post list here
+    localStorage.setItem("filterArea", area);
+    state.filterArea = area;
+
+    state.posts = []; //reset posts
+  },
   setNotifications(state, nots) {
     state.notifications = nots;
   },
@@ -73,10 +88,16 @@ export const mutations = {
   },
   setAreasMap(state, s) {
     state.areasMap = s;
+  },
+  setPosts(state, posts) {
+    state.posts = posts;
   }
 };
 
 export const getters = {
+  getFilterArea: state => () => {
+    return state.filterArea;
+  },
   getNotifications: state => () => {
     return state.notifications;
   },
@@ -98,26 +119,40 @@ export const getters = {
 };
 
 export const actions = {
-  nuxtClientInit({ commit }, context) {
-    commit("setAuthLoading", true);
+  nuxtClientInit(store, context) {
+    store.commit("setAuthLoading", true);
     let listener;
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(async user => {
       if (user) {
+        //Setup user
         const u = {
           uid: user.uid,
           photoURL: user.photoURL,
           name: user.displayName
         };
-        commit("setUser", u);
+        store.commit("setUser", u);
 
-        listener = api.watchNotifications(u.uid, nots => {
-          commit("setNotifications", nots);
+        listener = api.watchNotifications(u.uid, nots =>
+          store.commit("setNotifications", nots)
+        );
+
+        //Fetch areas and skills
+        store.commit("setSkillsMap", await api.listSkills());
+        store.commit("setAreasMap", await api.listAreas());
+
+        //Fetch initial posts
+        const [posts, offset] = await api.listPosts({
+          area: store.state.filterArea,
+          offset: context.app.$utils.getGlobalOffset(),
+          limit: store.state.postLimit
         });
+        store.commit("setPosts", posts);
+        context.app.$utils.setGlobalOffset(offset);
       } else {
-        commit("setUser", null);
+        store.commit("setUser", null);
         this.listener && this.listener();
       }
-      commit("setAuthLoading", false);
+      store.commit("setAuthLoading", false);
     });
   }
 };

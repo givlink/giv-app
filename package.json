@@ -33,6 +33,8 @@
     "sass-loader": "^8.0.0",
     "short-uuid": "^4.1.0",
     "vue-lazyload": "^1.3.3",
+    "vue-pull-refresh": "^0.2.7",
+    "vue-scroll-behavior": "^0.3.0",
     "vue-slick": "^1.1.15",
     "vue-sweetalert2": "^3.0.1"
   },

@@ -48,7 +48,9 @@
             <span class="Detail__box__info__good__text">いいね</span>
           </div>
         </template>
-        <p class="Detail__box__info__time">{{ giv.created_at | moment }}</p>
+        <p class="Detail__box__info__time">
+          {{ $utils.parseDate(giv.created_at) }}
+        </p>
       </div>
       <div class="Detail__box__content">
         <h2 class="Detail__box__content__title">
@@ -68,7 +70,7 @@
           alt="カレンダー"
         />
         <span class="Detail__date__info__text"
-          >{{ giv.meetup_date | moment }}{{ giv.start_time }}〜{{
+          >{{ $utils.parseDate(giv.meetup_date) }}{{ giv.start_time }}〜{{
             giv.end_time
           }}</span
         >
@@ -116,55 +118,20 @@
 </template>
 
 <script>
-import axios from "axios";
-
-import moment from "moment";
-
-const Cookie = process.client ? require("js-cookie") : undefined;
 export default {
   components: {},
-  middleware: "auth",
   layout: "logined",
   data() {
     return {
       code: "",
-      hasError: ""
+      hasError: "",
+      giv: null
     };
   },
-
-  filters: {
-    moment: function(date) {
-      return moment(date).format("YYYY.MM.DD");
-    }
-  },
-  mounted() {},
 
   computed: {
     basePath() {
       return `${process.env.baseUrl}`;
-    }
-  },
-  async asyncData({ app, params }) {
-    if (params.id) {
-      const baseUrl = process.env.baseUrl + "/me/receive/" + params.id;
-      const getUrl = encodeURI(baseUrl);
-      const token = app.$auth.$storage.getUniversal("_token.auth0");
-      const response = await axios.get(getUrl, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token
-        }
-      });
-      console.log(response);
-      return {
-        giv: response.data
-      };
-    }
-  },
-  methods: {
-    async checkCode() {},
-    logout() {
-      this.$auth.logout();
     }
   }
 };
