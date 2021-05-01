@@ -1,6 +1,11 @@
 <template>
   <div class="Home Main">
-    <vue-pull-refresh :top-load-method="refreshPosts" :topConfig="pullConfig">
+    <vue-pull-refresh
+      :top-load-method="refreshPosts"
+      :topConfig="pullConfig"
+      :is-top-bounce="onTop"
+      :is-bottom-bounce="false"
+    >
       <AreaSwitch />
       <div class="Home__cards">
         <div class="Home__card" v-for="post in posts">
@@ -99,6 +104,7 @@ export default {
   data() {
     return {
       error: null,
+      onTop: true,
       limit: 30,
       hasNext: true,
       pullConfig: {
@@ -169,6 +175,11 @@ export default {
     }
   },
   async mounted() {
+    let vm = this;
+    window.addEventListener("scroll", () => {
+      vm.onTop = window.pageYOffset === 0;
+    });
+
     const qToken = this.$route.query.pushtoken;
     if (qToken) {
       //Query token takes priority
