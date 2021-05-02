@@ -36,6 +36,7 @@
     "vue-pull-refresh": "^0.2.7",
     "vue-pull-to": "^0.1.8",
     "vue-scroll-behavior": "^0.3.0",
+    "vue-select": "^3.11.2",
     "vue-slick": "^1.1.15",
     "vue-sweetalert2": "^3.0.1"
   },

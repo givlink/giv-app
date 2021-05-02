@@ -10,36 +10,26 @@
         ></b-form-input>
         <span class="Search__box__form__submit" v-on:click="search()" />
       </form>
-      <div class="Search__box__tags" v-if="Object.values(skillsMap).length">
-        <template v-for="item of Object.values(skillsMap)">
-          <span
-            v-on:click="clickTag(item.id, 'skills')"
-            :class="
-              userSearchFilter.type === 'skills' &&
-                item.id == userSearchFilter.value &&
-                'Search__box__tags__tag__active'
-            "
-            class="Search__box__tags__tag"
-            >{{ item.tag }}</span
-          >
-        </template>
-      </div>
-      <div class="Search__box__tags" v-if="Object.values(areasMap).length">
-        <template v-for="item of Object.values(areasMap)">
-          <span
-            v-on:click="clickTag(item.id, 'area')"
-            :class="
-              userSearchFilter.type === 'area' &&
-                item.id == userSearchFilter.value &&
-                'Search__box__tags__tag__active'
-            "
-            class="Search__box__tags__tag"
-            >{{ item.tag }}</span
-          >
-        </template>
+      <div class="flex items-center space-x-1">
+        <v-select
+          class="flex-1 py-2"
+          :value="selectedItem"
+          @input="setSelected"
+          placeholder="興味・関心フィルター"
+          :options="makeOptions(skillsMap, 'skills')"
+          :components="{ OpenIndicator, Deselect }"
+        ></v-select>
+        <v-select
+          class="flex-1 py-2"
+          :value="selectedItemArea"
+          @input="setSelectedArea"
+          placeholder="場所フィルター"
+          :options="makeOptions(areasMap, 'area')"
+          :components="{ OpenIndicator, Deselect }"
+        ></v-select>
       </div>
     </div>
-    <ul class="Search__list" style="margin-top:75px;">
+    <ul class="Search__list" style="margin-top:15px;">
       <li class="Search__list__li" v-for="item of userSearchItems">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">
           <div class="Search__list__li__link__icon">
@@ -80,32 +70,42 @@
 
 <script>
 import api from "../../lib/api";
+import OpenIndicator from "../../components/OpenIndicator.vue";
+import Deselect from "../../components/Deselect.vue";
 import { mapState, mapActions } from "vuex";
 
 export default {
   layout: "logined",
   data() {
     return {
+      OpenIndicator,
+      Deselect,
       searchField: null,
       searchTag: null,
       searchQuery: "",
+      selectedItem: null,
+      selectedItemArea: null,
       offset: null,
       limit: 30,
       hasNext: true
     };
   },
-  computed: mapState([
-    "userSearchFilter",
-    "userSearchLoading",
-    "userSearchItems",
-    "skillsMap",
-    "areasMap"
-  ]),
+  computed: {
+    ...mapState([
+      "userSearchFilter",
+      "userSearchLoading",
+      "userSearchItems",
+      "skillsMap",
+      "areasMap"
+    ])
+  },
   watch: {
     searchQuery: async function(val, oldVal) {
       if (val !== "") {
         this.searchTag = "";
         this.searchField = "";
+        this.selectedItem = null;
+        this.selectedItemArea = null;
       }
       if (val === "" && !this.searchTag && !this.searchField) {
         this.$store.dispatch({
@@ -118,6 +118,45 @@ export default {
   },
   methods: {
     ...mapActions(["loadMoreUserSearch"]),
+    makeOptions(map, type) {
+      return Object.values(map).map(v => {
+        return {
+          type: type,
+          key: v.id,
+          label: v.tag
+        };
+      });
+    },
+    setSelected(val) {
+      this.selectedItem = val;
+      this.selectedItemArea = null;
+      const filter = { type: null, value: null };
+      if (val) {
+        this.searchQuery = "";
+        filter.type = val.type;
+        filter.value = val.key;
+      }
+      this.$store.dispatch({
+        type: "updateUserSearchFilter",
+        filter: filter,
+        resetOffset: true
+      });
+    },
+    setSelectedArea(val) {
+      this.selectedItemArea = val;
+      this.selectedItem = null;
+      const filter = { type: null, value: null };
+      if (val) {
+        this.searchQuery = "";
+        filter.type = val.type;
+        filter.value = val.key;
+      }
+      this.$store.dispatch({
+        type: "updateUserSearchFilter",
+        filter: filter,
+        resetOffset: true
+      });
+    },
     renderTag(id) {
       try {
         return this.$store.getters.getSkillTag(id).tag;
@@ -147,4 +186,15 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.v-select .vs__selected-options {
+  flex-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vs__dropdown-toggle {
+  border: 1px solid #d0d0d0;
+}
+</style>
