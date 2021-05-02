@@ -10,7 +10,7 @@
         ></b-form-input>
         <span class="Search__box__form__submit" v-on:click="search()" />
       </form>
-      <div class="flex items-center space-x-1">
+      <div class="flex items-center space-x-1 text-xs">
         <v-select
           class="flex-1 py-2"
           :value="selectedItem"
