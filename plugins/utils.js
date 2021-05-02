@@ -14,10 +14,13 @@ function isIsoDate(str) {
 //which is needed for calling posts api with offset
 //so we store in a global var instead
 let globalOffset = null;
+let globalUserSearchOffset = null;
 
 const utils = {
   getGlobalOffset: () => globalOffset,
   setGlobalOffset: val => (globalOffset = val),
+  getGlobalUserSearchOffset: () => globalUserSearchOffset,
+  setGlobalUserSearchOffset: val => (globalUserSearchOffset = val),
   parseUrl: path => {
     if (path && path.startsWith("http")) {
       return path;

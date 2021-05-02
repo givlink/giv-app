@@ -13,6 +13,12 @@ export const state = () => ({
   pushToken: null,
   postLimit: 20,
   posts: [],
+  userSearchLoading: true,
+  userSearchItems: [],
+  userSearchFilter: {
+    type: null,
+    value: null
+  },
   lastError: null,
   skillsMap: {},
   notifications: [],
@@ -21,6 +27,13 @@ export const state = () => ({
   user: null,
   filterArea: localStorage.getItem("filterArea") || "all"
 });
+
+const dedupeAppend = (array, newArray) => {
+  const map = {};
+  array.forEach(u => (map[u.id] = u));
+  newArray.forEach(u => (map[u.id] = u));
+  return Object.values(map);
+};
 
 export const mutations = {
   setFilterArea(state, area) {
@@ -34,6 +47,19 @@ export const mutations = {
     state.filterArea = area;
 
     state.posts = []; //reset posts
+  },
+  setUserSearchLoading(state, val) {
+    state.userSearchLoading = val;
+  },
+  setUserSearchItems(state, { users, append }) {
+    if (append) {
+      state.userSearchItems = dedupeAppend(state.userSearchItems, users);
+    } else {
+      state.userSearchItems = users;
+    }
+  },
+  setUserSearchFilter(state, filter) {
+    state.userSearchFilter = filter;
   },
   setNotifications(state, nots) {
     state.notifications = nots;
@@ -119,6 +145,30 @@ export const getters = {
 };
 
 export const actions = {
+  async loadMoreUserSearch({ commit, state }) {
+    commit("setUserSearchLoading", true);
+    const off = this.$utils.getGlobalUserSearchOffset();
+    const [users, offset] = await api.listUsers(
+      off,
+      20,
+      state.userSearchFilter
+    );
+    commit("setUserSearchItems", { users, append: true });
+    commit("setUserSearchLoading", false);
+    this.$utils.setGlobalUserSearchOffset(offset);
+  },
+  async updateUserSearchFilter({ commit }, { filter, resetOffset }) {
+    let off = this.$utils.getGlobalUserSearchOffset();
+    if (resetOffset) {
+      off = null;
+    }
+    commit("setUserSearchFilter", filter);
+    commit("setUserSearchLoading", true);
+    const [users, offset] = await api.listUsers(off, 20, filter);
+    commit("setUserSearchItems", { users });
+    commit("setUserSearchLoading", false);
+    this.$utils.setGlobalUserSearchOffset(offset);
+  },
   nuxtClientInit(store, context) {
     store.commit("setAuthLoading", true);
     let listener;
@@ -148,6 +198,12 @@ export const actions = {
         });
         store.commit("setPosts", posts);
         context.app.$utils.setGlobalOffset(offset);
+
+        //Fetch initial users (search page)
+        const [users, userOffset] = await api.listUsers();
+        store.commit("setUserSearchItems", { users });
+        store.commit("setUserSearchLoading", false);
+        context.app.$utils.setGlobalUserSearchOffset(userOffset);
       } else {
         store.commit("setUser", null);
         this.listener && this.listener();

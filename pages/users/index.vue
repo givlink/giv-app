@@ -10,21 +10,29 @@
         ></b-form-input>
         <span class="Search__box__form__submit" v-on:click="search()" />
       </form>
-      <div class="Search__box__tags" v-if="skills">
-        <template v-for="item of skills">
+      <div class="Search__box__tags" v-if="Object.values(skillsMap).length">
+        <template v-for="item of Object.values(skillsMap)">
           <span
             v-on:click="clickTag(item.id, 'skills')"
-            :class="item.id == searchTag && 'Search__box__tags__tag__active'"
+            :class="
+              userSearchFilter.type === 'skills' &&
+                item.id == userSearchFilter.value &&
+                'Search__box__tags__tag__active'
+            "
             class="Search__box__tags__tag"
             >{{ item.tag }}</span
           >
         </template>
       </div>
-      <div class="Search__box__tags" v-if="areas">
-        <template v-for="item of areas">
+      <div class="Search__box__tags" v-if="Object.values(areasMap).length">
+        <template v-for="item of Object.values(areasMap)">
           <span
             v-on:click="clickTag(item.id, 'area')"
-            :class="item.id == searchTag && 'Search__box__tags__tag__active'"
+            :class="
+              userSearchFilter.type === 'area' &&
+                item.id == userSearchFilter.value &&
+                'Search__box__tags__tag__active'
+            "
             class="Search__box__tags__tag"
             >{{ item.tag }}</span
           >
@@ -32,7 +40,7 @@
       </div>
     </div>
     <ul class="Search__list" style="margin-top:75px;">
-      <li class="Search__list__li" v-for="item of users">
+      <li class="Search__list__li" v-for="item of userSearchItems">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">
           <div class="Search__list__li__link__icon">
             <b-img
@@ -56,7 +64,10 @@
           </div>
         </nuxt-link>
       </li>
-      <li class="Search__list__li" v-if="hasNext" v-on:click="loadmore()">
+      <div v-if="userSearchLoading" class="flex items-center justify-center">
+        <b-spinner label="Loading..." :variant="'primary'"></b-spinner>
+      </div>
+      <li v-else class="Search__list__li" v-on:click="loadMoreUserSearch">
         <span
           class="Search__list__li__link"
           style="text-align: center;font-size: 1.6em;"
@@ -69,6 +80,7 @@
 
 <script>
 import api from "../../lib/api";
+import { mapState, mapActions } from "vuex";
 
 export default {
   layout: "logined",
@@ -82,6 +94,13 @@ export default {
       hasNext: true
     };
   },
+  computed: mapState([
+    "userSearchFilter",
+    "userSearchLoading",
+    "userSearchItems",
+    "skillsMap",
+    "areasMap"
+  ]),
   watch: {
     searchQuery: async function(val, oldVal) {
       if (val !== "") {
@@ -89,44 +108,16 @@ export default {
         this.searchField = "";
       }
       if (val === "" && !this.searchTag && !this.searchField) {
-        const [users, offset] = await api.listUsers();
-        this.users = users;
-        this.offset = offset;
+        this.$store.dispatch({
+          type: "updateUserSearchFilter",
+          filter: { type: null, value: null },
+          resetOffset: true
+        });
       }
-    }
-  },
-  async asyncData({ app }) {
-    const skillsMap = await api.listSkills();
-    const areasMap = await api.listAreas();
-    const [users, offset] = await api.listUsers();
-    return {
-      skills: Object.values(skillsMap),
-      areas: Object.values(areasMap),
-      users,
-      offset
-    };
-  },
-  async mounted() {
-    if (
-      !this.$store.state.skillsMap ||
-      Object.keys(this.$store.state.skillsMap).length === 0
-    ) {
-      this.$store.commit("setSkillsMap", await api.listSkills());
     }
   },
   methods: {
-    makeTagFilter() {
-      if (!this.searchTag || this.searchTag == "" || !this.searchField) {
-        return null;
-      }
-
-      let result = [this.searchField, "array-contains", this.searchTag];
-      if (this.searchField === "area") {
-        result = [this.searchField, "==", this.searchTag];
-      }
-      return result;
-    },
-
+    ...mapActions(["loadMoreUserSearch"]),
     renderTag(id) {
       try {
         return this.$store.getters.getSkillTag(id).tag;
@@ -134,47 +125,22 @@ export default {
         return id;
       }
     },
-    async clickTag(id, field) {
+    async clickTag(value, filterType) {
       this.searchQuery = "";
-      this.searchTag = id;
-      this.searchField = field;
 
-      const [users, offset] = await api.listUsers(
-        null,
-        this.limit,
-        this.makeTagFilter()
-      );
-
-      this.users = users;
-      this.offset = offset;
-    },
-    dedupeUser(users) {
-      const map = [];
-      users.forEach(u => (map[u.id] = u));
-      return Object.values(map);
-    },
-    async loadmore() {
-      const [users, offset] = await api.listUsers(
-        this.offset,
-        this.limit,
-        this.makeTagFilter()
-      );
-      this.users = this.dedupeUser([...this.users, ...users]);
-      this.offset = offset;
+      this.$store.dispatch({
+        type: "updateUserSearchFilter",
+        filter: { type: filterType, value },
+        resetOffset: true
+      });
     },
     async search() {
       if (this.searchQuery !== "") {
-        const [users, offset] = await api.listUsers(null, 5, [
-          "name",
-          ">",
-          this.searchQuery
-        ]);
-        this.users = users;
-        this.offset = offset;
-      } else {
-        const [users, offset] = await api.listUsers();
-        this.users = users;
-        this.offset = offset;
+        this.$store.dispatch({
+          type: "updateUserSearchFilter",
+          filter: { type: "name", value: this.searchQuery },
+          resetOffset: true
+        });
       }
     }
   }
