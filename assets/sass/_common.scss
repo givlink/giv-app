@@ -74,12 +74,6 @@ img {
   max-width: $window-base-width;
 }
 
-a {
-  &:hover {
-    opacity: 0.6;
-  }
-}
-
 @mixin default-layout() {
   width: $window-base-width;
   margin: 0 auto;

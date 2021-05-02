@@ -1,3 +1,16 @@
+.footer-link {
+  font-size: 1em;
+  color: #909090;
+  margin-bottom: 0;
+}
+.footer-link.nuxt-link-exact-active {
+  svg {
+    color: #0eb9ec;
+  }
+  color:black;
+  
+}
+
 .Footer {
   background-color: white;
   position: fixed;
@@ -22,15 +35,15 @@
     position: relative;
     &__notification {
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       color: white;
       background-color: $base-blue-color;
       border-radius: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
-      right: calc( 50% - 30px);
+      right: calc(50% - 30px);
       top: 5px;
     }
     &__icon {
@@ -40,7 +53,7 @@
       margin-bottom: 5px;
     }
     &__text {
-      font-size: 1.0em;
+      font-size: 1em;
       color: #909090;
       margin-bottom: 0;
     }

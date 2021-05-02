@@ -1,5 +1,8 @@
 <template>
-  <div class="flex items-center justify-center mb-6 space-x-1">
+  <div
+    v-show="shouldShow"
+    class="flex items-center justify-center mb-3 space-x-1"
+  >
     <button
       v-on:click="selectArea('all')"
       :class="selected == 'all' && 'Search__box__tags__tag__active'"
@@ -17,11 +20,22 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
       selected: "all"
     };
+  },
+  computed: {
+    ...mapState(["userProfile", "userProfileLoading"]),
+    shouldShow() {
+      return (
+        !this.userProfileLoading &&
+        this.userProfile &&
+        this.userProfile.area == "sakai"
+      );
+    }
   },
   mounted() {
     this.selected = this.$store.getters.getFilterArea();

@@ -25,6 +25,8 @@ export const state = () => ({
   areasMap: {},
   authLoading: true,
   user: null,
+  userProfile: null,
+  userProfileLoading: true,
   filterArea: localStorage.getItem("filterArea") || "all"
 });
 
@@ -47,6 +49,12 @@ export const mutations = {
     state.filterArea = area;
 
     state.posts = []; //reset posts
+  },
+  setUserProfile(state, user) {
+    state.userProfile = user;
+  },
+  setUserProfileLoading(state, val) {
+    state.userProfileLoading = val;
   },
   setUserSearchLoading(state, val) {
     state.userSearchLoading = val;
@@ -189,6 +197,11 @@ export const actions = {
         //Fetch areas and skills
         store.commit("setSkillsMap", await api.listSkills());
         store.commit("setAreasMap", await api.listAreas());
+
+        //Fetch user profile
+        const userProfile = await api.getUserProfile(u.uid);
+        store.commit("setUserProfile", userProfile);
+        store.commit("setUserProfileLoading", false);
 
         //Fetch initial posts
         const [posts, offset] = await api.listPosts({
