@@ -43,7 +43,7 @@ const utils = {
   parseDate: date => {
     let d;
     if (typeof date.toDate !== "undefined") {
-      date.toDate();
+      d = date.toDate();
     } else if (isIsoDate(date)) {
       d = new Date(date);
     } else if (isTimestamp(date)) {

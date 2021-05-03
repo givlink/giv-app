@@ -294,6 +294,7 @@ export default {
         .firestore()
         .collection("comments")
         .where("postId", "==", params.id)
+        .orderBy("createdAt", "desc")
         .limit(10)
         .get();
       const comments = [];
