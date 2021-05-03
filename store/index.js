@@ -156,9 +156,13 @@ export const actions = {
   async loadMoreUserSearch({ commit, state }) {
     commit("setUserSearchLoading", true);
     const off = this.$utils.getGlobalUserSearchOffset();
+    let limit = 20;
+    if (state.userSearchFilter.type === "name") {
+      limit = 10; //smaller limit on names for tighter match
+    }
     const [users, offset] = await api.listUsers(
       off,
-      20,
+      limit,
       state.userSearchFilter
     );
     commit("setUserSearchItems", { users, append: true });
@@ -172,7 +176,11 @@ export const actions = {
     }
     commit("setUserSearchFilter", filter);
     commit("setUserSearchLoading", true);
-    const [users, offset] = await api.listUsers(off, 20, filter);
+    let limit = 20;
+    if (filter.type === "name") {
+      limit = 10; //smaller limit on names for tighter match
+    }
+    const [users, offset] = await api.listUsers(off, limit, filter);
     commit("setUserSearchItems", { users });
     commit("setUserSearchLoading", false);
     this.$utils.setGlobalUserSearchOffset(offset);
