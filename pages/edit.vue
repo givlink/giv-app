@@ -65,7 +65,7 @@
             <ul class="Regist__main__select__box">
               <li
                 class="Regist__main__select__box__li"
-                v-for="item in all_interests"
+                v-for="item in skillsMap"
               >
                 <p class="Regist__main__select__box__li__text">
                   {{ renderTag(item.id) }}
@@ -106,59 +106,15 @@
 </template>
 
 <script>
-import firebase from "../lib/firebase";
-const getCurrentUser = async () => {
-  const user = firebase.auth().currentUser;
-  if (!user) return null;
-  const doc = await firebase
-    .firestore()
-    .doc(`/users/${user.uid}`)
-    .get();
-  const profile = { ...doc.data(), id: doc.id };
-  return profile;
-};
-
-const updateCurrentUser = async ({
-  interests = null,
-  name = null,
-  job = null,
-  intro = null
-}) => {
-  const user = firebase.auth().currentUser;
-  if (!user) return null;
-  let payload = {};
-  if (interests && interests.length > 0) {
-    payload.interests = interests;
-  }
-  if (intro && intro !== "") {
-    payload.intro = intro;
-  }
-  if (name && name !== "") {
-    payload.name = name;
-  }
-  if (job && job !== "") {
-    payload.job = job;
-  }
-
-  await firebase
-    .firestore()
-    .doc(`/users/${user.uid}`)
-    .set(payload, { merge: true });
-};
-
-const getSkills = async () => {
-  const skills = [];
-  const snap = await firebase
-    .firestore()
-    .collection("skills")
-    .get();
-  snap.forEach(doc => skills.push({ id: doc.id, ...doc.data() }));
-  return skills;
-};
+import api from "../lib/api";
+import { mapState } from "vuex";
 
 export default {
   components: {},
   layout: "logined",
+  computed: {
+    ...mapState(["skillsMap"])
+  },
   data() {
     return {
       photoURL: null,
@@ -171,28 +127,16 @@ export default {
       loading: false,
       error: null,
       imageChanged: false,
-      imageSaved: false
+      imageSaved: false,
+      newPhotoFile: null
     };
   },
   async asyncData({ app }) {
-    //@Todo get user data, skills, times, areas, interests
-
-    const user = await getCurrentUser();
-    const skills = await getSkills();
-    console.log(user);
+    //@Todo show user skills, and also make them updateable
+    const user = await api.getCurrentUserProfile();
     return {
-      ...user,
-      all_skills: skills,
-      all_interests: skills
+      ...user
     };
-  },
-  async mounted() {
-    if (
-      !this.$store.state.skillsMap ||
-      Object.keys(this.$store.state.skillsMap).length === 0
-    ) {
-      this.$store.commit("setSkillsMap", await getSkills());
-    }
   },
   methods: {
     renderTag(id) {
@@ -216,87 +160,24 @@ export default {
     async sendChangeImage() {
       this.loading = true;
 
-      const ref = firebase
-        .storage()
-        .ref()
-        .child(this.photoURL);
+      this.photoURL = this.newPhotoURL;
+      await api.updateCurrentUserPhoto(this.newPhotoFile);
+      this.imageChanged = false;
+      this.imageSaved = true;
 
-      ref.put(this.newPhotoFile).then(snapshot => {
-        this.loading = false;
-        this.imageChanged = false;
-        this.imageSaved = true;
-        this.photoURL = this.newPhotoURL;
-        //@Todo bust the image cache as the old one stays
-      });
+      this.loading = false;
     },
     async next() {
       this.loading = true;
 
-      await updateCurrentUser({
+      await api.updateCurrentUser({
         interests: this.interests,
         job: this.job,
         intro: this.intro,
         name: this.name
       });
+
       this.loading = false;
-      /* this.error_message = ""; */
-      /* let hasError = false; */
-      /* if (this.last_name == "") { */
-      /*   this.error_message += "姓を入力してください<br>"; */
-      /*   hasError = true; */
-      /* } */
-      /* if (this.first_name == "") { */
-      /*   this.error_message += "名を入力してください<br>"; */
-      /*   hasError = true; */
-      /* } */
-      /* if (this.select_skills.length < 1) { */
-      /*   this.error_message += "自分のgivは最低一つ選択してください<br>"; */
-      /*   hasError = true; */
-      /* } */
-      /* if (this.select_times.length < 1) { */
-      /*   this.error_message += */
-      /*     "givを提供できる時間は最低一つ選択してください<br>"; */
-      /*   hasError = true; */
-      /* } */
-      /* if (this.select_areas.length < 1) { */
-      /*   this.error_message += "提供場所を一つ選択してください。<br>"; */
-      /*   hasError = true; */
-      /* } */
-      /* if (this.select_interests.length < 1) { */
-      /*   this.error_message += "興味・関心は最低一つ選択してください。<br>"; */
-      /*   hasError = true; */
-      /* } */
-      /* if (!hasError) { */
-      /*   const baseUrl = process.env.baseUrl + "/me"; */
-      /*   const getUrl = encodeURI(baseUrl); */
-      /*   const token = this.$auth.$storage.getUniversal("_token.auth0"); */
-      /*   const config = { */
-      /*     headers: { */
-      /*       "Content-Type": "application/json", */
-      /*       Authorization: token */
-      /*     } */
-      /*   }; */
-      /*   const data = { */
-      /*     first_name: this.first_name, */
-      /*     last_name: this.last_name, */
-      /*     job: this.position, */
-      /*     introduction: this.introduction, */
-      /*     giv_tags: this.select_skills, */
-      /*     area_tags: [this.select_areas], */
-      /*     interest_tags: this.select_interests, */
-      /*     time_tags: this.select_times */
-      /*   }; */
-      /*   console.log(data); */
-      /*   return axios */
-      /*     .put(baseUrl, data, config) */
-      /*     .then(res => { */
-      /*       console.log(res); */
-      /*       this.$router.push("mypage"); */
-      /*     }) */
-      /*     .catch(e => { */
-      /*       this.hasError = "もう一度はじめからやり直してください"; */
-      /*     }); */
-      /* } */
     }
   }
 };
