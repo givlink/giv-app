@@ -24,22 +24,21 @@
           {{ giv.kind }}
         </span>
       </div>
-      <slick
-        ref="slick"
-        :options="slickOptions"
-        class="Detail__box__images"
+      <carousel
+        perPage="1"
+        minSwipeDistance="10"
+        paginationActiveColor="#42A8E4"
+        paginationColor="gray"
         v-if="post.images"
       >
-        <template v-for="item of post.images">
-          <div>
+        <slide v-for="item of post.images" :key="item" class="">
             <img
-              v-lazy="$utils.parseUrl(item)"
-              class="Detail__box__images__img"
+            class="object-contain"
+              :src="$utils.parseUrl(item)"
               alt
             ></img>
-          </div>
-        </template>
-      </slick>
+        </slide>
+      </carousel>
       <div class="Detail__box__info">
         <template v-if="isLike">
           <p class="Detail__box__info__good" v-on:click="deleteLike">
@@ -146,9 +145,7 @@
 </template>
 
 <script>
-import Slick from "vue-slick"; // Slick読み込み
-import "../../../node_modules/slick-carousel/slick/slick.css"; // Slickのcss読み込み
-import "../../../node_modules/slick-carousel/slick/slick-theme.css"; // Slickのcss読み込み
+import {Carousel, Slide} from "vue-carousel"; 
 
 import firebase from "../../../lib/firebase";
 
@@ -258,18 +255,13 @@ const postComment = async ({ message = "", author = null, postId = null }) => {
 
 export default {
   components: {
-    Slick
+    Carousel,
+    Slide
   },
-  /* middleware: 'auth', */
   layout: "logined",
   data() {
     return {
       message: "",
-      slickOptions: {
-        arrows: false,
-        dots: true,
-        adaptiveHeight: true
-      },
       code: "",
       hasError: "",
       isLike: false,

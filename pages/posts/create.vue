@@ -24,7 +24,9 @@
         class="Form__box__textarea"
         max-rows="6"
       ></b-form-textarea>
-      <label for="image" class="Form__box__label">画像を追加しましょう（※最大３つ）</label>
+      <label for="image" class="Form__box__label"
+        >画像を追加しましょう（※最大３つ）</label
+      >
       <label for="image" class="Form__box__label">1つ目</label>
       <b-form-file
         v-model="file"
@@ -70,7 +72,7 @@ export default {
       message: "",
       file: "",
       id: "",
-      sending: false,
+      sending: false
     };
   },
   mounted() {},
@@ -90,9 +92,9 @@ export default {
         giver: {
           id: giver.id,
           name: giver.name,
-          photoURL: giver.photoURL,
-        },
-      },
+          photoURL: giver.photoURL
+        }
+      }
     };
   },
   methods: {
@@ -101,7 +103,7 @@ export default {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
+        reader.onerror = error => reject(error);
       });
     },
     async send() {
@@ -117,14 +119,19 @@ export default {
         message: this.message,
         images,
         authorId: api.getCurrentUser().uid,
-        giv: this.giv,
+        giv: this.giv
       };
 
       try {
         const user = await api.getCurrentUser();
         this.post = await api.createPost(data);
-        await api.updateNotification({ userId: user.uid, id: this.notificationId, status: "read" });
+        await api.updateNotification({
+          userId: user.uid,
+          id: this.notificationId,
+          status: "read"
+        });
       } catch (err) {
+        //@Todo sentry
         console.log("Got err:", err);
         this.hasError = "送信に失敗しました";
       }
@@ -133,8 +140,8 @@ export default {
       if (this.post) {
         this.$router.push({ path: `/posts/${this.post.id}` });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
