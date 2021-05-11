@@ -27,7 +27,7 @@
             type="file"
             id="image"
             accept="image/*"
-            @change="onFileChange($event)"
+            @change="onFileChange"
           />
           <button
             v-on:click="sendChangeImage"
@@ -148,6 +148,7 @@ export default {
       }
     },
     onFileChange(e) {
+      e.preventDefault();
       this.imageChanged = false;
       const files = e.target.files;
       if (files.length > 0) {
