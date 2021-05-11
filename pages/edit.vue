@@ -36,6 +36,7 @@
           >
             画像の変更を確定
           </button>
+          <p class="UserForm__regist__error">{{ error }}</p>
         </div>
       </div>
       <div class="UserForm">
@@ -161,7 +162,11 @@ export default {
       this.loading = true;
 
       this.photoURL = this.newPhotoURL;
-      await api.updateCurrentUserPhoto(this.newPhotoFile);
+      try {
+        await api.updateCurrentUserPhoto(this.newPhotoFile);
+      } catch (err) {
+        this.error = err.message;
+      }
       this.imageChanged = false;
       this.imageSaved = true;
 
