@@ -11,7 +11,7 @@
               v-lazy="$utils.parseUrl(post.author.photoURL)"
               class="Detail__box__header__user__icon__img"
               alt
-            ></img>
+            />
           </div>
 
           <div class="Detail__box__header__user__text">
@@ -25,18 +25,22 @@
         </span>
       </div>
       <carousel
-        perPage="1"
-        minSwipeDistance="10"
+        :perPage="1"
+        :minSwipeDistance="50"
         paginationActiveColor="#42A8E4"
         paginationColor="gray"
         v-if="post.images"
       >
-        <slide v-for="item of post.images" :key="item" class="">
-            <img
-            class="object-contain"
-              :src="$utils.parseUrl(item)"
-              alt
-            ></img>
+        <slide
+          v-for="item of post.images"
+          :key="item"
+          class="space-x-1 flex items-center justify-center"
+        >
+          <img
+            class="object-contain rounded max-w-sm sm:max-w-lg md:max-w-xl mx-auto"
+            :src="$utils.parseUrl(item)"
+            alt
+          />
         </slide>
       </carousel>
       <div class="Detail__box__info">
@@ -79,7 +83,7 @@
               v-lazy="$utils.parseUrl(post.giver.photoURL)"
               class="Home__card__content__person__icon__img"
               alt
-            ></img>
+            />
           </div>
           <div class="Home__card__content__person__text">
             <p class="Home__card__content__person__text__head">givを贈った人</p>
@@ -97,7 +101,7 @@
           src="~/assets/image/icon_edit.png"
           class="User__profile__edit__img"
           alt
-        ></img>
+        />
       </nuxt-link>
     </template>
     <div class="Comment">
@@ -117,7 +121,7 @@
                 v-lazy="$utils.parseUrl(item.author && item.author.photoURL)"
                 class="Detail__box__header__user__icon__img"
                 alt
-              ></img>
+              />
             </nuxt-link>
             {{ item.authorName }} 投稿日:{{ $utils.parseDate(item.updatedAt) }}
           </p>
@@ -137,7 +141,7 @@
       </div>
     </div>
     <div class="Back">
-      <button @click="$router.go(-1)"class="Back__btn focus:outline-none">
+      <button @click="$router.go(-1)" class="Back__btn focus:outline-none">
         一覧へ戻る
       </button>
     </div>
@@ -145,7 +149,7 @@
 </template>
 
 <script>
-import {Carousel, Slide} from "vue-carousel"; 
+import { Carousel, Slide } from "vue-carousel";
 
 import firebase from "../../../lib/firebase";
 
