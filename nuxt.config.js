@@ -10,6 +10,7 @@ export default {
     }
   },
   mode: "spa",
+  // ssr: false,
   head: {
     title: process.env.npm_package_name || "",
     meta: [
