@@ -28,7 +28,7 @@
         />
       </nuxt-link>
     </div>
-    <div class="User__giv" v-if="recommendations">
+    <div class="User__giv" v-if="recommendations && recommendations.length > 0">
       <h3 class="User__giv__title">Recommendations</h3>
       <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
         <UserCircleItem
@@ -39,7 +39,10 @@
         />
       </ul>
     </div>
-    <div class="User__giv" v-if="usersWhoLikeYourSkills">
+    <div
+      class="User__giv"
+      v-if="usersWhoLikeYourSkills && usersWhoLikeYourSkills.length > 0"
+    >
       <h3 class="User__giv__title">Users who like your skills</h3>
       <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
         <UserCircleItem
@@ -50,7 +53,7 @@
         />
       </ul>
     </div>
-    <div class="User__giv" v-if="similarUsers">
+    <div class="User__giv" v-if="similarUsers && similarUsers.length > 0">
       <h3 class="User__giv__title">Users with similar interests</h3>
       <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
         <UserCircleItem
