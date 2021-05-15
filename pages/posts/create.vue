@@ -123,7 +123,7 @@ export default {
       };
 
       try {
-        const user = await api.getCurrentUser();
+        const user = api.getCurrentUser();
         this.post = await api.createPost(data);
         await api.updateNotification({
           userId: user.uid,

@@ -1,7 +1,7 @@
 <template>
   <div class="User Main">
     <div class="Back">
-      <button @click="$router.go(-1)"class="Back__btn focus:outline-none">
+      <button @click="$router.go(-1)" class="Back__btn focus:outline-none">
         一覧へ戻る
       </button>
     </div>
@@ -11,7 +11,7 @@
           :src="$utils.parseUrl(profile.photoURL + `?height=500`)"
           class="User__profile__icon__img"
           alt
-        ></img>
+        />
       </div>
       <p class="User__profile__name">{{ profile.name }}</p>
       <p class="User__profile__position">{{ profile.job }}</p>
@@ -25,8 +25,41 @@
           src="~/assets/image/icon_edit.png"
           class="User__profile__edit__img"
           alt
-        ></img>
+        />
       </nuxt-link>
+    </div>
+    <div class="User__giv" v-if="recommendations">
+      <h3 class="User__giv__title">Recommendations</h3>
+      <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
+        <UserCircleItem
+          :user="user"
+          class=""
+          v-for="user of recommendations"
+          :key="user.id"
+        />
+      </ul>
+    </div>
+    <div class="User__giv" v-if="usersWhoLikeYourSkills">
+      <h3 class="User__giv__title">Users who like your skills</h3>
+      <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
+        <UserCircleItem
+          :user="user"
+          class=""
+          v-for="user of usersWhoLikeYourSkills"
+          :key="user.id"
+        />
+      </ul>
+    </div>
+    <div class="User__giv" v-if="similarUsers">
+      <h3 class="User__giv__title">Users with similar interests</h3>
+      <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
+        <UserCircleItem
+          :user="user"
+          class=""
+          v-for="user of similarUsers"
+          :key="user.id"
+        />
+      </ul>
     </div>
     <div class="User__giv">
       <h3 class="User__giv__title">登録しているgiv</h3>
@@ -62,7 +95,7 @@
                 :src="$utils.parseUrl(item.images[0])"
                 class="User__latest__wrap__box__img"
                 alt
-              ></img>
+              />
             </template>
             <template v-else>
               <span>NO IMAGE</span>
@@ -81,7 +114,7 @@
                 :src="$utils.parseUrl(item.images[0])"
                 class="User__latest__wrap__box__img"
                 alt
-              ></img>
+              />
             </template>
             <template v-else>
               <span>NO IMAGE</span>
@@ -128,8 +161,12 @@
 
 <script>
 import api from "../../lib/api";
+import UserCircleItem from "@/components/UserCircleItem";
 export default {
   layout: "logined",
+  components: {
+    UserCircleItem
+  },
   data() {
     return {
       profile: "",
@@ -137,6 +174,7 @@ export default {
       received: "",
       onModal: false,
       currentUserId: "",
+      recommendations: [],
       id: null
     };
   },
@@ -147,32 +185,28 @@ export default {
       const posts = await api.getUserPosts(params.id);
       const receivedPosts = await api.getUserReceivedPosts(params.id);
 
+      let recommendations, similarUsers, usersWhoLikeYourSkills;
+      //user recommendations
+      if (currentUser.uid === params.id) {
+        recommendations = await api.listRecommendations(profile);
+        similarUsers = await api.listSimilarUsers(profile);
+        usersWhoLikeYourSkills = await api.listUsersWhoLikeYourSkills(profile);
+      }
+
       const result = {
         profile,
         posts,
         received: receivedPosts,
         id: params.id,
-        currentUserId: currentUser.uid
+        currentUserId: currentUser.uid,
+        recommendations: app.$utils.shuffleArray(recommendations),
+        similarUsers: app.$utils.shuffleArray(similarUsers),
+        usersWhoLikeYourSkills: app.$utils.shuffleArray(usersWhoLikeYourSkills)
       };
       return result;
     }
   },
-  async mounted() {
-    if (
-      !this.$store.state.skillsMap ||
-      Object.keys(this.$store.state.skillsMap).length === 0
-    ) {
-      console.log("setting again");
-      this.$store.commit("setSkillsMap", await api.listSkills());
-    }
-    if (
-      !this.$store.state.areasMap ||
-      Object.keys(this.$store.state.areasMap).length === 0
-    ) {
-      console.log("setting again");
-      this.$store.commit("setAreasMap", await api.listAreas());
-    }
-  },
+  async mounted() {},
   methods: {
     renderAreaTag(id) {
       try {

@@ -1,5 +1,4 @@
 import moment from "moment";
-
 function isTimestamp(str) {
   return /^\d+$/.test(str);
 }
@@ -21,6 +20,21 @@ const utils = {
   setGlobalOffset: val => (globalOffset = val),
   getGlobalUserSearchOffset: () => globalUserSearchOffset,
   setGlobalUserSearchOffset: val => (globalUserSearchOffset = val),
+
+  shuffleArray: array => {
+    if (!array) return [];
+
+    try {
+      array.sort(() => {
+        return 0.5 - Math.random();
+      });
+    } catch (err) {
+      console.log("err shuffling:", err);
+      //@Todo sentry
+    }
+    return array;
+  },
+
   parseUrl: path => {
     if (path && path.startsWith("http")) {
       return path;
