@@ -33,13 +33,13 @@
             class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
-          <div class="Form__img__delete" v-on:click="deleteImage('image1')">
+          <button class="Form__img__delete" v-on:click="deleteImage('image1')">
             <b-img
               src="~/assets/image/icon_delete.png"
               class="Form__img__delete__img"
               alt
             ></b-img>
-          </div>
+          </button>
         </div>
       </template>
       <template v-else>
@@ -59,13 +59,13 @@
             class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
-          <div class="Form__img__delete" v-on:click="deleteImage('image2')">
+          <button class="Form__img__delete" v-on:click="deleteImage('image2')">
             <b-img
               src="~/assets/image/icon_delete.png"
               class="Form__img__delete__img"
               alt
             ></b-img>
-          </div>
+          </button>
         </div>
       </template>
       <template v-else>
@@ -85,13 +85,13 @@
             class="Form__img__img mx-auto object-cover h-auto w-full max-w-md"
             alt
           ></b-img>
-          <div class="Form__img__delete" v-on:click="deleteImage('image3')">
+          <button class="Form__img__delete" v-on:click="deleteImage('image3')">
             <b-img
               src="~/assets/image/icon_delete.png"
               class="Form__img__delete__img"
               alt
             ></b-img>
-          </div>
+          </button>
         </div>
       </template>
       <template v-else>
