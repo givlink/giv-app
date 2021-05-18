@@ -343,19 +343,27 @@ export default {
       //@Todo feedback user for success/failure
     },
     async deleteComments(id) {
-      var confirm = window.confirm("本当に削除しますか？");
-      if (confirm) {
-        try {
-          await deleteComment({ id });
-          alert("コメントを削除しました");
+      this.$confirm({
+        message: "本当に削除しますか？",
+        button: {
+          no: "いいえ",
+          yes: "はい"
+        },
+        callback: async confirm => {
+          if (confirm) {
+            try {
+              await deleteComment({ id });
+              alert("コメントを削除しました");
 
-          this.comments = this.comments.filter(c => c.id !== id);
-        } catch (err) {
-          console.log("ERR deleting comment:", err);
-          alert(err.message);
-          return;
+              this.comments = this.comments.filter(c => c.id !== id);
+            } catch (err) {
+              console.log("ERR deleting comment:", err);
+              alert(err.message);
+              return;
+            }
+          }
         }
-      }
+      });
     },
     async sendLike() {
       this.isLike = true;
