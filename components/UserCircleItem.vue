@@ -6,9 +6,11 @@
         class="mx-auto row-span-4 h-full w-32 object-cover rounded-2xl overflow-hidden"
       />
       <div class="mt-auto flex flex-col items-center">
-        <span class="text-center pt-2 pb-1 truncate">{{ user.name }}</span>
+        <span class="text-center pt-2 pb-1 truncate">{{
+          $utils.snipText(user.name, 10)
+        }}</span>
         <span class="User__giv__tags__tag truncate">{{
-          randomMatchingSkill
+          $utils.snipText(randomMatchingSkill, 8)
         }}</span>
       </div>
     </div>
