@@ -1,5 +1,6 @@
 <template>
   <div>
+    <vue-confirm-dialog></vue-confirm-dialog>
     <ex-header />
     <nuxt />
     <ex-footer />

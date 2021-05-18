@@ -171,20 +171,35 @@ export default {
       this.loading = false;
     },
     async deleteImage(imgId) {
-      var result = confirm("本当に画像を削除しますか？");
-      if (result) {
-        this[imgId] = null;
-      }
+      this.$confirm({
+        message: "本当に画像を削除しますか？",
+        button: {
+          no: "いいえ",
+          yes: "はい"
+        },
+        callback: confirm => {
+          if (confirm) {
+            this[imgId] = null;
+          }
+        }
+      });
     },
     async deletePost() {
-      var result = confirm("本当にこのポストを削除しますか？");
-      this.loading = true;
-      if (result) {
-        await api.deletePost(this.id);
-        this.loading = false;
-        this.$router.push("/");
-        location.reload();
-      }
+      this.$confirm({
+        message: "本当にこのポストを削除しますか？",
+        button: {
+          no: "いいえ",
+          yes: "はい"
+        },
+        callback: async confirm => {
+          if (confirm) {
+            await api.deletePost(this.id);
+            this.loading = false;
+            this.$router.push("/");
+            location.reload();
+          }
+        }
+      });
     },
     async updateImages() {
       try {

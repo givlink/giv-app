@@ -48,6 +48,7 @@ export default {
     "~/plugins/utils.js",
     "~/plugins/scroll.js",
     "~/plugins/pull-refresh.js",
+    "~/plugins/confirm-dialog.js",
     "~/plugins/vue-select.js",
     "~/plugins/auth.js",
     { src: "~/plugins/vue-lazyload.js", ssr: false }
