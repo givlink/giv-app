@@ -1,5 +1,10 @@
 <template>
   <div class="Form Main">
+    <div class="Spinner" v-show="loading">
+      <div class="Spinner__box">
+        <b-spinner label="Loading..." :variant="'primary'"></b-spinner>
+      </div>
+    </div>
     <p class="Form__text"></p>
     <div class="Form__box">
       <label for="title" class="Form__box__label">タイトル（※）</label>
@@ -123,7 +128,8 @@ export default {
       image1: null,
       image2: null,
       image3: null,
-      id: ""
+      id: "",
+      loading: false
     };
   },
   mounted() {
@@ -151,6 +157,7 @@ export default {
   },
   methods: {
     async updateText() {
+      this.loading = true;
       try {
         await api.updatePost({
           id: this.id,
@@ -161,6 +168,7 @@ export default {
       } catch (err) {
         this.hasError = `送信に失敗しました: ${err.message}`;
       }
+      this.loading = false;
     },
     async deleteImage(imgId) {
       var result = confirm("本当に画像を削除しますか？");
@@ -170,40 +178,47 @@ export default {
     },
     async deletePost() {
       var result = confirm("本当にこのポストを削除しますか？");
+      this.loading = true;
       if (result) {
         await api.deletePost(this.id);
+        this.loading = false;
         this.$router.push("/");
+        location.reload();
       }
     },
     async updateImages() {
       try {
-        throw new Error("test");
         if (!this.image1 && !this.image2 && !this.image3) {
           alert("画像が設定されていません");
           return;
         }
+
+        this.loading = true;
+
         //Handle user deleted images
-        if (!this.image1) {
+        if (!this.image1 && !!this.post.images[0]) {
+          //user deleted image 1
           await api.deleteImage(this.post.images[0]);
           this.post.images[0] = null;
         }
-        if (!this.image2) {
+        if (!this.image2 && !!this.post.images[1]) {
           await api.deleteImage(this.post.images[1]);
           this.post.images[1] = null;
         }
-        if (!this.image3) {
+        if (!this.image3 && !!this.post.images[2]) {
           await api.deleteImage(this.post.images[2]);
           this.post.images[2] = null;
         }
 
         if (this.image1 && typeof this.image1 !== "string") {
           //upload image 1 and replace
-
           const path = `images/${this.post.authorId}/posts/${
             this.post.id
           }/images/${shortId.generate()}`;
           await api.uploadImage(this.image1, path);
-          await api.deleteImage(this.post.images[0]);
+          if (this.post.images[0]) {
+            await api.deleteImage(this.post.images[0]);
+          }
           this.post.images[0] = path;
         }
         if (this.image2 && typeof this.image2 !== "string") {
@@ -212,6 +227,9 @@ export default {
             this.post.id
           }/images/${shortId.generate()}`;
           await api.uploadImage(this.image2, path);
+          if (this.post.images[1]) {
+            await api.deleteImage(this.post.images[1]);
+          }
           this.post.images[1] = path;
         }
         if (this.image3 && typeof this.image3 !== "string") {
@@ -220,6 +238,9 @@ export default {
             this.post.id
           }/images/${shortId.generate()}`;
           await api.uploadImage(this.image3, path);
+          if (this.post.images[0]) {
+            await api.deleteImage(this.post.images[2]);
+          }
           this.post.images[2] = path;
         }
 
@@ -231,6 +252,7 @@ export default {
         alert(msg);
         this.hasError = msg;
       }
+      this.loading = false;
     },
     makeOrParseUrl(path) {
       try {
