@@ -25,14 +25,15 @@ const utils = {
     if (!array) return [];
 
     try {
-      array.sort(() => {
+      //slice to not update original
+      return array.slice().sort(() => {
         return 0.5 - Math.random();
       });
     } catch (err) {
       console.log("err shuffling:", err);
       //@Todo sentry
+      return array;
     }
-    return array;
   },
 
   parseUrl: path => {

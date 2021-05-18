@@ -15,6 +15,12 @@ export const state = () => ({
   posts: [],
   userSearchLoading: true,
   userSearchItems: [],
+  recommendationsLoading: true,
+  recommendations: {
+    matchingYourInterests: [],
+    matchingYourSkills: [],
+    similarInterests: []
+  },
   userSearchFilter: {
     type: null,
     value: null
@@ -37,6 +43,35 @@ const dedupeAppend = (array, newArray) => {
   return Object.values(map);
 };
 
+const fetchAreasAndSkills = async store => {
+  store.commit("setSkillsMap", await api.listSkills());
+  store.commit("setAreasMap", await api.listAreas());
+};
+
+const fetchRecommendations = async (store, userProfile) => {
+  store.commit("setRecommendations", {
+    matchingYourInterests: await api.listRecommendations(userProfile),
+    matchingYourSkills: await api.listUsersWhoLikeYourSkills(userProfile),
+    similarInterests: await api.listSimilarUsers(userProfile)
+  });
+  store.commit("setRecommendationsLoading", false);
+};
+const fetchInitialPosts = async (store, context) => {
+  const [posts, offset] = await api.listPosts({
+    area: store.state.filterArea,
+    offset: context.app.$utils.getGlobalOffset(),
+    limit: store.state.postLimit
+  });
+  store.commit("setPosts", posts);
+  context.app.$utils.setGlobalOffset(offset);
+};
+const fetchInitialUsersForSearch = async (store, context) => {
+  const [users, userOffset] = await api.listUsers();
+  store.commit("setUserSearchItems", { users });
+  store.commit("setUserSearchLoading", false);
+  context.app.$utils.setGlobalUserSearchOffset(userOffset);
+};
+
 export const mutations = {
   setFilterArea(state, area) {
     if (state.filterArea === area) return;
@@ -49,6 +84,12 @@ export const mutations = {
     state.filterArea = area;
 
     state.posts = []; //reset posts
+  },
+  setRecommendations(state, r) {
+    state.recommendations = r;
+  },
+  setRecommendationsLoading(state, b) {
+    state.recommendationsLoading = b;
   },
   setUserProfile(state, user) {
     state.userProfile = user;
@@ -202,29 +243,16 @@ export const actions = {
           store.commit("setNotifications", nots)
         );
 
-        //Fetch areas and skills
-        store.commit("setSkillsMap", await api.listSkills());
-        store.commit("setAreasMap", await api.listAreas());
+        fetchAreasAndSkills(store);
 
         //Fetch user profile
         const userProfile = await api.getUserProfile(u.uid);
         store.commit("setUserProfile", userProfile);
         store.commit("setUserProfileLoading", false);
 
-        //Fetch initial posts
-        const [posts, offset] = await api.listPosts({
-          area: store.state.filterArea,
-          offset: context.app.$utils.getGlobalOffset(),
-          limit: store.state.postLimit
-        });
-        store.commit("setPosts", posts);
-        context.app.$utils.setGlobalOffset(offset);
-
-        //Fetch initial users (search page)
-        const [users, userOffset] = await api.listUsers();
-        store.commit("setUserSearchItems", { users });
-        store.commit("setUserSearchLoading", false);
-        context.app.$utils.setGlobalUserSearchOffset(userOffset);
+        fetchInitialPosts(store, context);
+        fetchInitialUsersForSearch(store, context);
+        fetchRecommendations(store, userProfile);
       } else {
         store.commit("setUser", null);
         this.listener && this.listener();

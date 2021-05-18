@@ -28,41 +28,16 @@
         />
       </nuxt-link>
     </div>
-    <div class="User__giv" v-if="recommendations && recommendations.length > 0">
-      <h3 class="User__giv__title">Recommendations</h3>
-      <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
-        <UserCircleItem
-          :user="user"
-          class=""
-          v-for="user of recommendations"
-          :key="user.id"
-        />
-      </ul>
-    </div>
-    <div
-      class="User__giv"
-      v-if="usersWhoLikeYourSkills && usersWhoLikeYourSkills.length > 0"
-    >
-      <h3 class="User__giv__title">Users who like your skills</h3>
-      <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
-        <UserCircleItem
-          :user="user"
-          class=""
-          v-for="user of usersWhoLikeYourSkills"
-          :key="user.id"
-        />
-      </ul>
-    </div>
-    <div class="User__giv" v-if="similarUsers && similarUsers.length > 0">
-      <h3 class="User__giv__title">Users with similar interests</h3>
-      <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
-        <UserCircleItem
-          :user="user"
-          class=""
-          v-for="user of similarUsers"
-          :key="user.id"
-        />
-      </ul>
+    <div v-if="currentUserId === id">
+      <Recommendation type="matchingYourInterests" label="Recommendations" />
+      <Recommendation
+        type="matchingYourSkills"
+        label="Users who like your skills"
+      />
+      <Recommendation
+        type="similarInterests"
+        label="Users with similar interests"
+      />
     </div>
     <div class="User__giv">
       <h3 class="User__giv__title">登録しているgiv</h3>
@@ -164,11 +139,11 @@
 
 <script>
 import api from "../../lib/api";
-import UserCircleItem from "@/components/UserCircleItem";
+import Recommendation from "@/components/Recommendation";
 export default {
   layout: "logined",
   components: {
-    UserCircleItem
+    Recommendation
   },
   data() {
     return {
@@ -188,23 +163,12 @@ export default {
       const posts = await api.getUserPosts(params.id);
       const receivedPosts = await api.getUserReceivedPosts(params.id);
 
-      let recommendations, similarUsers, usersWhoLikeYourSkills;
-      //user recommendations
-      if (currentUser.uid === params.id) {
-        recommendations = await api.listRecommendations(profile);
-        similarUsers = await api.listSimilarUsers(profile);
-        usersWhoLikeYourSkills = await api.listUsersWhoLikeYourSkills(profile);
-      }
-
       const result = {
         profile,
         posts,
         received: receivedPosts,
         id: params.id,
-        currentUserId: currentUser.uid,
-        recommendations: app.$utils.shuffleArray(recommendations),
-        similarUsers: app.$utils.shuffleArray(similarUsers),
-        usersWhoLikeYourSkills: app.$utils.shuffleArray(usersWhoLikeYourSkills)
+        currentUserId: currentUser.uid
       };
       return result;
     }

@@ -29,7 +29,17 @@
         ></v-select>
       </div>
     </div>
-    <ul class="Search__list" style="margin-top:15px;">
+    <div class="mt-20" />
+    <Recommendation type="matchingYourInterests" label="Recommendations" />
+    <Recommendation
+      type="matchingYourSkills"
+      label="Users who like your skills"
+    />
+    <Recommendation
+      type="similarInterests"
+      label="Users with similar interests"
+    />
+    <ul class="Search__list">
       <li class="Search__list__li" v-for="item of userSearchItems">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">
           <div class="Search__list__li__link__icon">
@@ -69,13 +79,17 @@
 </template>
 
 <script>
-import api from "../../lib/api";
-import OpenIndicator from "../../components/OpenIndicator.vue";
-import Deselect from "../../components/Deselect.vue";
+import api from "@/lib/api";
+import OpenIndicator from "@/components/OpenIndicator";
+import Recommendation from "@/components/Recommendation";
+import Deselect from "@/components/Deselect";
 import { mapState, mapActions } from "vuex";
 
 export default {
   layout: "logined",
+  components: {
+    Recommendation
+  },
   data() {
     return {
       OpenIndicator,
