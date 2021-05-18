@@ -253,7 +253,7 @@ export default {
             this.post.id
           }/images/${shortId.generate()}`;
           await api.uploadImage(this.image3, path);
-          if (this.post.images[0]) {
+          if (this.post.images[2]) {
             await api.deleteImage(this.post.images[2]);
           }
           this.post.images[2] = path;
