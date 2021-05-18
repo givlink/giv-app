@@ -29,15 +29,9 @@
       </nuxt-link>
     </div>
     <div v-if="currentUserId === id">
-      <Recommendation type="matchingYourInterests" label="Recommendations" />
-      <Recommendation
-        type="matchingYourSkills"
-        label="Users who like your skills"
-      />
-      <Recommendation
-        type="similarInterests"
-        label="Users with similar interests"
-      />
+      <Recommendation type="matchingYourInterests" />
+      <Recommendation type="matchingYourSkills" />
+      <Recommendation type="similarInterests" />
     </div>
     <div class="User__giv">
       <h3 class="User__giv__title">登録しているgiv</h3>

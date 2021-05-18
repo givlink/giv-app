@@ -30,15 +30,9 @@
       </div>
     </div>
     <div class="mt-20" />
-    <Recommendation type="matchingYourInterests" label="Recommendations" />
-    <Recommendation
-      type="matchingYourSkills"
-      label="Users who like your skills"
-    />
-    <Recommendation
-      type="similarInterests"
-      label="Users with similar interests"
-    />
+    <Recommendation type="matchingYourInterests" />
+    <Recommendation type="matchingYourSkills" />
+    <Recommendation type="similarInterests" />
     <ul class="Search__list">
       <li class="Search__list__li" v-for="item of userSearchItems">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">

@@ -132,7 +132,11 @@ export default {
       this.posts.forEach(p => (map[p.id] = p));
       posts.forEach(p => (map[p.id] = p));
       const result = Object.values(map);
-      result.sort((a, b) => a.createdAt > b.createdAt);
+      result.sort((a, b) => {
+        if (a.createdAt > b.createdAt) return -1;
+        if (b.createdAt > a.createdAt) return 1;
+        return 0;
+      });
       return result;
     },
     //@Todo copy paste from below

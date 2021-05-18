@@ -1,6 +1,6 @@
 <template>
   <div class="User__giv" v-if="!recommendationsLoading && users.length > 0">
-    <h3 class="User__giv__title">{{ label }}</h3>
+    <h3 class="User__giv__title">{{ getLabel }}</h3>
     <ul class="flex items-center overflow-x-auto overflow-y-hidden space-x-3">
       <UserCircleItem
         :user="user"
@@ -23,6 +23,20 @@ export default {
     ...mapState(["recommendations", "recommendationsLoading"]),
     users() {
       return this.$utils.shuffleArray(this.recommendations[this.type]);
+    },
+    getLabel() {
+      if (this.label) return this.label;
+
+      switch (this.type) {
+        case "matchingYourInterests":
+          return "受け取ってみませんか？　あなたが興味/関心あるギブを提供できるメンバー";
+        case "matchingYourSkills":
+          return "贈ってみませんか？　あなたのギブに興味/関心があるメンバー";
+        case "similarInterests":
+          return "あなたと同じ興味/関心を持つメンバー";
+      }
+
+      return "";
     }
   },
   components: {

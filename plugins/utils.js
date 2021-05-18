@@ -79,6 +79,8 @@ const utils = {
         .utc()
         .format("YYYY.MM.DD");
     }
+
+    // console.log("input:", date, "output", str);
     return str;
   }
 };
