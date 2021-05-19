@@ -21,8 +21,8 @@
                 style="display:flex; justify-content:center; align-items:center;"
               >
                 <b-img
-                  :src="$utils.parseUrl(item.giver.photoURL)"
-                  alt="item.giver.name"
+                  :src="$utils.parseUrl(item.giver && item.giver.photoURL)"
+                  alt=""
                   style="height:30px; width:30px;border-radius:100%;"
                 ></b-img>
                 <span class="" style="margin-left:5px;">
@@ -40,7 +40,7 @@
         >
           <div class="Notification__list__li__link__icon">
             <b-img
-              :src="$utils.parseUrl(item.sender.photoURL)"
+              :src="$utils.parseUrl(item.sender && item.sender.photoURL)"
               class="Notification__list__li__link__icon__img"
               alt
             ></b-img>
@@ -48,7 +48,7 @@
           <div class="Notification__list__li__link__text">
             <p class="Notification__list__li__link__text__info">
               「{{
-                item.sender.name
+                item.sender && item.sender.name
               }}」さんからgivを贈りたいのアクションがありました
             </p>
             <p class="Notification__list__li__link__text__date">
@@ -64,7 +64,7 @@
         >
           <div class="Notification__list__li__link__icon">
             <b-img
-              :src="$utils.parseUrl(item.receiver.photoURL)"
+              :src="$utils.parseUrl(item.receiver && item.receiver.photoURL)"
               class="Notification__list__li__link__icon__img"
               alt
             ></b-img>
@@ -72,7 +72,7 @@
           <div class="Notification__list__li__link__text">
             <p class="Notification__list__li__link__text__info">
               「{{
-                item.receiver.name
+                item.receiver && item.receiver.name
               }}」さんからgivを受け取りたいのアクションがありました
             </p>
             <p class="Notification__list__li__link__text__date">
@@ -114,7 +114,8 @@ export default {
   },
   computed: {
     notifications() {
-      return this.$store.getters.getNotifications();
+      const nots = this.$store.getters.getNotifications();
+      return nots;
     }
   },
   async asyncData({ app }) {

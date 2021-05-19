@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="bg-white fixed left-0 right-0 bottom-0 px-2 border-t border-gray-300"
+    class="bg-white fixed z-10 left-0 right-0 bottom-0 px-2 border-t border-gray-300"
   >
     <div class="flex items-center justify-between">
       <nuxt-link to="/" class=" flex flex-col items-center footer-link">
