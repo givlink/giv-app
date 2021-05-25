@@ -32,7 +32,7 @@ export default {
 
       switch (this.type) {
         case "matchingYourInterests":
-          return "なたが興味/関心あるギブを提供できるメンバー";
+          return "あなたが興味/関心あるギブを提供できるメンバー";
         case "matchingYourSkills":
           return "あなたのギブに興味/関心があるメンバー";
       }
