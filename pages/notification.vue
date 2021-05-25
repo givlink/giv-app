@@ -99,7 +99,7 @@
           :to="`/posts/${item.postId}`"
           v-on:click.native="markAsRead(item.id)"
           class="Notification__list__li__link"
-          v-if="item.type === 'comment'"
+          v-if="item.type === 'commentCreated'"
         >
           <div class="Notification__list__li__link__text">
             <p class="Notification__list__li__link__text__info">
