@@ -95,6 +95,21 @@
             </p>
           </div>
         </nuxt-link>
+        <nuxt-link
+          :to="`/posts/${item.postId}`"
+          v-on:click.native="markAsRead(item.id)"
+          class="Notification__list__li__link"
+          v-if="item.type === 'comment'"
+        >
+          <div class="Notification__list__li__link__text">
+            <p class="Notification__list__li__link__text__info">
+              新しいコメントがあります
+            </p>
+            <p class="Notification__list__li__link__text__date">
+              {{ $utils.parseDate(item.createdAt) }}
+            </p>
+          </div>
+        </nuxt-link>
       </li>
     </ul>
   </div>
