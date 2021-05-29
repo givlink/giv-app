@@ -1,8 +1,8 @@
 <template>
   <footer
-    class="bg-white fixed z-10 left-0 right-0 bottom-0 px-2 border-t border-gray-300"
+    class="bg-white fixed z-10 left-0 right-0 bottom-0 px-2 border-t border-gray-300 px-1 py-3 "
   >
-    <div class="flex items-center justify-between">
+    <div class="max-w-xl mx-auto flex items-center justify-between">
       <nuxt-link to="/" class=" flex flex-col items-center footer-link">
         <svg
           class="w-5 h-5"
@@ -20,7 +20,7 @@
         </svg>
         <p class="pt-1">タイムライン</p>
       </nuxt-link>
-      <nuxt-link to="/users" class="Footer__box footer-link">
+      <nuxt-link to="/users" class="flex flex-col items-center footer-link">
         <svg
           class="w-5 h-5"
           fill="none"
@@ -37,7 +37,10 @@
         </svg>
         <p class="pt-1">検索</p>
       </nuxt-link>
-      <nuxt-link to="/notification" class="Footer__box footer-link">
+      <nuxt-link
+        to="/notification"
+        class="flex flex-col items-center footer-link"
+      >
         <svg
           class="w-5 h-5"
           fill="none"
@@ -57,7 +60,7 @@
         </div>
         <p class="pt-1">お知らせ</p>
       </nuxt-link>
-      <nuxt-link :to="myPage" class="Footer__box footer-link">
+      <nuxt-link :to="myPage" class="flex flex-col items-center footer-link">
         <svg
           class="w-5 h-5"
           fill="none"
