@@ -34,7 +34,6 @@
         </nuxt-link>
         <nuxt-link
           :to="`/users/${item.senderId}`"
-          v-on:click.native="markAsRead(item.id)"
           class="Notification__list__li__link"
           v-if="item.type === 'givRequest' && item.requestType == 'send'"
         >
@@ -58,7 +57,6 @@
         </nuxt-link>
         <nuxt-link
           :to="`/users/${item.receiverId}`"
-          v-on:click.native="markAsRead(item.id)"
           class="Notification__list__li__link"
           v-if="item.type === 'givRequest' && item.requestType == 'receive'"
         >
