@@ -10,29 +10,59 @@
         ></b-form-input>
         <span class="Search__box__form__submit" v-on:click="search()" />
       </form>
-      <div class="flex items-center space-x-1 text-xs">
-        <v-select
-          class="flex-1 py-2"
+      <div class="flex items-center space-x-1 text-xs my-2">
+        <select
           :value="selectedItem"
-          @input="setSelected"
-          placeholder="興味・関心フィルター"
-          :options="makeOptions(skillsMap, 'skills')"
-          :components="{ OpenIndicator, Deselect }"
-        ></v-select>
-        <v-select
-          class="flex-1 py-2"
+          @change="setSelected($event)"
+          class="flex-1 border border-gray-200 rounded h-8 px-1 py-2"
+        >
+          <option value="" selected class="text-center"
+            >興味・関心フィルター</option
+          >
+          <slot
+            v-for="[cat, skills] in Object.entries(
+              makeOptions2(skillsMap, 'skills')
+            )"
+          >
+            <optgroup :key="cat" :label="cat">
+              <option
+                class="block pl-1 py-1"
+                v-for="(s, j) in skills"
+                :value="s.id"
+                >{{ s.tag }}</option
+              >
+            </optgroup>
+          </slot>
+        </select>
+        <select
           :value="selectedItemArea"
-          @input="setSelectedArea"
-          placeholder="場所フィルター"
-          :options="makeOptions(areasMap, 'area')"
-          :components="{ OpenIndicator, Deselect }"
-        ></v-select>
+          @change="setSelectedArea($event)"
+          class="flex-1 border border-gray-200 rounded h-8 px-1 py-2"
+        >
+          <option value="" selected class="text-center">場所フィルター</option>
+          <slot
+            v-for="[cat, areas] in Object.entries(
+              makeOptions2(areasMap, 'area')
+            )"
+          >
+            <optgroup :key="cat" :label="cat">
+              <option
+                class="block pl-1 py-1"
+                v-for="(s, j) in areas"
+                :value="s.id"
+                >{{ s.tag }}</option
+              >
+            </optgroup>
+          </slot>
+        </select>
       </div>
     </div>
     <div class="mt-20" />
-    <Recommendation type="matchingYourInterests" />
-    <Recommendation type="matchingYourSkills" />
-    <Recommendation type="similarInterests" />
+    <div v-if="!selectedItem && !selectedItemArea">
+      <Recommendation type="matchingYourInterests" />
+      <Recommendation type="matchingYourSkills" />
+      <Recommendation type="similarInterests" />
+    </div>
     <ul class="Search__list">
       <li class="Search__list__li" v-for="item of userSearchItems">
         <nuxt-link :to="`/users/${item.id}`" class="Search__list__li__link">
@@ -126,7 +156,26 @@ export default {
   },
   methods: {
     ...mapActions(["loadMoreUserSearch"]),
+    makeOptions2(map, type) {
+      const byCat = {
+        others: []
+      };
+
+      Object.values(map).forEach(m => {
+        if (!m.category) {
+          byCat["others"].push(m);
+          return;
+        }
+
+        const catKey = this.renderSkillCategory(m.category);
+        if (!byCat[catKey]) byCat[catKey] = [];
+        byCat[catKey].push({ ...m, type });
+      });
+
+      return byCat;
+    },
     makeOptions(map, type) {
+      this.makeOptions2(map, type);
       return Object.values(map).map(v => {
         return {
           type: type,
@@ -135,14 +184,16 @@ export default {
         };
       });
     },
-    setSelected(val) {
-      this.selectedItem = val;
+    setSelected(e) {
+      const key = e.target.value;
+      const val = this.skillsMap[key];
+      this.selectedItem = key;
       this.selectedItemArea = null;
       const filter = { type: null, value: null };
       if (val) {
         this.searchQuery = "";
-        filter.type = val.type;
-        filter.value = val.key;
+        filter.type = "skills";
+        filter.value = val.id;
       }
       this.$store.dispatch({
         type: "updateUserSearchFilter",
@@ -150,20 +201,29 @@ export default {
         resetOffset: true
       });
     },
-    setSelectedArea(val) {
-      this.selectedItemArea = val;
+    setSelectedArea(e) {
+      const key = e.target.value;
+      const val = this.areasMap[key];
+      this.selectedItemArea = key;
       this.selectedItem = null;
       const filter = { type: null, value: null };
       if (val) {
         this.searchQuery = "";
-        filter.type = val.type;
-        filter.value = val.key;
+        filter.type = "area";
+        filter.value = val.id;
       }
       this.$store.dispatch({
         type: "updateUserSearchFilter",
         filter: filter,
         resetOffset: true
       });
+    },
+    renderSkillCategory(id) {
+      try {
+        return this.$store.getters.getSkillCategoryTag(id).tag;
+      } catch (err) {
+        return id;
+      }
     },
     renderTag(id) {
       try {
