@@ -19,12 +19,8 @@
           <option value="" selected class="text-center"
             >興味・関心フィルター</option
           >
-          <slot
-            v-for="[cat, skills] in Object.entries(
-              makeOptions2(skillsMap, 'skills')
-            )"
-          >
-            <optgroup :key="cat" :label="cat">
+          <slot v-for="[cat, skills] in makeOptions2(skillsMap, 'skills')">
+            <optgroup :key="cat.id" :label="cat.tag">
               <option
                 class="block pl-1 py-1"
                 v-for="(s, j) in skills"
@@ -40,12 +36,8 @@
           class="flex-1 border border-gray-200 rounded h-8 px-1 py-2"
         >
           <option value="" selected class="text-center">場所フィルター</option>
-          <slot
-            v-for="[cat, areas] in Object.entries(
-              makeOptions2(areasMap, 'area')
-            )"
-          >
-            <optgroup :key="cat" :label="cat">
+          <slot v-for="[cat, areas] in makeOptions2(areasMap, 'area')">
+            <optgroup :key="cat.id" :label="cat.tag">
               <option
                 class="block pl-1 py-1"
                 v-for="(s, j) in areas"
@@ -134,7 +126,9 @@ export default {
       "userSearchLoading",
       "userSearchItems",
       "skillsMap",
-      "areasMap"
+      "areasMap",
+      "areaCategories",
+      "skillCategories"
     ])
   },
   watch: {
@@ -157,32 +151,23 @@ export default {
   methods: {
     ...mapActions(["loadMoreUserSearch"]),
     makeOptions2(map, type) {
-      const byCat = {
-        others: []
-      };
+      const result = [];
 
-      Object.values(map).forEach(m => {
-        if (!m.category) {
-          byCat["others"].push(m);
-          return;
-        }
+      let looper = this.skillCategories;
+      if (type === "area") looper = this.areaCategories;
 
-        const catKey = this.renderSkillCategory(m.category);
-        if (!byCat[catKey]) byCat[catKey] = [];
-        byCat[catKey].push({ ...m, type });
+      looper.forEach(ac => {
+        const itemsInCategory = [];
+        Object.values(map).forEach(i => {
+          if (i.category === ac.id) {
+            itemsInCategory.push(i);
+          }
+        });
+        const item = [ac, itemsInCategory];
+        if (itemsInCategory.length) result.push(item);
       });
 
-      return byCat;
-    },
-    makeOptions(map, type) {
-      this.makeOptions2(map, type);
-      return Object.values(map).map(v => {
-        return {
-          type: type,
-          key: v.id,
-          label: v.tag
-        };
-      });
+      return result;
     },
     setSelected(e) {
       const key = e.target.value;
@@ -217,13 +202,6 @@ export default {
         filter: filter,
         resetOffset: true
       });
-    },
-    renderSkillCategory(id) {
-      try {
-        return this.$store.getters.getSkillCategoryTag(id).tag;
-      } catch (err) {
-        return id;
-      }
     },
     renderTag(id) {
       try {

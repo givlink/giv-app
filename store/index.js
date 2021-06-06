@@ -27,7 +27,8 @@ export const state = () => ({
   },
   lastError: null,
   skillsMap: {},
-  skillCategoriesMap: {},
+  skillCategories: [],
+  areaCategories: [],
   notifications: [],
   areasMap: {},
   authLoading: true,
@@ -47,7 +48,8 @@ const dedupeAppend = (array, newArray) => {
 const fetchAreasAndSkillsEtc = async store => {
   store.commit("setSkillsMap", await api.listSkills());
   store.commit("setAreasMap", await api.listAreas());
-  store.commit("setSkillCategoriesMap", await api.listSkillCategories());
+  store.commit("setSkillCategories", await api.listSkillCategories());
+  store.commit("setAreaCategories", await api.listPlaceCategories());
 };
 
 const fetchRecommendations = async (store, userProfile) => {
@@ -160,8 +162,11 @@ export const mutations = {
   setToken(state, token) {
     state.token = token;
   },
-  setSkillCategoriesMap(state, s) {
-    state.skillCategoriesMap = s;
+  setAreaCategories(state, s) {
+    state.areaCategories = s;
+  },
+  setSkillCategories(state, s) {
+    state.skillCategories = s;
   },
   setSkillsMap(state, s) {
     state.skillsMap = s;
@@ -185,7 +190,11 @@ export const getters = {
     return state.areasMap[id];
   },
   getSkillCategoryTag: state => id => {
-    return state.skillCategoriesMap[id];
+    let result;
+    state.skillCategories.forEach(i => {
+      if (i.id === id) result = i;
+    });
+    return result;
   },
   getSkillTag: state => id => {
     return state.skillsMap[id];
