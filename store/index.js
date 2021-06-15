@@ -1,5 +1,7 @@
 import firebase from "../lib/firebase";
 import api from "../lib/api";
+
+const DEBUG_MODE = false;
 export const state = () => ({
   skills: [],
   places: [],
@@ -256,8 +258,10 @@ export const actions = {
         };
         store.commit("setUser", u);
 
-        listener = api.watchNotifications(u.uid, nots =>
-          store.commit("setNotifications", nots)
+        listener = api.watchNotifications(
+          u.uid,
+          nots => store.commit("setNotifications", nots),
+          DEBUG_MODE
         );
 
         fetchAreasAndSkillsEtc(store);

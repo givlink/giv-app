@@ -1,5 +1,5 @@
 <template>
-  <div class="Notification Main">
+  <div class="Notification Main mt-3">
     <ul class="Notification__list">
       <li class="Notification__list__li" v-for="item of notifications">
         <nuxt-link
@@ -30,52 +30,6 @@
                 </span>
               </div>
             </div>
-          </div>
-        </nuxt-link>
-        <nuxt-link
-          :to="`/users/${item.senderId}`"
-          class="Notification__list__li__link"
-          v-if="item.type === 'givRequest' && item.requestType == 'send'"
-        >
-          <div class="Notification__list__li__link__icon">
-            <b-img
-              :src="$utils.parseUrl(item.sender && item.sender.photoURL)"
-              class="Notification__list__li__link__icon__img"
-              alt
-            ></b-img>
-          </div>
-          <div class="Notification__list__li__link__text">
-            <p class="Notification__list__li__link__text__info">
-              「{{
-                item.sender && item.sender.name
-              }}」さんからgivを贈りたいのアクションがありました
-            </p>
-            <p class="Notification__list__li__link__text__date">
-              {{ $utils.parseDate(item.createdAt) }}
-            </p>
-          </div>
-        </nuxt-link>
-        <nuxt-link
-          :to="`/users/${item.receiverId}`"
-          class="Notification__list__li__link"
-          v-if="item.type === 'givRequest' && item.requestType == 'receive'"
-        >
-          <div class="Notification__list__li__link__icon">
-            <b-img
-              :src="$utils.parseUrl(item.receiver && item.receiver.photoURL)"
-              class="Notification__list__li__link__icon__img"
-              alt
-            ></b-img>
-          </div>
-          <div class="Notification__list__li__link__text">
-            <p class="Notification__list__li__link__text__info">
-              「{{
-                item.receiver && item.receiver.name
-              }}」さんからgivを受け取りたいのアクションがありました
-            </p>
-            <p class="Notification__list__li__link__text__date">
-              {{ $utils.parseDate(item.createdAt) }}
-            </p>
           </div>
         </nuxt-link>
         <nuxt-link
@@ -114,35 +68,19 @@
 </template>
 
 <script>
-import api from "../lib/api";
+import api from "@/lib/api";
+import { mapState } from "vuex";
 
 export default {
-  layout: "logined",
-  data() {
-    return {
-      pendingPostGivs: [],
-      postsForMe: [],
-      givs: []
-    };
-  },
+  layout: "logined-notifications",
   computed: {
-    notifications() {
-      const nots = this.$store.getters.getNotifications();
-      return nots;
-    }
-  },
-  async asyncData({ app }) {
-    const { uid } = api.getCurrentUser();
-    return {
-      uid
-    };
+    ...mapState(["notifications"])
   },
   methods: {
-    markAsRead(id) {
+    async markAsRead(id) {
+      const { uid } = api.getCurrentUser();
       api.updateNotification({ userId: this.uid, id, status: "read" });
     }
   }
 };
 </script>
-
-<style></style>

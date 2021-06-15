@@ -1,4 +1,5 @@
 module.exports = {
+  // mode: "jit",
   purge: [
     "./components/**/*.{vue,js}",
     "./layouts/**/*.vue",
@@ -8,7 +9,11 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {}
+    extend: {
+      colors: {
+        "giv-blue": "#0eb9ec"
+      }
+    }
   },
   variants: {
     boxShadow: ["hover", "group-hover", "focus", "active"]
