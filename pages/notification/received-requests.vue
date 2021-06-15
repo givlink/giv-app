@@ -1,15 +1,8 @@
 <template>
-  <div class="Notification Main mt-3">
+  <div class="Notification Main mt-6">
     <ul class="Notification__list">
       <li class="Notification__list__li" v-for="item of notifications">
-        <GivRequestSend
-          v-if="item.type === 'givRequest' && item.requestType == 'send'"
-          :item="item"
-        />
-        <GivRequestReceive
-          v-if="item.type === 'givRequest' && item.requestType == 'receive'"
-          :item="item"
-        />
+        <GivRequestCard v-if="item.type === 'givRequest'" :item="item" />
       </li>
     </ul>
   </div>
@@ -17,19 +10,19 @@
 
 <script>
 import api from "@/lib/api";
-import GivRequestSend from "@/components/GivRequestSend.vue";
-import GivRequestReceive from "@/components/GivRequestReceive.vue";
+import GivRequestCard from "@/components/GivRequestCard.vue";
 import { mapState } from "vuex";
 
 export default {
   layout: "logined-notifications",
-  components: { GivRequestSend, GivRequestReceive },
+  components: { GivRequestCard },
   computed: {
     ...mapState(["notifications"])
   },
   methods: {
     async markAsRead(id) {
       const { uid } = api.getCurrentUser();
+      //@Todo err handling
       api.updateNotification({ userId: this.uid, id, status: "read" });
     }
   }

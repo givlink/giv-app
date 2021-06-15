@@ -18,6 +18,7 @@
       justify-content: center;
       align-items: center;
       position: fixed;
+      z-index:9999;
       bottom: 65px;
       right: 5px;
       filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.6));
@@ -184,6 +185,7 @@
 
 .GivBtn {
   position: fixed;
+  z-index: 9999;
   bottom: 65px;
   right: 5px;
   &__img {

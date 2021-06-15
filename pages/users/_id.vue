@@ -1,5 +1,5 @@
 <template>
-  <div class="User Main">
+  <div class="User py-14">
     <div class="Back">
       <button @click="$router.go(-1)" class="Back__btn focus:outline-none">
         一覧へ戻る
@@ -104,9 +104,13 @@
         Logout
       </button>
     </div>
-    <div class="GivBtn" v-on:click="toggleModal" v-show="currentUserId !== id">
+    <button
+      class="GivBtn"
+      v-on:click="toggleModal"
+      v-show="currentUserId !== id && !onModal"
+    >
       <img class="GivBtn__img" src="~/assets/image/giv_btn.png" alt="giv" />
-    </div>
+    </button>
     <div class="GivModal" v-if="onModal">
       <div
         class="GivModal__btn GivModal__btn--send"

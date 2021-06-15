@@ -1,10 +1,10 @@
 <template>
-  <div class="Notification Main mt-3">
+  <div class="Notification Main mt-6">
     <ul class="Notification__list">
       <li class="Notification__list__li" v-for="item of notifications">
         <nuxt-link
           :to="`/posts/create?givId=${item.givId}&notId=${item.id}`"
-          class="Notification__list__li__link"
+          class="bg-white block py-2 px-2 rounded mx-1 mb-1"
           v-if="item.type === 'givFinished'"
         >
           <div class="Notification__list__li__link__text" style="width:100%;">
@@ -35,7 +35,7 @@
         <nuxt-link
           :to="`/giv/${item.givId}`"
           v-on:click.native="markAsRead(item.id)"
-          class="Notification__list__li__link"
+          class="bg-white block py-2 px-2 rounded mx-1 mb-1"
           v-if="item.type === 'givCreated'"
         >
           <div class="Notification__list__li__link__text">
@@ -50,7 +50,7 @@
         <nuxt-link
           :to="`/posts/${item.postId}`"
           v-on:click.native="markAsRead(item.id)"
-          class="Notification__list__li__link"
+          class="bg-white block py-2 px-2 rounded mx-1 mb-1"
           v-if="item.type === 'commentCreated'"
         >
           <div class="Notification__list__li__link__text">
