@@ -1,7 +1,7 @@
 import firebase from "../lib/firebase";
 import api from "../lib/api";
 
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 export const state = () => ({
   skills: [],
   places: [],
@@ -17,6 +17,12 @@ export const state = () => ({
   posts: [],
   userSearchLoading: true,
   userSearchItems: [],
+  givRequests: {
+    receive: [],
+    send: [],
+    combined: [],
+    pendingCount: 0
+  },
   recommendationsLoading: true,
   recommendations: {
     matchingYourInterests: [],
@@ -118,6 +124,33 @@ export const mutations = {
   },
   setNotifications(state, nots) {
     state.notifications = nots;
+  },
+  setGivRequestsReceive(state, reqs) {
+    state.givRequests.receive = reqs;
+    state.givRequests.combined = [
+      ...state.givRequests.receive,
+      ...state.givRequests.send
+    ];
+    state.givRequests.combined.sort((a, b) => {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+    state.givRequests.pendingCount = state.givRequests.combined.filter(
+      c => c.status !== "match"
+    ).length;
+  },
+  setGivRequestsSend(state, reqs) {
+    state.givRequests.send = reqs;
+    state.givRequests.combined = [
+      ...state.givRequests.receive,
+      ...state.givRequests.send
+    ];
+    state.givRequests.combined.sort((a, b) => {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+
+    state.givRequests.pendingCount = state.givRequests.combined.filter(
+      c => c.status !== "match"
+    ).length;
   },
   setLastError(state, err) {
     state.lastError = err;
@@ -265,6 +298,14 @@ export const actions = {
         );
 
         fetchAreasAndSkillsEtc(store);
+
+        //Watch givRequests
+        //@Todo cleanup listener
+        api.watchGivRequests(
+          u.uid,
+          requests => store.commit("setGivRequestsReceive", requests),
+          requests => store.commit("setGivRequestsSend", requests)
+        );
 
         //Fetch user profile
         const userProfile = await api.getUserProfile(u.uid);

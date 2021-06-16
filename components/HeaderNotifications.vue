@@ -15,8 +15,18 @@
         <nuxt-link
           to="/notification/received-requests"
           class="flex-1 text-gray-400 text-center py-1 not-link"
-          >受け取ったリクエスト</nuxt-link
         >
+          <span class="relative block">
+            受け取ったリクエスト
+
+            <span
+              v-if="givRequests.pendingCount > 0"
+              class="w-5 h-5 text-white flex items-center justify-center rounded-full absolute top-0 right-0 -mt-2 mr-3 bg-giv-blue"
+            >
+              {{ givRequests.pendingCount }}
+            </span>
+          </span>
+        </nuxt-link>
       </nav>
     </div>
   </header>
@@ -29,3 +39,14 @@
   border-bottom: 3px solid #0eb9ec;
 }
 </style>
+
+<script>
+import api from "@/lib/api";
+import { mapState } from "vuex";
+
+export default {
+  computed: {
+    ...mapState(["givRequests"])
+  }
+};
+</script>

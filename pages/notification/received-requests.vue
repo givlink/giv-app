@@ -1,8 +1,8 @@
 <template>
-  <div class="Notification Main mt-6">
+  <div class="Notification Main mt-6 mb-12">
     <ul class="Notification__list">
-      <li class="Notification__list__li" v-for="item of notifications">
-        <GivRequestCard v-if="item.type === 'givRequest'" :item="item" />
+      <li class="Notification__list__li" v-for="item of givRequests.combined">
+        <GivRequestCard :item="item" />
       </li>
     </ul>
   </div>
@@ -17,14 +17,8 @@ export default {
   layout: "logined-notifications",
   components: { GivRequestCard },
   computed: {
-    ...mapState(["notifications"])
+    ...mapState(["givRequests"])
   },
-  methods: {
-    async markAsRead(id) {
-      const { uid } = api.getCurrentUser();
-      //@Todo err handling
-      api.updateNotification({ userId: this.uid, id, status: "read" });
-    }
-  }
+  methods: {}
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white block py-2 px-2 rounded mx-2 mb-2">
+  <div class="bg-white block py-2 px-2 rounded mx-2 mb-2" v-if="requester">
     <div class="flex items-start">
       <div class="pr-3">
         <nuxt-link :to="`/users/${requester.id}`">
@@ -14,12 +14,22 @@
         <h3 class="text-sm font-semibold text-gray-700">
           {{ requester && requester.name }}
         </h3>
-        <p class="text-xs">
-          <span v-if="item.requestType === 'send'">
-            wants to send Giv to you
+        <ul class="flex flex-wrap">
+          <li
+            v-for="skill in requester.skills"
+            class="request-skill border rounded-full px-2 mr-1 py-1 leading-none"
+          >
+            {{ renderTag(skill) }}
+          </li>
+        </ul>
+        <p class="text-xs mt-2">
+          <span class="mr-px">{{ requester.name }}</span
+          >さん
+          <span v-if="item.type === 'send'">
+            からギブを贈りたいとリクエストがありました。
           </span>
-          <span v-if="item.requestType === 'receive'">
-            wants to receive a Giv from you
+          <span v-if="item.type === 'receive'">
+            からギブを受け取りたいとリクエストがありました。
           </span>
         </p>
         <span class="block text-right flex-1 mt-auto">
@@ -34,7 +44,49 @@
       </div>
     </div>
     <b-modal
-      loading="true"
+      id="modal"
+      v-model="showModalError"
+      hide-header-close
+      no-close-on-backdrop
+      centered
+      cancel-disabled
+      ok-disabled
+    >
+      <template #modal-header>
+        <div class="w-full flex items-center justify-center">
+          <img
+            class="h-14 w-14 animate-shake"
+            src="~/assets/icons/tama_def.png"
+            alt="tama"
+          />
+          <span
+            class="mx-2 text-center text-sm leading-none text-red-500 font-bold"
+            >エラーが発生しました！</span
+          >
+          <img
+            class="h-14 w-14 animate-shake"
+            src="~/assets/icons/piyo_def.png"
+            alt="poyo"
+          />
+        </div>
+      </template>
+      <template #default>
+        <div class="text-center text-sm font-mono text-black">
+          {{ error }}
+        </div>
+      </template>
+      <template #modal-footer>
+        <div class="w-full flex items-center justify-center">
+          <button
+            @click="showModalError = false"
+            class="font-bold text-sm border-hack px-12 py-3 leading-none rounded-full text-giv-blue hover:bg-giv-blue hover:text-white"
+          >
+            閉じる
+          </button>
+        </div>
+      </template>
+    </b-modal>
+    <b-modal
       id="modal"
       v-model="showModal"
       hide-header-close
@@ -80,9 +132,12 @@
       </nuxt-link>
       <button
         @click="acceptRequest"
-        class="text-white font-semibold bg-giv-blue border-blue-500 border rounded-full px-4 py-2"
+        :disabled="completed"
+        class="text-white font-semibold border-blue-500 border rounded-full px-4 py-2"
+        :class="completed ? 'bg-gray-300' : 'bg-giv-blue '"
       >
-        リクエスト承認
+        <span v-if="completed">リクエスト承認済</span>
+        <span v-else>リクエスト承認</span>
       </button>
     </div>
   </div>
@@ -95,25 +150,33 @@ export default {
   computed: {
     requester() {
       if (!this.item) return null;
-      if (this.item.requestType === "receive") return this.item.receiver;
-      if (this.item.requestType === "send") return this.item.sender;
+      if (this.item.type === "receive") return this.item.receiver;
+      if (this.item.type === "send") return this.item.sender;
       return null;
+    },
+    completed() {
+      return this.item.status === "match";
     }
   },
   data() {
     return {
       showModal: false,
-      loading: false
+      showModalError: false,
+      loading: false,
+      error: null
     };
   },
   methods: {
     async acceptRequest() {
-      const requestId = this.item.id;
-      //@Todo this is not id, but we should use givRequest id instead
       this.loading = true;
-      await api.acceptGivRequest(requestId);
+      try {
+        await api.acceptGivRequest(this.item.id);
+        this.showModal = true;
+      } catch (err) {
+        this.error = err.message;
+        this.showModalError = true;
+      }
       this.loading = false;
-      this.showModal = true;
     },
     renderTag(id) {
       try {
@@ -127,6 +190,10 @@ export default {
 </script>
 
 <style>
+.request-skill {
+  font-size: 0.85em;
+}
+
 .border-hack {
   border: 2px solid #0eb9ec;
 }
