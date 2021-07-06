@@ -86,14 +86,25 @@
 
 <script>
 import api from "../lib/api";
+import { mapState } from "vuex";
 export default {
   computed: {
+    ...mapState(["givRequests", "notifications"]),
     myPage() {
       const user = api.getCurrentUser();
       return `/users/${user.uid}`;
     },
     count() {
-      return this.$store.getters.getNotifications().length;
+      let result = 0;
+
+      //Count general notifications
+      this.notifications.forEach(n => {
+        if (n.type !== "givRequest") result++;
+      });
+
+      //Count givRequests notifications
+      result += this.givRequests.pendingCount;
+      return result;
     }
   }
 };
