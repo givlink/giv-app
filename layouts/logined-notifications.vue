@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="min-h-screen flex flex-col">
     <vue-confirm-dialog></vue-confirm-dialog>
     <ex-header />
-    <nuxt />
+    <nuxt class="flex-1" />
     <ex-footer />
   </div>
 </template>

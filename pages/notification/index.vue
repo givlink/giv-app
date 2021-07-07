@@ -1,5 +1,20 @@
 <template>
   <div class="Notification Main mt-6">
+    <div
+      v-if="countExcludingRequests === 0"
+      class="w-full h-full mt-24 flex flex-col items-center justify-center"
+    >
+      <img
+        class="h-12 w-12 animate-wobble"
+        src="~/assets/icons/tama_def_sleepy.png"
+        alt="tama"
+      />
+      <span
+        class="mx-2 mt-3 text-center text-sm leading-none text-gray-500 font-medium"
+      >
+        お知らせはありません。
+      </span>
+    </div>
     <ul class="Notification__list">
       <li class="Notification__list__li" v-for="item of notifications">
         <nuxt-link
@@ -74,10 +89,20 @@ import { mapState } from "vuex";
 export default {
   layout: "logined-notifications",
   computed: {
-    ...mapState(["notifications"])
+    ...mapState(["givRequests", "notifications"]),
+    countExcludingRequests() {
+      let result = 0;
+
+      //Count general notifications
+      this.notifications.forEach(n => {
+        if (n.type !== "givRequest") result++;
+      });
+
+      return result;
+    }
   },
   methods: {
-    async markAsRead(id) {
+    markAsRead(id) {
       const { uid } = api.getCurrentUser();
       api.updateNotification({ userId: this.uid, id, status: "read" });
     }

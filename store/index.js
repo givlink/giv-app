@@ -1,7 +1,7 @@
 import firebase from "../lib/firebase";
 import api from "../lib/api";
 
-const DEBUG_MODE = true;
+const DEBUG_MODE = false; //@Todo we could set this to process.env.NODE_ENV === 'development'
 export const state = () => ({
   skills: [],
   places: [],
