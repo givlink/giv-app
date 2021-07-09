@@ -157,7 +157,7 @@ export default {
         offset: this.$utils.getGlobalOffset()
       });
       if (posts.length === 0 && this.filterArea !== "all") {
-        //@Hack to check for end of post for sakai shi
+        //@Hack to check for end of post for senboku shi
         this.$store.commit("setPosts", posts);
       } else {
         this.$store.commit("setPosts", this.dedupePosts(posts));

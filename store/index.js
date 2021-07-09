@@ -88,7 +88,7 @@ export const mutations = {
   setFilterArea(state, area) {
     if (state.filterArea === area) return;
 
-    const VALID_AREAS = ["all", "sakai"];
+    const VALID_AREAS = ["all", "senboku"];
     if (!VALID_AREAS.includes(area)) return; //@Todo log err
 
     //@Change post list here

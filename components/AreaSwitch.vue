@@ -11,8 +11,8 @@
       全体
     </button>
     <button
-      v-on:click="selectArea('sakai')"
-      :class="selected == 'sakai' && 'Search__box__tags__tag__active'"
+      v-on:click="selectArea('senboku')"
+      :class="selected == 'senboku' && 'Search__box__tags__tag__active'"
       class="Search__box__tags__tag focus:outline-none border border-gray-300"
     >
       泉北ニュータウン
@@ -33,7 +33,7 @@ export default {
       return (
         !this.userProfileLoading &&
         this.userProfile &&
-        this.userProfile.area == "sakai"
+        this.userProfile.area == "senboku"
       );
     }
   },
