@@ -215,12 +215,6 @@ export const mutations = {
 };
 
 export const getters = {
-  getFilterArea: state => () => {
-    return state.filterArea;
-  },
-  getNotifications: state => () => {
-    return state.notifications;
-  },
   getAreaTag: state => id => {
     return state.areasMap[id];
   },
@@ -312,6 +306,12 @@ export const actions = {
         store.commit("setUserProfile", userProfile);
         store.commit("setUserProfileLoading", false);
 
+        if (userProfile.area === "senboku") {
+          store.commit("setFilterArea", "senboku");
+        } else {
+          //Always reset if not senboku user
+          store.commit("setFilterArea", "all");
+        }
         fetchInitialPosts(store, context);
         fetchInitialUsersForSearch(store, context);
         fetchRecommendations(store, userProfile);

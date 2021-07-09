@@ -51,6 +51,7 @@ export default {
     "~/plugins/confirm-dialog.js",
     "~/plugins/vue-select.js",
     "~/plugins/auth.js",
+    "~/plugins/global-components.js",
     { src: "~/plugins/vue-lazyload.js", ssr: false }
   ],
   buildModules: ["@nuxtjs/tailwindcss"],

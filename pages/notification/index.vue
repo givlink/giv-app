@@ -1,20 +1,10 @@
 <template>
   <div class="Notification Main mt-6">
-    <div
+    <giv-empty-state
+      class="mt-12"
       v-if="countExcludingRequests === 0"
-      class="w-full h-full mt-24 flex flex-col items-center justify-center"
-    >
-      <img
-        class="h-12 w-12 animate-wobble"
-        src="~/assets/icons/tama_def_sleepy.png"
-        alt="tama"
-      />
-      <span
-        class="mx-2 mt-3 text-center text-sm leading-none text-gray-500 font-medium"
-      >
-        お知らせはありません。
-      </span>
-    </div>
+      msg="お知らせはありません。"
+    />
     <ul class="Notification__list">
       <li class="Notification__list__li" v-for="item of notifications">
         <nuxt-link

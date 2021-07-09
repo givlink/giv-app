@@ -8,6 +8,11 @@
     >
       <AreaSwitch />
       <div class="Home__cards">
+        <giv-empty-state
+          class="my-24"
+          v-if="posts.length === 0"
+          msg="新しいポストありません。"
+        />
         <div class="Home__card" v-for="post in posts">
           <nuxt-link :to="`/users/${post.authorId}`" class="Home__card__header">
             <div class="Home__card__header__icon">
@@ -103,6 +108,7 @@ export default {
   layout: "logined",
   data() {
     return {
+      loading: false,
       error: null,
       onTop: true,
       limit: 30,
@@ -122,7 +128,6 @@ export default {
   computed: mapState(["filterArea", "posts"]),
   watch: {
     filterArea(newValue, oldValue) {
-      console.log(`Updating from ${oldValue} to ${newValue}`);
       this.loadPosts();
     }
   },
@@ -151,6 +156,7 @@ export default {
       //@Todo show empty posts component if list empty
     },
     async loadPosts(refresh = false) {
+      this.loading = true;
       //@Todo do all this inside store instead of here.
       const [posts, offset] = await api.listPosts({
         area: this.filterArea,
@@ -166,6 +172,7 @@ export default {
         this.$utils.setGlobalOffset(offset);
       }
       //@Todo show empty posts component if list empty
+      this.loading = false;
     },
 
     async registerPushToken(token) {
