@@ -1,7 +1,5 @@
 <template>
-  <footer
-    class="bg-white m-2 fixed z-10 left-0 right-0 bottom-0 px-3 rounded-xl shadow py-3 "
-  >
+  <footer class="bg-white m-2 fixed z-10 left-0 right-0 bottom-0 px-3 rounded-xl shadow py-3 ">
     <div class="max-w-xl mx-auto flex items-center justify-between">
       <nuxt-link to="/" class=" flex flex-col items-center footer-link">
         <svg
@@ -35,7 +33,11 @@
           ></path>
         </svg>
       </nuxt-link>
-      <nuxt-link to="/messages" class="flex flex-col items-center footer-link">
+      <nuxt-link
+        v-if="enableMessages"
+        to="/messages"
+        class="flex flex-col items-center footer-link"
+      >
         <svg
           class="w-7 h-7"
           xmlns="http://www.w3.org/2000/svg"
@@ -102,6 +104,11 @@ export default {
     myPage() {
       const user = api.getCurrentUser();
       return `/users/${user.uid}`;
+    },
+    enableMessages() {
+      //Temp hack for testing new chat system
+      const user = api.getCurrentUser();
+      return user && user.uid === "5ccf0b6a-770e-4753-8370-5f3318649938";
     },
     count() {
       let result = 0;
