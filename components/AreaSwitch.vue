@@ -35,6 +35,7 @@ export default {
   methods: {
     selectArea(area) {
       this.$store.commit("setFilterArea", area);
+      this.$utils.setGlobalOffset(null); //reset offset
     }
   }
 };
