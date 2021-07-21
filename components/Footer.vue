@@ -1,11 +1,9 @@
 <template>
-  <footer
-    class="bg-white fixed z-10 left-0 right-0 bottom-0 px-2 border-t border-gray-300 px-1 py-3 "
-  >
+  <footer class="bg-white m-2 fixed z-10 left-0 right-0 bottom-0 px-3 rounded-xl shadow py-3 ">
     <div class="max-w-xl mx-auto flex items-center justify-between">
       <nuxt-link to="/" class=" flex flex-col items-center footer-link">
         <svg
-          class="w-5 h-5"
+          class="w-7 h-7"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -18,11 +16,10 @@
             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
           ></path>
         </svg>
-        <p class="pt-1">タイムライン</p>
       </nuxt-link>
       <nuxt-link to="/users" class="flex flex-col items-center footer-link">
         <svg
-          class="w-5 h-5"
+          class="w-7 h-7"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -35,14 +32,30 @@
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           ></path>
         </svg>
-        <p class="pt-1">検索</p>
       </nuxt-link>
       <nuxt-link
-        to="/notification"
-        class="flex flex-col items-center relative footer-link"
+        v-if="enableMessages"
+        to="/messages"
+        class="flex flex-col items-center footer-link"
       >
         <svg
-          class="w-5 h-5"
+          class="w-7 h-7"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          />
+        </svg>
+      </nuxt-link>
+      <nuxt-link to="/notification" class="flex flex-col items-center relative footer-link">
+        <svg
+          class="w-7 h-7"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -61,11 +74,10 @@
         >
           {{ count }}
         </div>
-        <p class="pt-1">お知らせ</p>
       </nuxt-link>
       <nuxt-link :to="myPage" class="flex flex-col items-center footer-link">
         <svg
-          class="w-5 h-5"
+          class="w-7 h-7"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 22 22"
@@ -78,7 +90,6 @@
             d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           ></path>
         </svg>
-        <p class="pt-1">マイページ</p>
       </nuxt-link>
     </div>
   </footer>
@@ -94,19 +105,24 @@ export default {
       const user = api.getCurrentUser();
       return `/users/${user.uid}`;
     },
+    enableMessages() {
+      //Temp hack for testing new chat system
+      const user = api.getCurrentUser();
+      return user && user.uid === "5ccf0b6a-770e-4753-8370-5f3318649938";
+    },
     count() {
       let result = 0;
 
       //Count general notifications
-      this.notifications.forEach(n => {
+      this.notifications.forEach((n) => {
         if (n.type !== "givRequest") result++;
       });
 
       //Count givRequests notifications
       result += this.givRequests.pendingCount;
       return result;
-    }
-  }
+    },
+  },
 };
 </script>
 

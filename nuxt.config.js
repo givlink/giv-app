@@ -52,6 +52,7 @@ export default {
     "~/plugins/vue-select.js",
     "~/plugins/auth.js",
     "~/plugins/global-components.js",
+    "~/plugins/chat-scroll.js",
     { src: "~/plugins/vue-lazyload.js", ssr: false }
   ],
   buildModules: ["@nuxtjs/tailwindcss"],

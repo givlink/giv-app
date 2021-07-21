@@ -1,10 +1,5 @@
 <template>
-  <div class="User py-14">
-    <div class="Back">
-      <button @click="$router.go(-1)" class="Back__btn focus:outline-none">
-        一覧へ戻る
-      </button>
-    </div>
+  <div class="User mt-12 mb-24">
     <div class="User__profile" v-if="profile">
       <div class="User__profile__icon" v-if="profile">
         <img
@@ -139,7 +134,7 @@
 import api from "../../lib/api";
 import Recommendation from "@/components/Recommendation";
 export default {
-  layout: "logined",
+  layout: "logined-user-details",
   components: {
     Recommendation
   },

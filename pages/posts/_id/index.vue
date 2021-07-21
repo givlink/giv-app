@@ -128,7 +128,7 @@
           <p class="Comment__box__text">{{ item.message }}</p>
         </div>
       </template>
-      <div class="Comment__send">
+      <div class="Comment__send pb-8">
         <b-form-textarea
           id="message"
           v-model="message"
@@ -139,11 +139,6 @@
         ></b-form-textarea>
         <div v-on:click="sendComments()" class="Comment__send__btn">送信</div>
       </div>
-    </div>
-    <div class="Back">
-      <button @click="$router.go(-1)" class="Back__btn focus:outline-none">
-        一覧へ戻る
-      </button>
     </div>
   </div>
 </template>
@@ -262,7 +257,7 @@ export default {
     Carousel,
     Slide
   },
-  layout: "logined",
+  layout: "logined-post-details",
   data() {
     return {
       message: "",
