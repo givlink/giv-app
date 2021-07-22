@@ -181,7 +181,6 @@ export default {
       });
       if (posts.length === 0 && this.filterArea !== "all") {
         this.$store.commit("setPosts", this.dedupePosts(posts));
-        this.hasNext = false;
 
         //this was causing problems of "no posts", commenting for now
         //revisit later if there are further problems
@@ -190,6 +189,9 @@ export default {
       } else {
         this.$store.commit("setPosts", this.dedupePosts(posts));
       }
+
+      this.hasNext = !!posts.length;
+
       if (!refresh) {
         this.$utils.setGlobalOffset(offset);
       }
