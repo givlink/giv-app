@@ -85,13 +85,30 @@
             </nuxt-link>
           </div>
         </div>
-        <div class="Search__list__li" v-if="hasNext" v-on:click="loadPosts()">
-          <span
-            class="Search__list__li__link"
-            style="text-align: center;font-size: 1.6em;"
-            >さらに読み込む</span
+        <button
+          class="w-full flex items-center justify-end hover:shadow-lg focus:translate-y-px transform bg-white shadow-sm rounded px-4 py-2"
+          v-if="hasNext"
+          v-on:click="loadPosts()"
+        >
+          <span class="text-sm mr-2" style="">さらに読み込む</span>
+
+          <b-spinner v-if="loading" class="h-5 w-5"></b-spinner>
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-gray-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-        </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
       </div>
     </vue-pull-refresh>
   </div>
@@ -163,8 +180,13 @@ export default {
         offset: this.$utils.getGlobalOffset()
       });
       if (posts.length === 0 && this.filterArea !== "all") {
+        this.$store.commit("setPosts", this.dedupePosts(posts));
+        this.hasNext = false;
+
+        //this was causing problems of "no posts", commenting for now
+        //revisit later if there are further problems
         //@Hack to check for end of post for senboku shi
-        this.$store.commit("setPosts", posts);
+        /* this.$store.commit("setPosts", posts); */
       } else {
         this.$store.commit("setPosts", this.dedupePosts(posts));
       }
