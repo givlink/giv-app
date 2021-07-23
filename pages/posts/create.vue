@@ -92,7 +92,8 @@ export default {
         giver: {
           id: giver.id,
           name: giver.name,
-          photoURL: giver.photoURL
+          photoURL: giver.photoURL,
+          area: giver.area
         }
       }
     };
