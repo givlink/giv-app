@@ -1,25 +1,25 @@
-import { Link } from '@reach/router'
-import { useSelector } from 'react-redux'
-import React from 'react'
-import { useLocation, useMatch } from '@reach/router'
-import { Transition } from '@headlessui/react'
+import { Link } from "@reach/router";
+import { useSelector } from "react-redux";
+import React from "react";
+import { useLocation, useMatch } from "@reach/router";
+import { Transition } from "@headlessui/react";
 
 export default function Footer() {
   const { unreadCount, user } = useSelector((s) => ({
     unreadCount: s.unreadCount,
     user: s.authUser,
-  }))
-  const loc = useLocation()
+  }));
+  const loc = useLocation();
 
-  const isPostList = !!useMatch('/')
-  const isUserList = !!useMatch('/users')
-  const isChatList = !!useMatch('/chats')
-  const isNotsList = !!useMatch('/notifications')
+  const isPostList = !!useMatch("/");
+  const isUserList = !!useMatch("/users");
+  const isChatList = !!useMatch("/chats");
+  const isNotsList = !!useMatch("/notifications");
 
-  const isMyPage = loc.pathname === `/users/${user?.uid}`
-  console.log(loc.pathname)
+  const isMyPage = loc.pathname === `/users/${user?.uid}`;
 
-  const shouldShow = isPostList || isUserList || isChatList || isNotsList || isMyPage
+  const shouldShow =
+    isPostList || isUserList || isChatList || isNotsList || isMyPage;
 
   return (
     <Transition
@@ -37,7 +37,9 @@ export default function Footer() {
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <Link
             to="/"
-            className={`${isPostList && 'text-giv-blue-dark'} flex flex-col items-center`}
+            className={`${
+              isPostList && "text-giv-blue-dark"
+            } flex flex-col items-center`}
           >
             <svg
               className="w-7 h-7"
@@ -56,7 +58,9 @@ export default function Footer() {
           </Link>
           <Link
             to="/users"
-            className={`${isUserList && 'text-giv-blue-dark'} flex flex-col items-center`}
+            className={`${
+              isUserList && "text-giv-blue-dark"
+            } flex flex-col items-center`}
           >
             <svg
               className="w-7 h-7"
@@ -75,7 +79,9 @@ export default function Footer() {
           </Link>
           <Link
             to="/chats"
-            className={`${isChatList && 'text-giv-blue-dark'} flex flex-col items-center`}
+            className={`${
+              isChatList && "text-giv-blue-dark"
+            } flex flex-col items-center`}
           >
             <svg
               className="w-7 h-7"
@@ -94,7 +100,9 @@ export default function Footer() {
           </Link>
           <Link
             to="/notifications"
-            className={`${isNotsList && 'text-giv-blue-dark'} flex flex-col items-center`}
+            className={`${
+              isNotsList && "text-giv-blue-dark"
+            } flex flex-col items-center`}
           >
             <svg
               className="w-7 h-7"
@@ -118,7 +126,9 @@ export default function Footer() {
           </Link>
           <Link
             to={`/users/${user?.uid}`}
-            className={`${isMyPage && 'text-giv-blue-dark'} flex flex-col items-center`}
+            className={`${
+              isMyPage && "text-giv-blue-dark"
+            } flex flex-col items-center`}
           >
             <svg
               className="w-7 h-7"
@@ -138,5 +148,5 @@ export default function Footer() {
         </div>
       </nav>
     </Transition>
-  )
+  );
 }

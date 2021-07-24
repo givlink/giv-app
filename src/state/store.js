@@ -1,5 +1,12 @@
-import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+
+const DEFAULT_EDIT_BEFORE = {
+  skills: {},
+  name: "",
+  job: "",
+  intro: "",
+};
 
 const initialState = {
   authLoading: true,
@@ -26,41 +33,65 @@ const initialState = {
   areasLoading: true,
   areaCategories: [],
   areas: {},
-}
+
+  //Search
+  selectedTag: "",
+
+  //Editing
+  userEditBefore: DEFAULT_EDIT_BEFORE,
+  userEditForm: DEFAULT_EDIT_BEFORE,
+
+  userEditingChanged: false,
+  userEditingLoading: false,
+
+  //Nav
+  postListScrollPos: 0,
+  userListScrollPos: 0,
+  chatListScrollPos: 0,
+  notificationListScrollPos: 0,
+};
+
+const didChangeEdit = (state, newState) => {
+  const before = JSON.stringify(state.userEditBefore);
+  const after = JSON.stringify(newState.userEditForm);
+  const changed = before !== after;
+  return changed;
+};
 
 const getUpdatedUserMap = (users, state) => {
-  const map = { ...state.userById }
-  users.forEach((p) => (map[p.id] = p))
-  return map
-}
+  const map = { ...state.userById };
+  users.forEach((p) => (map[p.id] = p));
+  return map;
+};
 const getUpdatedPostMap = (posts, state) => {
-  const map = { ...state.postById }
-  posts.forEach((p) => (map[p.id] = p))
-  return map
-}
+  const map = { ...state.postById };
+  posts.forEach((p) => (map[p.id] = p));
+  return map;
+};
 
 const reducer = (state = initialState, action) => {
+  if (!state) return initialState;
   switch (action.type) {
-    case 'auth/init':
-      return { ...state, authLoading: true, authUser: null }
-    case 'auth/loading':
-      return { ...state, authLoading: true }
-    case 'auth/data':
-      return { ...state, authUser: action.user, authLoading: false }
+    case "auth/init":
+      return { ...state, authLoading: true, authUser: null };
+    case "auth/loading":
+      return { ...state, authLoading: true };
+    case "auth/data":
+      return { ...state, authUser: action.user, authLoading: false };
 
-    case 'posts/loading':
-      return { ...state, postsLoading: true }
-    case 'posts/loading_more':
-      return { ...state, postsLoadingMore: true }
-    case 'posts/data':
+    case "posts/loading":
+      return { ...state, postsLoading: true };
+    case "posts/loading_more":
+      return { ...state, postsLoadingMore: true };
+    case "posts/data":
       return {
         ...state,
         posts: action.posts,
         postsOffset: action.offset,
         postsLoading: false,
         postById: getUpdatedPostMap(action.posts, state),
-      }
-    case 'posts/data_more':
+      };
+    case "posts/data_more":
       return {
         ...state,
         //@Todo dedupe and fix ordering
@@ -68,22 +99,22 @@ const reducer = (state = initialState, action) => {
         postsOffset: action.offset,
         postsLoadingMore: false,
         postById: getUpdatedPostMap(action.posts, state),
-      }
+      };
 
     //Users
-    case 'users/loading':
-      return { ...state, usersLoading: true }
-    case 'users/loading_more':
-      return { ...state, usersLoadingMore: true }
-    case 'users/data':
+    case "users/loading":
+      return { ...state, usersLoading: true };
+    case "users/loading_more":
+      return { ...state, usersLoadingMore: true };
+    case "users/data":
       return {
         ...state,
         users: action.users,
         usersOffset: action.offset,
         usersLoading: false,
         userById: getUpdatedUserMap(action.users, state),
-      }
-    case 'users/data_more':
+      };
+    case "users/data_more":
       return {
         ...state,
         //@Todo dedupe and fix ordering
@@ -91,58 +122,134 @@ const reducer = (state = initialState, action) => {
         usersOffset: action.offset,
         usersLoadingMore: false,
         userById: getUpdatedUserMap(action.users, state),
-      }
-    case 'users/data_single_loading':
+      };
+    case "users/data_single_loading":
       return {
         ...state,
         userSingleLoading: true,
-      }
-    case 'users/data_single':
+      };
+    case "users/data_single":
       return {
         ...state,
         userSingleLoading: false,
         userById: getUpdatedUserMap([action.user], state),
-      }
+      };
     //Skills
-    case 'skills/loading':
-      return { ...state, skillsLoading: true }
-    case 'skills/data':
+    case "skills/loading":
+      return { ...state, skillsLoading: true };
+    case "skills/data":
       return {
         ...state,
         skills: action.skills,
         skillsLoading: false,
-      }
+      };
     //Skill Categories
-    case 'skill_categories/loading':
-      return { ...state, skillCategoriesLoading: true }
-    case 'skill_categories/data':
+    case "skill_categories/loading":
+      return { ...state, skillCategoriesLoading: true };
+    case "skill_categories/data":
       return {
         ...state,
         skillCategories: action.skillCategories,
         skillCategoriesLoading: false,
-      }
+      };
     //Areas
-    case 'areas/loading':
-      return { ...state, areasLoading: true }
-    case 'areas/data':
+    case "areas/loading":
+      return { ...state, areasLoading: true };
+    case "areas/data":
       return {
         ...state,
         areas: action.areas,
         areasLoading: false,
-      }
+      };
     //Area Categories
-    case 'area_categories/loading':
-      return { ...state, areaCategoriesLoading: true }
-    case 'area_categories/data':
+    case "area_categories/loading":
+      return { ...state, areaCategoriesLoading: true };
+    case "area_categories/data":
       return {
         ...state,
         areaCategories: action.areaCategories,
         areaCategoriesLoading: false,
+      };
+    case "nav/scroll":
+      return { ...state, [action.page + "ScrollPos"]: action.pos };
+    case "edit_user/loading_start":
+      return {
+        ...state,
+        userEditingLoading: true,
+      };
+    case "edit_user/new_data":
+      return {
+        ...state,
+        userEditingLoading: false,
+        userById: getUpdatedUserMap([action.user], state),
+      };
+    case "edit_user/update_value": {
+      const newState = {
+        ...state,
+      };
+      if (action.name) {
+        newState.userEditForm.name = action.name;
       }
-    default:
-      return state
-  }
-}
+      if (action.job) {
+        newState.userEditForm.job = action.job;
+      }
+      if (action.intro) {
+        newState.userEditForm.intro = action.intro;
+      }
 
-const store = createStore(reducer, initialState, applyMiddleware(thunk))
-export default store
+      //Check if changed
+      const changed = didChangeEdit(state, newState);
+      newState.userEditingChanged = changed;
+
+      return newState;
+    }
+    case "edit_user/reset":
+      const user = state.userById[state.authUser.uid];
+      const skillMap = {};
+      user.skills.forEach((s) => (skillMap[s] = true));
+      return {
+        ...state,
+        userEditBefore: {
+          name: user.name,
+          job: user.job,
+          intro: user.intro,
+          skills: skillMap,
+        },
+        userEditForm: {
+          name: user.name,
+          job: user.job,
+          intro: user.intro,
+          skills: skillMap,
+        },
+      };
+    case "edit_user/change_skill":
+      const newSkills = {
+        ...state.userEditForm.skills,
+        [action.id]: action.selected,
+      };
+
+      //remove false keys
+      for (let key in newSkills) {
+        if (!newSkills[key]) delete newSkills[key];
+      }
+
+      const newState = {
+        ...state,
+        userEditForm: {
+          ...state.userEditForm,
+          skills: newSkills,
+        },
+      };
+
+      //Check if changed
+      const changed = didChangeEdit(state, newState);
+      newState.userEditingChanged = changed;
+
+      return newState;
+    default:
+      return state;
+  }
+};
+
+const store = createStore(reducer, initialState, applyMiddleware(thunk));
+export default store;

@@ -1,63 +1,42 @@
-import React from 'react'
-import './index.css'
+import "./index.css";
 
-import { Router, useLocation, navigate } from '@reach/router'
-import { useAuth, useInitAuth } from 'hooks/auth'
-import init from 'hooks/init'
+import { Router } from "@reach/router";
 
-import UserList from 'pages/UserList'
-import UserDetail from 'pages/UserDetail'
-import UserEdit from 'pages/UserEdit'
+import UserList from "pages/UserList";
+import UserDetail from "pages/UserDetail";
 
-import PostList from 'pages/PostList'
-import PostDetail from 'pages/PostDetail'
-import PostEdit from 'pages/PostEdit'
+import PostList from "pages/PostList";
+import PostDetail from "pages/PostDetail";
+import PostEdit from "pages/PostEdit";
 
-import Login from 'pages/Login'
-import Invite from 'pages/Invite'
+import Login from "pages/Login";
+import Invite from "pages/Invite";
 
-import SpinnerFull from 'components/SpinnerFull'
-import Footer from 'components/Footer'
-
-const AuthProvider = (props) => {
-  useInitAuth()
-  const { user, loading } = useAuth()
-  const loc = useLocation()
-
-  if (loading) return <SpinnerFull />
-
-  if (!user && loc.pathname !== '/login') navigate('/login')
-
-  return props.children
-}
+import Footer from "components/Footer";
+import AuthProvider from "components/AuthProvider";
+import InitProvider from "components/InitProvider";
 
 const App = () => {
-  init.useInitPosts()
-  init.useInitUsers()
-  init.useInitSkills()
-  init.useInitAreas()
-  init.useInitSkillCategories()
-  init.useInitAreaCategories()
-
   return (
     <AuthProvider>
-      <Router className="h-screen w-screen" primary={false}>
-        {/* Setup */}
-        <Login path="login" />
-        <Invite path="invite" />
+      <InitProvider>
+        <Router className="h-screen w-screen" primary={false}>
+          {/* Setup */}
+          <Login path="login" />
+          <Invite path="invite" />
 
-        {/* Users */}
-        <UserList path="users" />
-        <UserDetail path="users/:id" />
-        <UserEdit path="users/:id/edit" />
+          {/* Users */}
+          <UserList path="users" />
+          <UserDetail path="users/:id" />
 
-        {/* Posts */}
-        <PostDetail path="posts/:id" />
-        <PostEdit path="posts/:id/edit" />
-        <PostList path="/" />
-      </Router>
-      <Footer />
+          {/* Posts */}
+          <PostDetail path="posts/:id" />
+          <PostEdit path="posts/:id/edit" />
+          <PostList path="/" />
+        </Router>
+        <Footer />
+      </InitProvider>
     </AuthProvider>
-  )
-}
-export default App
+  );
+};
+export default App;

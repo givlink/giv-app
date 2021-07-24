@@ -1,11 +1,11 @@
-import utils from 'lib/utils'
-import { Link } from '@reach/router'
-import { ChevronRightIcon } from '@heroicons/react/outline'
+import utils from "lib/utils";
+import { Link } from "@reach/router";
+import { ChevronRightIcon } from "@heroicons/react/outline";
 
 export default function PostListCard({ post }) {
-  let firstImage
+  let firstImage;
   if (post.images) {
-    firstImage = post.images[0]
+    firstImage = post.images[0];
   }
 
   return (
@@ -21,16 +21,13 @@ export default function PostListCard({ post }) {
         </div>
       </Link>
       <Link to={`/posts/${post.id}`}>
-    {
-      firstImage && (
-
-        <img
-        className="h-64 w-full object-cover overflow-hidden mb-2"
-        src={utils.parseUrl(firstImage)}
-        alt={post.title}
-        />
-      )
-    }
+        {firstImage && (
+          <img
+            className="h-64 w-full object-cover overflow-hidden mb-2"
+            src={utils.parseUrl(firstImage)}
+            alt=""
+          />
+        )}
         <div className="px-2 py-2">
           <h3 className="font-medium text-xl mb-2">{post.title}</h3>
           <p className="">{utils.snipText(post.message)}</p>
@@ -46,7 +43,9 @@ export default function PostListCard({ post }) {
           <div className="w-full flex flex-col">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-medium text-giv-blue">givを贈った人</span>
+                <span className="text-xs font-medium text-giv-blue">
+                  givを贈った人
+                </span>
                 <h4 className="font-medium">{post.giver.name}</h4>
               </div>
               <ChevronRightIcon className="h-6 w-6 text-gray-500" />
@@ -55,5 +54,5 @@ export default function PostListCard({ post }) {
         </div>
       </Link>
     </div>
-  )
+  );
 }

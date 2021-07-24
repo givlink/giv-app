@@ -1,7 +1,7 @@
-import { ChevronLeftIcon } from '@heroicons/react/outline'
-import React from 'react'
-import { useInView } from 'react-intersection-observer'
-import { Transition } from '@headlessui/react'
+import { ChevronLeftIcon } from "@heroicons/react/outline";
+import React from "react";
+import { useInView } from "react-intersection-observer";
+import { Transition } from "@headlessui/react";
 
 const FloatingBackHeader = () => {
   return (
@@ -16,7 +16,7 @@ const FloatingBackHeader = () => {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <header className="z-10 px-3 py-2 mb-3 sticky top-0">
+      <header className="z-10 px-3 py-2 mb-3 fixed top-0">
         <button
           onClick={() => window.history.go(-1)}
           className="focus:translate-y-1 transform h-10 w-10 flex items-center justify-center bg-giv-blue text-white rounded-full shadow-xl"
@@ -34,28 +34,30 @@ const FloatingBackHeader = () => {
         </button>
       </header>
     </Transition>
-  )
-}
+  );
+};
 
 const BackHeader = React.forwardRef((props, ref) => (
-  <header className="z-10 border-b border-gray-200 bg-white px-3 py-2 shadow">
+  <header
+    ref={ref}
+    className="z-10 border-b border-gray-200 bg-white px-3 py-2 shadow"
+  >
     <button
-      ref={ref}
       onClick={() => window.history.go(-1)}
       className="focus:translate-y-1 transform py-2 flex items-center justify-center bg-white"
     >
       <ChevronLeftIcon className="h-6 w-6 mr-1" />
-  <span>Back</span>
+      <span>Back</span>
     </button>
   </header>
-))
+));
 
 export default function HeaderBack() {
-  const [ref, inView] = useInView({ threshold: 0 })
+  const [ref, inView] = useInView({ threshold: 0 });
   return (
     <>
       {!inView && <FloatingBackHeader />}
       <BackHeader ref={ref} />
     </>
-  )
+  );
 }
