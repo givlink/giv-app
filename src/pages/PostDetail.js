@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import utils from "lib/utils";
-import ScrollProvider from "components/ScrollProvider";
 import {
   CalendarIcon,
   ChevronRightIcon,
@@ -13,6 +12,7 @@ import {
 } from "@heroicons/react/outline";
 import { Link } from "@reach/router";
 import api from "lib/api";
+import usePreserveScroll from "hooks/scroll";
 
 const CommentCard = ({ comment }) => {
   return (
@@ -125,9 +125,9 @@ const CommentList = ({ postId }) => {
 export default function PostDetail(props) {
   const post = useSelector((s) => s.postById[props.id]);
 
+  usePreserveScroll("postDetail");
   if (!post) return null;
   return (
-    <ScrollProvider>
       <div>
         <HeaderBack />
         <div className="bg-white pb-6">
@@ -192,6 +192,5 @@ export default function PostDetail(props) {
           <CommentList postId={props.id} />
         </div>
       </div>
-    </ScrollProvider>
   );
 }

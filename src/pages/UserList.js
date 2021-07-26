@@ -5,7 +5,7 @@ import UserListCard from "components/UserListCard";
 import Spinner from "components/Spinner";
 import actions from "state/actions";
 import { ChevronRightIcon } from "@heroicons/react/outline";
-import ScrollProvider from "components/ScrollProvider";
+import usePreserveScroll from "hooks/scroll";
 
 const makeOptions = (map, type, category) => {
   const result = [];
@@ -24,13 +24,7 @@ const makeOptions = (map, type, category) => {
 };
 
 const FilterBar = (props) => {
-  const {
-    selected,
-    skillMap,
-    areaMap,
-    skillCategories,
-    areaCategories,
-  } = useSelector((s) => ({
+  const { selected, skillMap, areaMap, skillCategories, areaCategories } = useSelector((s) => ({
     skillCategories: s.skillCategories,
     skillMap: s.skills,
     areaCategories: s.areaCategories,
@@ -48,19 +42,17 @@ const FilterBar = (props) => {
         <option value="" className="text-center">
           興味・関心フィルター
         </option>
-        {makeOptions(skillMap, "skills", skillCategories).map(
-          ([cat, skills]) => {
-            return (
-              <optgroup key={cat.id} label={cat.tag}>
-                {skills.map((s) => (
-                  <option key={s.id} className="block pl-1 py-1" value={s.id}>
-                    {s.tag}
-                  </option>
-                ))}
-              </optgroup>
-            );
-          }
-        )}
+        {makeOptions(skillMap, "skills", skillCategories).map(([cat, skills]) => {
+          return (
+            <optgroup key={cat.id} label={cat.tag}>
+              {skills.map((s) => (
+                <option key={s.id} className="block pl-1 py-1" value={s.id}>
+                  {s.tag}
+                </option>
+              ))}
+            </optgroup>
+          );
+        })}
       </select>
       <select
         value={selected}
@@ -96,47 +88,39 @@ export default function UserList() {
     loadingMore: s.usersLoadingMore,
   }));
 
-  React.useEffect(() => {
-    dispatch({ type: "nav/navigate", page: "userList" });
-  }, []);
+  usePreserveScroll("userList");
 
   return (
-    <ScrollProvider page="userList">
-      <div className="pb-24">
-        <Header />
-        <FilterBar />
-        {loading && (
-          <div className="mb-4">
-            <Spinner />
-          </div>
-        )}
+    <div className="pb-24">
+      <Header />
+      <FilterBar />
+      {loading && (
+        <div className="mb-4">
+          <Spinner />
+        </div>
+      )}
 
-        <ul className="divide-y">
-          {users.map((u) => {
-            return (
-              <li key={u.id}>
-                <UserListCard user={u} />
-              </li>
-            );
-          })}
-        </ul>
-        {hasMore && !loading && (
-          <div className="flex items-center justify-center mx-2">
-            <button
-              disabled={loadingMore}
-              className="flex items-center justify-end px-6 w-full border border-gray-400 shadow rounded py-3 my-3"
-              onClick={() => dispatch(actions.loadMoreUsers())}
-            >
-              <span className="mr-2 mb-px">Load More</span>
-              {loadingMore ? (
-                <Spinner size="h-5 w-5" />
-              ) : (
-                <ChevronRightIcon className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-        )}
-      </div>
-    </ScrollProvider>
+      <ul className="divide-y">
+        {users.map((u) => {
+          return (
+            <li key={u.id}>
+              <UserListCard user={u} />
+            </li>
+          );
+        })}
+      </ul>
+      {hasMore && !loading && (
+        <div className="flex items-center justify-center mx-2">
+          <button
+            disabled={loadingMore}
+            className="flex items-center justify-end px-6 w-full border border-gray-400 shadow rounded py-3 my-3"
+            onClick={() => dispatch(actions.loadMoreUsers())}
+          >
+            <span className="mr-2 mb-px">Load More</span>
+            {loadingMore ? <Spinner size="h-5 w-5" /> : <ChevronRightIcon className="h-5 w-5" />}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

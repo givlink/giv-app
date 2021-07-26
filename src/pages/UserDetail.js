@@ -7,9 +7,9 @@ import { useSelector, useDispatch } from "react-redux";
 import utils from "lib/utils";
 import api from "lib/api";
 import SkillTagList from "components/SkillTagList";
-import ScrollProvider from "components/ScrollProvider";
 import { LocationMarkerIcon } from "@heroicons/react/outline";
 import EditUser from "components/EditUser";
+import usePreserveScroll from "hooks/scroll";
 
 export default function UserDetail(props) {
   const dispatch = useDispatch();
@@ -28,6 +28,8 @@ export default function UserDetail(props) {
     return area.tag;
   };
 
+  usePreserveScroll("userDetail")
+
   React.useEffect(() => {
     if (user) return;
 
@@ -45,7 +47,6 @@ export default function UserDetail(props) {
 
   if (!user && !state.userSingleLoading) return null; //@todo show 404
   return (
-    <ScrollProvider>
       <div className="bg-white h-full">
         {isMyPage ? <HeaderMyPage /> : <HeaderBack />}
         <div className="pb-24">
@@ -106,6 +107,5 @@ export default function UserDetail(props) {
           )}
         </div>
       </div>
-    </ScrollProvider>
   );
 }
