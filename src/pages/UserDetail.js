@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import utils from "lib/utils";
 import api from "lib/api";
 import SkillTagList from "components/SkillTagList";
+import GivList from "components/GivList";
 import { LocationMarkerIcon } from "@heroicons/react/outline";
 import EditUser from "components/EditUser";
 import usePreserveScroll from "hooks/scroll";
@@ -28,7 +29,8 @@ export default function UserDetail(props) {
     return area.tag;
   };
 
-  usePreserveScroll("userDetail")
+  usePreserveScroll("userDetail", true)
+
 
   React.useEffect(() => {
     if (user) return;
@@ -102,6 +104,18 @@ export default function UserDetail(props) {
               </span>
               <div className="pl-4 pr-1 pt-2">
                 <SkillTagList skills={user.skills} size="large" limit={100} />
+              </div>
+              <span className="block mt-4 mb-1 px-4 py-2 border-b font-medium">
+                Giv Given
+              </span>
+              <div className="px-4 pt-2">
+                <GivList userId={user.id} type="receive" />
+              </div>
+              <span className="block mt-4 mb-1 px-4 py-2 border-b font-medium">
+                Giv Received
+              </span>
+              <div className="px-4 pt-2">
+                <GivList userId={user.id} type="send" />
               </div>
             </>
           )}

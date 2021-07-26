@@ -12,11 +12,13 @@
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-hot-toast": "^2.0.0",
     "react-intersection-observer": "^8.32.0",
     "react-redux": "^7.2.4",
     "react-responsive-carousel": "^3.2.20",
     "react-scripts": "4.0.3",
     "react-simple-pull-to-refresh": "^1.2.3",
+    "react-toastify": "^7.0.4",
     "redux-thunk": "^2.3.0",
     "short-uuid": "^4.2.0"
   },

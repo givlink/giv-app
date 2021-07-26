@@ -5,6 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import SkillSelector from "components/SkillSelector";
 import Spinner from "components/Spinner";
 import api from "lib/api";
+// import { toast } from "react-hot-toast";
 
 const EditModal = ({ id, editing, setEditing }) => {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ const EditModal = ({ id, editing, setEditing }) => {
     dispatch({ type: "edit_user/new_data", user });
     //@Todo update store with new user data
     dispatch({ type: "edit_user/reset" });
+    closeModal();
   };
 
   React.useEffect(() => {
@@ -66,10 +68,7 @@ const EditModal = ({ id, editing, setEditing }) => {
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
-          <span
-            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-            aria-hidden="true"
-          >
+          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
             &#8203;
           </span>
           <Transition.Child
@@ -108,9 +107,7 @@ const EditModal = ({ id, editing, setEditing }) => {
                   </div>
                   <div className="flex-1 flex flex-col mt-5 pb-12 px-3 text-center overflow-auto">
                     <label className="flex flex-col items-start">
-                      <span className="text-sm text-gray-800 font-medium">
-                        Name
-                      </span>
+                      <span className="text-sm text-gray-800 font-medium">Name</span>
                       <input
                         value={state.form.name}
                         name="name"
@@ -120,9 +117,7 @@ const EditModal = ({ id, editing, setEditing }) => {
                       />
                     </label>
                     <label className="mt-6 flex flex-col items-start">
-                      <span className="text-sm text-gray-800 font-medium">
-                        Job
-                      </span>
+                      <span className="text-sm text-gray-800 font-medium">Job</span>
                       <input
                         name="job"
                         value={state.form.job}
@@ -132,9 +127,7 @@ const EditModal = ({ id, editing, setEditing }) => {
                       />
                     </label>
                     <label className="mt-6 mb-6 flex-1 flex flex-col items-start">
-                      <span className="text-sm text-gray-800 font-medium">
-                        Intro
-                      </span>
+                      <span className="text-sm text-gray-800 font-medium">Intro</span>
                       <textarea
                         rows="5"
                         name="intro"
@@ -145,9 +138,7 @@ const EditModal = ({ id, editing, setEditing }) => {
                       />
                     </label>
                     <div className="flex flex-col items-start pb-4">
-                      <span className="font-medium text-gray-800 text-sm mb-1">
-                        Your Interests
-                      </span>
+                      <span className="font-medium text-gray-800 text-sm mb-1">Your Interests</span>
                       <SkillSelector
                         allSkills={state.skillMap}
                         userSkills={state.form.skills}
@@ -181,10 +172,22 @@ const EditModal = ({ id, editing, setEditing }) => {
 export default function EditUser({ id }) {
   const [editing, setEditing] = React.useState(false);
 
+  // const debug = ()=>{
+  //   toast.info("🦄 Wow so easy!", {
+  //     position: "top-center",
+  //     autoClose: 3000,
+  //     hideProgressBar: true,
+  //     closeOnClick: true,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     progress: undefined,
+  //   });
+  // }
   return (
     <div className="flex justify-end mx-3">
       <button
         onClick={() => setEditing(true)}
+        // onClick={debug}
         className="flex items-center border border-gray-400 rounded px-4 py-1.5 text-sm font-medium leading-none"
       >
         <PencilIcon className="h-4 w-4 mr-1" />

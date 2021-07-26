@@ -15,11 +15,13 @@ import Invite from "pages/Invite";
 import Footer from "components/Footer";
 import AuthProvider from "components/AuthProvider";
 import InitProvider from "components/InitProvider";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
     <AuthProvider>
       <InitProvider>
+        <Toaster />
         <Router className="h-screen w-screen" primary={false}>
           {/* Setup */}
           <Login path="login" />

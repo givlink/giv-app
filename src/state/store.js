@@ -15,6 +15,7 @@ const initialState = {
   postsLoading: true,
   postsOffset: null,
   postsLoadingMore: false,
+  postSingleLoading: false,
   postsHasMore: true,
   posts: [],
   postById: {},
@@ -99,6 +100,17 @@ const reducer = (state = initialState, action) => {
         postsOffset: action.offset,
         postsLoadingMore: false,
         postById: getUpdatedPostMap(action.posts, state),
+      };
+    case "posts/data_single_loading":
+      return {
+        ...state,
+        postSingleLoading: true,
+      };
+    case "posts/data_single":
+      return {
+        ...state,
+        postSingleLoading: false,
+        postById: getUpdatedPostMap([action.post], state),
       };
 
     //Users

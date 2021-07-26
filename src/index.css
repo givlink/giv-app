@@ -52,5 +52,9 @@
   -webkit-animation: wobble 2s linear infinite;
 }
 
+.Toastify__toast-container {
+  margin-top:20px;
+}
+
 @tailwind components;
 @tailwind utilities;
