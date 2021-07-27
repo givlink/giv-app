@@ -1,12 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import React from "react";
-import { PlusIcon, PencilIcon, ChevronLeftIcon } from "@heroicons/react/outline";
+import { PlusIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import utils from "lib/utils";
 import { Dialog, Transition } from "@headlessui/react";
-import SkillSelector from "components/SkillSelector";
 import Spinner from "components/Spinner";
-import api from "lib/api";
-// import { toast } from "react-hot-toast";
 
 const EditModal = ({ id, editing, setEditing }) => {
   const [newImage, setNewImage] = React.useState(null);
@@ -62,7 +59,10 @@ const EditModal = ({ id, editing, setEditing }) => {
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
-          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+          <span
+            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+          >
             &#8203;
           </span>
           <Transition.Child
@@ -97,10 +97,12 @@ const EditModal = ({ id, editing, setEditing }) => {
                     </Dialog.Title>
                   </div>
                   <div className="py-3 px-1 mb-10">
-                    <img src={getSrc()} className="rounded shadow"/>
+                    <img src={getSrc()} className="rounded shadow" alt="" />
                     <label
                       className={`flex items-center justify-center ${
-                        newImage ? "py-1 text-sm text-gray-600" : "border border-giv-blue text-giv-blue py-3 "
+                        newImage
+                          ? "py-1 text-sm text-gray-600"
+                          : "border border-giv-blue text-giv-blue py-3 "
                       } px-6 w-full mt-4 rounded font-medium `}
                     >
                       <input
@@ -114,7 +116,14 @@ const EditModal = ({ id, editing, setEditing }) => {
                     </label>
                   </div>
                   <div className="fixed bottom-0 w-full border-t border-gray-200 bg-gray-100 rounded px-4 py-1">
-                    <button onClick={onSave} className={`w-full px-5 py-3 font-medium rounded ${newImage ?'opacity-100 bg-giv-blue text-white':'opacity-25'}`}>
+                    <button
+                      onClick={onSave}
+                      className={`w-full px-5 py-3 font-medium rounded ${
+                        newImage
+                          ? "opacity-100 bg-giv-blue text-white"
+                          : "opacity-25"
+                      }`}
+                    >
                       Save
                     </button>
                   </div>

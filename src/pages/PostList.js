@@ -1,4 +1,4 @@
-import Header from "components/Header";
+import HeaderPostList from "components/HeaderPostList";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PostListCard from "components/PostListCard";
@@ -35,7 +35,7 @@ export default function PostList() {
 
   return (
     <div className="pb-24">
-      <Header />
+      <HeaderPostList />
       {loading && (
         <div className="mb-4">
           <Spinner />
@@ -67,7 +67,11 @@ export default function PostList() {
             onClick={() => dispatch(actions.loadMorePosts())}
           >
             <span className="mr-2 mb-px">Load More</span>
-            {loadingMore ? <Spinner size="h-5 w-5" /> : <ChevronRightIcon className="h-5 w-5" />}
+            {loadingMore ? (
+              <Spinner size="h-5 w-5" />
+            ) : (
+              <ChevronRightIcon className="h-5 w-5" />
+            )}
           </button>
         </div>
       )}

@@ -145,7 +145,11 @@ export const listSkillCategories = async () => {
 };
 export const listSkills = async () => {
   const skills = {};
-  const snap = await firebase.firestore().collection("skills").orderBy("order", "asc").get();
+  const snap = await firebase
+    .firestore()
+    .collection("skills")
+    .orderBy("order", "asc")
+    .get();
   snap.forEach((doc) => (skills[doc.id] = { id: doc.id, ...doc.data() }));
   return skills;
 };
@@ -184,7 +188,10 @@ export const getCurrentUserProfile = async () => {
   return getUserProfile(user.uid);
 };
 export const getUserReceivedPosts = async (uid, limit = 20, offset = null) => {
-  let postSnap = await firebase.firestore().collection("posts").where("giver.id", "==", uid);
+  let postSnap = await firebase
+    .firestore()
+    .collection("posts")
+    .where("giver.id", "==", uid);
 
   if (offset) postSnap = postSnap.startAfter(offset);
   postSnap = await postSnap.limit(limit).get();
@@ -194,7 +201,10 @@ export const getUserReceivedPosts = async (uid, limit = 20, offset = null) => {
 };
 
 export const getUserPosts = async (uid, limit = 20, offset = null) => {
-  let postSnap = await firebase.firestore().collection("posts").where("authorId", "==", uid);
+  let postSnap = await firebase
+    .firestore()
+    .collection("posts")
+    .where("authorId", "==", uid);
 
   if (offset) postSnap = postSnap.startAfter(offset);
   postSnap = await postSnap.limit(limit).get();
@@ -223,7 +233,10 @@ export const updateNotification = ({ userId, id, status = null }) => {
 
   const payload = { status };
 
-  return firebase.firestore().doc(`/users/${userId}/notifications/${id}`).update(payload);
+  return firebase
+    .firestore()
+    .doc(`/users/${userId}/notifications/${id}`)
+    .update(payload);
 };
 
 export const acceptGivRequest = async (givRequestId) => {
@@ -258,7 +271,8 @@ export const watchGivRequests = async (userId, cb1, cb2) => {
 
         try {
           req.receiver = await getUserProfile(req.receiverId);
-          if (!req.receiver) throw new Error("Receiver not found: " + req.receiverId);
+          if (!req.receiver)
+            throw new Error("Receiver not found: " + req.receiverId);
 
           requests.push(req);
         } catch (err) {
@@ -290,6 +304,85 @@ export const watchGivRequests = async (userId, cb1, cb2) => {
 
   return listeners;
 };
+export const likePost = async (postId, userId) => {
+  if (!postId) {
+    console.log("No postId in like");
+    return;
+  }
+  if (!userId) {
+    console.log("No userId in like");
+    return;
+  }
+  //@Todo need a function to aggregate likes on a post
+  //When this happens
+  await firebase
+    .firestore()
+    .doc(`/users/${userId}/likes/${postId}`)
+    .set({ liked: true });
+};
+export const unlikePost = async (postId, userId) => {
+  if (!postId) {
+    console.log("No postId in unlike");
+    return;
+  }
+  if (!userId) {
+    console.log("No userId in unlike");
+    return;
+  }
+  //@Todo need a function to aggregate likes on a post
+  //When this happens
+  await firebase.firestore().doc(`/users/${userId}/likes/${postId}`).delete();
+};
+export const postComment = async ({
+  message = "",
+  author = null,
+  postId = null,
+}) => {
+  if (!author) {
+    console.log("No author");
+    return null;
+  }
+  if (!postId) {
+    console.log("No postid");
+    return null;
+  }
+  const payload = {
+    author: {
+      id: author.id,
+      name: author.name,
+      photoURL: author.photoURL,
+    },
+    authorId: author.id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    message,
+    parentCommentId: null,
+    postId,
+  };
+  const response = await firebase
+    .firestore()
+    .collection(`/comments`)
+    .add(payload);
+  payload.id = response.id;
+  return payload;
+};
+
+export const checkLiked = async (postId, userId) => {
+  if (!postId) {
+    console.log("No postId in checklike");
+    return;
+  }
+  if (!userId) {
+    console.log("No userId in checklike");
+    return;
+  }
+  const resp = await firebase
+    .firestore()
+    .doc(`/users/${userId}/likes/${postId}`)
+    .get();
+  return resp.exists;
+};
+
 export const watchNotifications = async (userId, cb, debug = false) => {
   if (!userId) {
     console.log("No user id in listNotifications");
@@ -316,7 +409,8 @@ export const watchNotifications = async (userId, cb, debug = false) => {
         }
         if (not.type === "givRequest" && not.requestType === "receive") {
           not.receiver = await getUserProfile(not.receiverId);
-          if (!not.receiver) throw new Error("Receiver not found: " + not.receiverId);
+          if (!not.receiver)
+            throw new Error("Receiver not found: " + not.receiverId);
         }
 
         //Only show notification if its clear of any error
@@ -416,7 +510,12 @@ export const deletePost = (id) => {
   return firebase.firestore().doc(`/posts/${id}`).delete();
 };
 
-export const updatePost = ({ id, title = null, message = null, images = null }) => {
+export const updatePost = ({
+  id,
+  title = null,
+  message = null,
+  images = null,
+}) => {
   //@Todo error handling
 
   const payload = {
@@ -429,7 +528,13 @@ export const updatePost = ({ id, title = null, message = null, images = null }) 
   return firebase.firestore().doc(`/posts/${id}`).update(payload);
 };
 
-export const createPost = async ({ authorId, images = [], title = "", message = "", giv }) => {
+export const createPost = async ({
+  authorId,
+  images = [],
+  title = "",
+  message = "",
+  giv,
+}) => {
   //@Todo error handling
   const author = await getUserProfile(authorId);
 
@@ -459,7 +564,9 @@ export const createPost = async ({ authorId, images = [], title = "", message = 
   const post = { ...payload, id: doc.id };
 
   const imagePaths = images.map((img) => {
-    const path = `images/${authorId}/posts/${post.id}/images/${shortId.generate()}`;
+    const path = `images/${authorId}/posts/${
+      post.id
+    }/images/${shortId.generate()}`;
     return path;
   });
 
@@ -473,9 +580,20 @@ export const createPost = async ({ authorId, images = [], title = "", message = 
   //@Todo if upload fails write to sentry
   //and also try uploading via functions
   await Promise.all(promises);
-  await firebase.firestore().doc(`/posts/${post.id}`).set({ images: imagePaths }, { merge: true });
+  await firebase
+    .firestore()
+    .doc(`/posts/${post.id}`)
+    .set({ images: imagePaths }, { merge: true });
 
   return post;
+};
+
+export const deleteComment = async (id = null) => {
+  if (!id) {
+    console.log("No id in delete comment");
+    return;
+  }
+  await firebase.firestore().doc(`/comments/${id}`).delete();
 };
 
 const listComments = async (postId, query = {}) => {
@@ -485,7 +603,7 @@ const listComments = async (postId, query = {}) => {
     .firestore()
     .collection("comments")
     .where("postId", "==", postId)
-    .orderBy("createdAt", "desc");
+    .orderBy("createdAt", "asc");
 
   if (q.offset) {
     snap = snap.startAfter(q.offset);
@@ -504,7 +622,9 @@ const listPosts = async (query = {}) => {
 
   let snap = firebase.firestore().collection("posts");
 
-  if (q.area && q.area !== "all") snap = snap.where("area", "==", q.area);
+  if (q.area && q.area !== "all") {
+    snap = snap.where("area", "==", q.area);
+  }
 
   snap = snap.orderBy("createdAt", "desc");
 
@@ -522,7 +642,11 @@ const listPosts = async (query = {}) => {
 
 const listAreas = async () => {
   const areas = {};
-  const snap = await firebase.firestore().collection("areas").orderBy("order", "asc").get();
+  const snap = await firebase
+    .firestore()
+    .collection("areas")
+    .orderBy("order", "asc")
+    .get();
   snap.forEach((doc) => (areas[doc.id] = { id: doc.id, ...doc.data() }));
   return areas;
 };
@@ -583,16 +707,20 @@ const getPostById = async (id) => {
     //if user change their photo then it wont show up
     //for now just fetching the latest. Fix this by updating all post photo url
     //when user updates their profile
-    const user = await getUserProfile(post.author.id)
-    post.author = user
-    return post
+    const user = await getUserProfile(post.author.id);
+    post.author = user;
+    return post;
   } else {
     return null;
   }
 };
 
 const getPostByGivId = async (givId) => {
-  const snap = await firebase.firestore().collection("posts").where("givId", "==", givId).get();
+  const snap = await firebase
+    .firestore()
+    .collection("posts")
+    .where("givId", "==", givId)
+    .get();
   if (!snap.empty) {
     const doc = snap.docs[0]; //@Todo assert only one
     return { ...doc.data(), id: doc.id };
@@ -602,7 +730,11 @@ const getPostByGivId = async (givId) => {
 };
 
 const getPostsForMe = async (userId) => {
-  const snap = await firebase.firestore().collection("posts").where("giver.id", "==", userId).get();
+  const snap = await firebase
+    .firestore()
+    .collection("posts")
+    .where("giver.id", "==", userId)
+    .get();
 
   const posts = [];
   snap.forEach((doc) => {
@@ -647,7 +779,13 @@ export const getInviteCode = async (code) => {
 };
 
 //@Todo add cache to getUserProfile etc
-export const createUserProfile = async ({ uid, code, area, skills, interests }) => {
+export const createUserProfile = async ({
+  uid,
+  code,
+  area,
+  skills,
+  interests,
+}) => {
   const payload = {
     uid,
     code,
@@ -656,7 +794,9 @@ export const createUserProfile = async ({ uid, code, area, skills, interests }) 
     interests,
   };
   //@Todo validate payload
-  const resp = await firebase.functions().httpsCallable("createUserProfile")(payload);
+  const resp = await firebase.functions().httpsCallable("createUserProfile")(
+    payload
+  );
   console.log(resp);
   //@Todo handle errors like
   //	profile already exists,
@@ -711,7 +851,10 @@ export const updateCurrentUserPhoto = async (file) => {
   await ref.put(file);
 
   //2. Update the user profile
-  await firebase.firestore().doc(`/users/${user.id}`).update({ photoURL: newPhotoURL });
+  await firebase
+    .firestore()
+    .doc(`/users/${user.id}`)
+    .update({ photoURL: newPhotoURL });
 
   //3. Delete old profile photo if its a local url
   if (oldPhotoURL && !oldPhotoURL.startsWith("http")) {
@@ -744,7 +887,10 @@ export const updateCurrentUser = async (data) => {
     payload.job = data.job;
   }
 
-  await firebase.firestore().doc(`/users/${user.uid}`).set(payload, { merge: true });
+  await firebase
+    .firestore()
+    .doc(`/users/${user.uid}`)
+    .set(payload, { merge: true });
 
   //Reset cache
   delete cache.users[user.uid];
@@ -796,6 +942,11 @@ const api = {
   listUserGivs,
 
   setupNotifications,
+  checkLiked,
+  likePost,
+  unlikePost,
+  postComment,
+  deleteComment,
 
   login,
   logout,

@@ -40,6 +40,7 @@ const utils = {
     // console.log("input:", date, "output", str);
     return str;
   },
+  sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
   parseUrl: (path) => {
     if (path && path.startsWith("http")) {
       return path + `?height=500`; //for fb higher quality image

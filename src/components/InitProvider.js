@@ -11,7 +11,7 @@ const InitProvider = (props) => {
   React.useEffect(() => {
     if (loading || !user) return;
 
-    dispatch(actions.loadInitialPosts());
+    dispatch(actions.loadUserProfileAndInitialPost());
     dispatch(actions.loadInitialUsers());
     dispatch(actions.loadInitialSkills());
     dispatch(actions.loadInitialAreas());

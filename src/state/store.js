@@ -1,4 +1,5 @@
 import { createStore, applyMiddleware } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 
 const DEFAULT_EDIT_BEFORE = {
@@ -12,6 +13,10 @@ const initialState = {
   authLoading: true,
   authUser: null,
 
+  userLoading: true,
+  user: null,
+
+  postAreaFilter: null,
   postsLoading: true,
   postsOffset: null,
   postsLoadingMore: false,
@@ -19,6 +24,9 @@ const initialState = {
   postsHasMore: true,
   posts: [],
   postById: {},
+
+  postLikeLoading: false,
+  postLikeById: {},
 
   usersLoading: true,
   usersOffset: null,
@@ -79,9 +87,23 @@ const reducer = (state = initialState, action) => {
       return { ...state, authLoading: true };
     case "auth/data":
       return { ...state, authUser: action.user, authLoading: false };
+    case "auth/user_profile_loading":
+      return { ...state, userLoading: true };
+    case "auth/user_profile_data":
+      return { ...state, user: action.user, userLoading: false };
 
+    case "posts/switch_area_filter":
+      return { ...state, postAreaFilter: action.postAreaFilter };
+    case "posts/reset":
+      return {
+        ...state,
+        postsLoading: true,
+        postsHasMore: true,
+        posts: [],
+        postsOffset: null,
+      };
     case "posts/loading":
-      return { ...state, postsLoading: true };
+      return { ...state, postsLoading: true, postsHasMore: true };
     case "posts/loading_more":
       return { ...state, postsLoadingMore: true };
     case "posts/data":
@@ -92,6 +114,21 @@ const reducer = (state = initialState, action) => {
         postsLoading: false,
         postById: getUpdatedPostMap(action.posts, state),
       };
+    case "postLike/loading":
+      return {
+        ...state,
+        postLikeLoading: true,
+      };
+    case "postLike/data":
+      const postLikeById = {
+        ...state.postLikeById,
+        [action.postId]: action.liked,
+        postLikeLoading: false,
+      };
+      return {
+        ...state,
+        postLikeById,
+      };
     case "posts/data_more":
       return {
         ...state,
@@ -100,6 +137,7 @@ const reducer = (state = initialState, action) => {
         postsOffset: action.offset,
         postsLoadingMore: false,
         postById: getUpdatedPostMap(action.posts, state),
+        postsHasMore: action.posts.length > 0,
       };
     case "posts/data_single_loading":
       return {
@@ -263,5 +301,9 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-const store = createStore(reducer, initialState, applyMiddleware(thunk));
+const store = createStore(
+  reducer,
+  initialState,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 export default store;

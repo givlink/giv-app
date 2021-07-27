@@ -1,8 +1,8 @@
-export default function Spinner({ size = 'h-6 w-6' }) {
+export default function Spinner({ size = "h-6 w-6", color = "text-giv-blue" }) {
   return (
     <div className="flex items-center justify-center">
       <svg
-        className={`animate-spin text-giv-blue ${size}`}
+        className={`animate-spin ${size} ${color}`}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -22,5 +22,5 @@ export default function Spinner({ size = 'h-6 w-6' }) {
         ></path>
       </svg>
     </div>
-  )
+  );
 }

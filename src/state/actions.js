@@ -25,7 +25,7 @@ const actions = {
   loadInitialSkillCategories: (setLoading = true) => {
     return async (dispatch) => {
       if (setLoading) {
-        dispatch({ type: "skill_categoris/loading" });
+        dispatch({ type: "skill_categories/loading" });
       }
       const skillCategories = await api.listSkillCategories();
       dispatch({ type: "skill_categories/data", skillCategories });
@@ -49,12 +49,83 @@ const actions = {
       dispatch({ type: "skills/data", skills });
     };
   },
+  setLiked: (postId, liked) => {
+    return async (dispatch, getState) => {
+      const { user } = getState();
+      // setting optimistic result before actual api call
+      dispatch({ type: "postLike/data", postId, liked });
+      //@Todo err handling
+      if (liked) {
+        api.likePost(postId, user.id);
+      } else {
+        api.unlikePost(postId, user.id);
+      }
+    };
+  },
+  loadUserProfile: () => {
+    return async (dispatch, getState) => {
+      const { authUser } = getState();
+      if (!authUser) {
+        console.warn("trying to load user profile but not authUser found");
+        return;
+      }
+      dispatch({ type: "auth/user_profile_loading" });
+      const user = await api.getUserProfile(authUser.uid, false);
+      dispatch({ type: "auth/user_profile_data", user });
+      dispatch({
+        type: "posts/switch_area_filter",
+        postAreaFilter: user.area === "senboku" ? "senboku" : null,
+      });
+    };
+  },
+  switchAreaFilter: (newAreaFilter) => {
+    return async (dispatch, getState) => {
+      dispatch({
+        type: "posts/switch_area_filter",
+        postAreaFilter: newAreaFilter,
+      });
+      //Reset all posts and offsets
+      dispatch({ type: "posts/reset" });
+      const [posts, offset] = await api.listPosts({ area: newAreaFilter });
+      dispatch({ type: "posts/data", posts, offset });
+
+      //Reset scroll pos
+      window.scrollTo(0, 0); //reset scroll
+      dispatch({
+        type: "nav/scroll",
+        page: "postList",
+        pos: 0,
+      });
+
+      //@Todo dispatch toast to notify filter changed
+    };
+  },
+  loadUserProfileAndInitialPost: () => {
+    return async (dispatch, getState) => {
+      const { authUser } = getState();
+      dispatch({ type: "auth/user_profile_loading" });
+      const user = await api.getUserProfile(authUser.uid, false);
+      dispatch({ type: "auth/user_profile_data", user });
+
+      const postAreaFilter = user.area === "senboku" ? "senboku" : null;
+      dispatch({
+        type: "posts/switch_area_filter",
+        postAreaFilter,
+      });
+
+      dispatch({ type: "posts/loading" });
+      const [posts, offset] = await api.listPosts({ area: postAreaFilter });
+      dispatch({ type: "posts/data", posts, offset });
+    };
+  },
   loadInitialPosts: (setLoading = true) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+      const { postAreaFilter } = getState();
+
       if (setLoading) {
         dispatch({ type: "posts/loading" });
       }
-      const [posts, offset] = await api.listPosts();
+      const [posts, offset] = await api.listPosts({ area: postAreaFilter });
       dispatch({ type: "posts/data", posts, offset });
     };
   },
@@ -64,6 +135,7 @@ const actions = {
       dispatch({ type: "posts/loading_more" });
       const [posts, offset] = await api.listPosts({
         offset: state.postsOffset,
+        area: state.postAreaFilter,
       });
       dispatch({ type: "posts/data_more", posts, offset });
     };

@@ -1,17 +1,21 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
+const DISABLE_IN_DEV = process.env.NODE_ENV === "development";
+
 const usePreserveScroll = (page, alwaysTop = false) => {
   const dispatch = useDispatch();
   const pos = useSelector((s) => s[`${page}ScrollPos`] || 0);
   React.useLayoutEffect(() => {
     let newPos = pos || 0;
-    if (alwaysTop) newPos = 0;
+    if (alwaysTop && !DISABLE_IN_DEV) newPos = 0;
 
     window.scrollTo(0, newPos);
 
     return () => {
-      dispatch({ type: "nav/scroll", page, pos: window.scrollY });
+      if (pos !== window.scrollY) {
+        dispatch({ type: "nav/scroll", page, pos: window.scrollY });
+      }
     };
   }, [page, pos, dispatch, alwaysTop]);
 
