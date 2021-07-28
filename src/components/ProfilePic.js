@@ -1,6 +1,8 @@
 import { useLocation } from "@reach/router";
 import { useSelector } from "react-redux";
 import EditProfilePic from "components/EditProfilePic";
+import utils from "lib/utils";
+import SafeImage from "components/SafeImage";
 
 const ProfilePic = (props) => {
   const loc = useLocation();
@@ -8,11 +10,7 @@ const ProfilePic = (props) => {
   const isMyPage = loc.pathname === `/users/${authUser?.uid}`;
   return (
     <div>
-      <img
-        alt=""
-        src={props.src}
-        className="h-32 w-32 object-cover shadow-xl rounded-xl"
-      />
+      <SafeImage src={props.src} />
       {isMyPage && <EditProfilePic id={authUser?.uid} />}
     </div>
   );

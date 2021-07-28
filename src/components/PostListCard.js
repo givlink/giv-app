@@ -1,5 +1,6 @@
 import utils from "lib/utils";
 import { Link } from "@reach/router";
+import SafeImage from "components/SafeImage";
 import { ChevronRightIcon } from "@heroicons/react/outline";
 
 export default function PostListCard({ post }) {
@@ -22,9 +23,10 @@ export default function PostListCard({ post }) {
       </Link>
       <Link to={`/posts/${post.id}`}>
         {firstImage && (
-          <img
+          <SafeImage
             className="h-64 w-full object-cover overflow-hidden mb-2"
             src={utils.parseUrl(firstImage)}
+            fallbackSrc={null}
             alt=""
           />
         )}

@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import utils from "lib/utils";
 import api from "lib/api";
 import SkillTagList from "components/SkillTagList";
+import FloatingRequestButton from "components/FloatingRequestButton";
 import ProfilePic from "components/ProfilePic";
 import GivList from "components/GivList";
 import { LocationMarkerIcon } from "@heroicons/react/outline";
@@ -50,7 +51,16 @@ export default function UserDetail(props) {
   if (!user && !state.userSingleLoading) return null; //@todo show 404
   return (
     <div className="bg-white h-full">
-      {isMyPage ? <HeaderMyPage /> : <HeaderBack />}
+      {isMyPage ? (
+        <HeaderMyPage />
+      ) : (
+        <>
+          <HeaderBack />
+          <FloatingRequestButton userId={props.id}>
+            Send Giv
+          </FloatingRequestButton>
+        </>
+      )}
       <div className="pb-24">
         {!user && state.userSingleLoading ? (
           <div className="pt-24">

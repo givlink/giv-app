@@ -14,6 +14,11 @@ function isIsoDate(str) {
 const utils = {
   //@Todo better date parse. This func is finicky.
   //find a better universal date timestamp parser
+  hideImageOnError: (e) => {
+    console.log("got err:", e);
+    e.target.src = "/icons/tama_def_sleepy.png";
+    e.target.style.width = "120px";
+  },
   parseDate: (date) => {
     let d;
     if (typeof date.toDate !== "undefined") {

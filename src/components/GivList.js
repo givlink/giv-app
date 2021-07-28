@@ -11,14 +11,17 @@ const GivCard = ({ post, type = "receive" }) => {
   }
 
   const renderName = () => {
-    let name = '';
+    let name = "";
     if (type === "receive") name = post.author.name;
     if (type === "send") name = post.giver.name;
     return utils.snipText(name, 15);
   };
 
   return (
-    <Link to={`/posts/${post.id}`} className="flex flex-col items-center justify-center">
+    <Link
+      to={`/posts/${post.id}`}
+      className="flex flex-col items-center justify-center"
+    >
       <img
         src={utils.parseUrl(firstImage)}
         alt=""
@@ -26,6 +29,19 @@ const GivCard = ({ post, type = "receive" }) => {
       />
       <span className="block mt-1 text-sm">{renderName()}</span>
     </Link>
+  );
+};
+
+const EmptyGivList = () => {
+  return (
+    <div className="flex flex-col items-center justify-center py-4">
+      <img
+        className="w-12 h-12 animate-wobble-slow opacity-50"
+        src="/icons/tama_def_sleepy.png"
+        alt=""
+      />
+      <span className="text-xs text-gray-500 pt-2">No Givs Found</span>
+    </div>
   );
 };
 
@@ -48,7 +64,8 @@ const GivList = ({ userId, type = "receive" }) => {
     run();
   }, [userId, type]);
 
-  if (loading) return <Spinner/>
+  if (loading) return <Spinner />;
+  if (!givs.length) return <EmptyGivList />;
 
   return (
     <ul className="grid grid-cols-2 gap-x-3 gap-y-5">

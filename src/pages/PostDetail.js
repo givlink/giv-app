@@ -5,6 +5,7 @@ import { Carousel } from "react-responsive-carousel";
 import Spinner from "components/Spinner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import utils from "lib/utils";
+import SafeImage from "components/SafeImage";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   ExclamationIcon,
@@ -336,7 +337,7 @@ export default function PostDetail(props) {
                 <h4 className="font-medium text-lg">{post.author.name}</h4>
               </div>
             </Link>
-            {post.images && (
+            {post.images && post.images.length && (
               <Carousel
                 showStatus={false}
                 showThumbs={true}
@@ -344,7 +345,12 @@ export default function PostDetail(props) {
                 swipeScrollTolerance={20}
               >
                 {post.images.map((i) => (
-                  <img key={i} src={utils.parseUrl(i)} alt={post.title} />
+                  <SafeImage
+                    key={i}
+                    src={utils.parseUrl(i)}
+                    alt={post.title}
+                    fallbackSrc={null}
+                  />
                 ))}
               </Carousel>
             )}

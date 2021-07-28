@@ -24,7 +24,13 @@ const makeOptions = (map, type, category) => {
 };
 
 const FilterBar = (props) => {
-  const { selected, skillMap, areaMap, skillCategories, areaCategories } = useSelector((s) => ({
+  const {
+    selected,
+    skillMap,
+    areaMap,
+    skillCategories,
+    areaCategories,
+  } = useSelector((s) => ({
     skillCategories: s.skillCategories,
     skillMap: s.skills,
     areaCategories: s.areaCategories,
@@ -42,17 +48,19 @@ const FilterBar = (props) => {
         <option value="" className="text-center">
           興味・関心フィルター
         </option>
-        {makeOptions(skillMap, "skills", skillCategories).map(([cat, skills]) => {
-          return (
-            <optgroup key={cat.id} label={cat.tag}>
-              {skills.map((s) => (
-                <option key={s.id} className="block pl-1 py-1" value={s.id}>
-                  {s.tag}
-                </option>
-              ))}
-            </optgroup>
-          );
-        })}
+        {makeOptions(skillMap, "skills", skillCategories).map(
+          ([cat, skills]) => {
+            return (
+              <optgroup key={cat.id} label={cat.tag}>
+                {skills.map((s) => (
+                  <option key={s.id} className="block pl-1 py-1" value={s.id}>
+                    {s.tag}
+                  </option>
+                ))}
+              </optgroup>
+            );
+          }
+        )}
       </select>
       <select
         value={selected}
@@ -117,7 +125,11 @@ export default function UserList() {
             onClick={() => dispatch(actions.loadMoreUsers())}
           >
             <span className="mr-2 mb-px">Load More</span>
-            {loadingMore ? <Spinner size="h-5 w-5" /> : <ChevronRightIcon className="h-5 w-5" />}
+            {loadingMore ? (
+              <Spinner size="h-5 w-5" />
+            ) : (
+              <ChevronRightIcon className="h-5 w-5" />
+            )}
           </button>
         </div>
       )}
