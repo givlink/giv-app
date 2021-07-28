@@ -1,42 +1,51 @@
 import { useSelector, useDispatch } from "react-redux";
 import React from "react";
-import { PlusIcon, ChevronLeftIcon } from "@heroicons/react/outline";
-import utils from "lib/utils";
+import { ChevronLeftIcon } from "@heroicons/react/outline";
 import { Dialog, Transition } from "@headlessui/react";
+import SkillSelector from "components/SkillSelector";
 import Spinner from "components/Spinner";
 import api from "lib/api";
 
-const EditModal = ({ id, editing, setEditing }) => {
-  const [newImage, setNewImage] = React.useState(null);
+const didChangeSkills = (oldSkills, newSkills) => {
+  const before = JSON.stringify(oldSkills);
+  const after = JSON.stringify(newSkills);
+  return before !== after;
+};
+
+const UserInterestsEditModal = ({ id, editing, setEditing, userSkills = {} }) => {
+  const [selectedSkills, setSelectedSkills] = React.useState(userSkills);
   const [sending, setSending] = React.useState(false);
+
+  const ref = React.useRef();
   const dispatch = useDispatch();
-  const user = useSelector((s) => s.userById[id]);
+  const state = useSelector((s) => ({
+    user: s.userById[id],
+    form: s.userEditForm,
+    skillMap: s.skills,
+    skillCategories: s.skillCategories,
+  }));
 
   const closeModal = () => {
     if (sending) return;
     setEditing(false);
     dispatch({ type: "edit_user/reset" });
   };
-
-  const getSrc = () => {
-    return newImage ? URL.createObjectURL(newImage) : utils.parseUrl(user.photoURL);
+  const onSkillClick = (id, selected) => {
+    const newSkills = { ...selectedSkills };
+    if (selected) {
+      newSkills[id] = selected;
+    } else {
+      //remove false keys for easy comparison
+      delete newSkills[id];
+    }
+    setSelectedSkills(newSkills);
   };
 
-  React.useEffect(() => {
-    setNewImage(null);
-  }, [editing]);
-
-  const handleChange = (e) => {
-    if (!e.target.files.length) return;
-    const file = e.target.files[0];
-    // const newImageUrl = URL.createObjectURL(file);
-    setNewImage(file);
-  };
+  const didChange = didChangeSkills(userSkills, selectedSkills);
   const onSave = async () => {
     setSending(true);
-    await api.updateCurrentUserPhoto(newImage);
     //@todo err handling
-    //update store with new user data , a bit hacky
+    await api.updateCurrentUser({ interests: Object.keys(selectedSkills) });
     const user = await api.getUserProfile(id, false);
     dispatch({ type: "edit_user/new_data", user });
     setSending(false);
@@ -49,6 +58,7 @@ const EditModal = ({ id, editing, setEditing }) => {
         as="div"
         static
         className="fixed z-10 inset-0 overflow-y-auto"
+        initialFocus={ref}
         open={editing}
         onClose={closeModal}
       >
@@ -78,7 +88,10 @@ const EditModal = ({ id, editing, setEditing }) => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="bg-white rounded-lg w-full pt-3 pb-4 text-left shadow-xl transform transition-all">
+            <div
+              style={{ height: "85vh", minWidth: "80vw" }}
+              className="bg-white overflow-hidden rounded-lg w-full pt-3 pb-4 text-left shadow-xl transform transition-all"
+            >
               {sending ? (
                 <button className="flex items-center justify-center h-full w-full">
                   <Spinner />
@@ -97,33 +110,23 @@ const EditModal = ({ id, editing, setEditing }) => {
                       as="h3"
                       className="flex-1 text-center mr-4 text-base leading-6 font-medium text-gray-900"
                     >
-                      Change Profile Image
+                      Edit Your Interests
                     </Dialog.Title>
                   </div>
-                  <div className="py-3 px-1 mb-10">
-                    <img src={getSrc()} className="rounded shadow" alt="" />
-                    <label
-                      className={`flex items-center justify-center ${
-                        newImage
-                          ? "py-1 text-sm text-gray-600"
-                          : "border border-giv-blue text-giv-blue py-3 "
-                      } px-6 w-full mt-4 rounded font-medium `}
-                    >
-                      <input
-                        onChange={handleChange}
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                      />
-                      <PlusIcon className="mr-1 h-4 w-4" />
-                      {newImage ? "Change" : "Upload Image"}
-                    </label>
+                  <div className="flex-1 flex flex-col mt-5 pb-12 px-3 text-center overflow-auto">
+                    <SkillSelector
+                      allSkills={state.skillMap}
+                      skillCategories={state.skillCategories}
+                      userSkills={selectedSkills}
+                      handleClick={onSkillClick}
+                    />
                   </div>
-                  <div className="fixed bottom-0 w-full border-t border-gray-200 bg-gray-100 rounded px-4 py-1">
+                  <div className="fixed bottom-0 w-full border-t border-gray-200 bg-gray-100 px-4 py-3">
                     <button
                       onClick={onSave}
-                      className={`w-full px-5 py-3 font-medium rounded ${
-                        newImage ? "opacity-100 bg-giv-blue text-white" : "opacity-25"
+                      disabled={!didChange}
+                      className={`w-full px-5 py-2 font-medium rounded ${
+                        didChange ? "bg-giv-blue text-white shadow-xl" : "bg-gray-200 text-gray-600"
                       }`}
                     >
                       Save
@@ -138,19 +141,4 @@ const EditModal = ({ id, editing, setEditing }) => {
     </Transition.Root>
   );
 };
-
-export default function EditUser({ id }) {
-  const [editing, setEditing] = React.useState(false);
-
-  return (
-    <div>
-      <button
-        onClick={() => setEditing(true)}
-        className="flex items-center justify-center w-full text-sm py-2"
-      >
-        Change Image
-      </button>
-      <EditModal editing={editing} setEditing={setEditing} id={id} />
-    </div>
-  );
-}
+export default UserInterestsEditModal;

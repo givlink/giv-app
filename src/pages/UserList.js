@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "components/Header";
+import HeaderUserList from "components/HeaderUserList";
 import { useSelector, useDispatch } from "react-redux";
 import UserListCard from "components/UserListCard";
 import Spinner from "components/Spinner";
@@ -100,7 +100,7 @@ export default function UserList() {
 
   return (
     <div className="pb-24">
-      <Header />
+      <HeaderUserList />
       <FilterBar />
       {loading && (
         <div className="mb-4">

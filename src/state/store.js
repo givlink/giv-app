@@ -228,6 +228,7 @@ const reducer = (state = initialState, action) => {
         userEditingLoading: true,
       };
     case "edit_user/new_data":
+      console.log(action);
       return {
         ...state,
         userEditingLoading: false,
@@ -254,21 +255,21 @@ const reducer = (state = initialState, action) => {
       return newState;
     }
     case "edit_user/reset":
-      const user = state.userById[state.authUser.uid];
+      const user = state.userById[state.authUser?.uid];
       const skillMap = {};
-      user.skills.forEach((s) => (skillMap[s] = true));
+      user?.skills.forEach((s) => (skillMap[s] = true));
       return {
         ...state,
         userEditBefore: {
-          name: user.name,
-          job: user.job,
-          intro: user.intro,
+          name: user?.name,
+          job: user?.job,
+          intro: user?.intro,
           skills: skillMap,
         },
         userEditForm: {
-          name: user.name,
-          job: user.job,
-          intro: user.intro,
+          name: user?.name,
+          job: user?.job,
+          intro: user?.intro,
           skills: skillMap,
         },
       };
@@ -301,9 +302,5 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-const store = createStore(
-  reducer,
-  initialState,
-  composeWithDevTools(applyMiddleware(thunk))
-);
+const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(thunk)));
 export default store;

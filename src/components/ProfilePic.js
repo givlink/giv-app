@@ -1,7 +1,6 @@
 import { useLocation } from "@reach/router";
 import { useSelector } from "react-redux";
 import EditProfilePic from "components/EditProfilePic";
-import utils from "lib/utils";
 import SafeImage from "components/SafeImage";
 
 const ProfilePic = (props) => {

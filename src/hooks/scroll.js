@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-const DISABLE_IN_DEV = process.env.NODE_ENV === "development";
+const DISABLE_IN_DEV = false && process.env.NODE_ENV === "development";
 
 const usePreserveScroll = (page, alwaysTop = false) => {
   const dispatch = useDispatch();

@@ -3,6 +3,7 @@ import api from "lib/api";
 import utils from "lib/utils";
 import { Link } from "@reach/router";
 import Spinner from "components/Spinner";
+import SafeImage from "components/SafeImage";
 
 const GivCard = ({ post, type = "receive" }) => {
   let firstImage;
@@ -22,10 +23,11 @@ const GivCard = ({ post, type = "receive" }) => {
       to={`/posts/${post.id}`}
       className="flex flex-col items-center justify-center"
     >
-      <img
+      <SafeImage
         src={utils.parseUrl(firstImage)}
         alt=""
         className="h-32 w-full object-cover rounded-md shadow-lg"
+        classNameFallback="w-32 h-32 opacity-25 object-fit rounded-md shadow"
       />
       <span className="block mt-1 text-sm">{renderName()}</span>
     </Link>

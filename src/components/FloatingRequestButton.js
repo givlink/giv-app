@@ -1,10 +1,8 @@
-import GivBtnImg from "assets/image/giv_btn.png";
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Spinner from "components/Spinner";
-import { XIcon, CheckCircleIcon } from "@heroicons/react/outline";
+import { ChevronDownIcon, CheckCircleIcon } from "@heroicons/react/outline";
 import { UploadIcon } from "@heroicons/react/solid";
-import utils from "lib/utils";
 import api from "lib/api";
 import { useSelector } from "react-redux";
 
@@ -71,9 +69,10 @@ const RequestModal = ({ open, setOpen, userId }) => {
                 >
                   <button
                     onClick={closeModal}
-                    className="-mt-4 mr-0.5 absolute right-0 top-0 flex items-center justify-center bg-white rounded-full shadow p-2 focus:outline-none"
+                    className="-mt-4 mr-0.5 absolute right-0 top-0 flex items-center justify-center border bg-white rounded-full shadow p-2 focus:outline-none"
+
                   >
-                    <XIcon className="h-6 w-6" />
+                    <ChevronDownIcon className="h-6 w-6" />
                   </button>
                   <img
                     className="w-10 h-10 mr-3 animate-wobble opacity-75"

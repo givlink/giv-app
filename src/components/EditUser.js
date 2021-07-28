@@ -1,54 +1,44 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import React from "react";
 import { PencilIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import { Dialog, Transition } from "@headlessui/react";
-import SkillSelector from "components/SkillSelector";
 import Spinner from "components/Spinner";
 import api from "lib/api";
 // import { toast } from "react-hot-toast";
 
-const EditModal = ({ id, editing, setEditing }) => {
+const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing }) => {
+  const ref = React.useRef();
+  const [name, setName] = React.useState(initialName);
+  const [job, setJob] = React.useState(initialJob);
+
+  const [sending, setSending] = React.useState(false);
+
   const dispatch = useDispatch();
-  const state = useSelector((s) => ({
-    user: s.userById[id],
-    form: s.userEditForm,
-    skillMap: s.skills,
-    userEditingChanged: s.userEditingChanged,
-    userEditingLoading: s.userEditingLoading,
-  }));
 
   const closeModal = () => {
-    if (state.userEditingLoading) return;
+    if (sending) return;
     setEditing(false);
-    dispatch({ type: "edit_user/reset" });
   };
-  const updateUser = (e) => {
-    dispatch({
-      type: "edit_user/update_value",
-      [e.target.name]: e.target.value,
-    });
-  };
-  const onSkillClick = (id, selected) => {
-    dispatch({ type: "edit_user/change_skill", id, selected });
+  const onChange = (e) => {
+    if (e.target.name === "name") setName(e.target.value);
+    if (e.target.name === "job") setJob(e.target.value);
   };
   const onSave = async () => {
-    dispatch({ type: "edit_user/loading_start" });
-    await new Promise((r) => setTimeout(r, 1000));
-    //@todo err
+    setSending(true);
+    await api.updateCurrentUser({ name, job });
+    //@todo err handling
     const user = await api.getUserProfile(id, false);
     dispatch({ type: "edit_user/new_data", user });
-    //@Todo update store with new user data
-    dispatch({ type: "edit_user/reset" });
+    setSending(false);
     closeModal();
   };
+  const didChange = name !== initialName || job !== initialJob;
 
-  React.useEffect(() => {
-    dispatch({ type: "edit_user/reset" });
-  }, [dispatch]);
   return (
     <Transition.Root show={editing} as={React.Fragment}>
       <Dialog
         as="div"
+        initialFocus={ref}
         static
         className="fixed z-10 inset-0 overflow-y-auto"
         open={editing}
@@ -81,10 +71,10 @@ const EditModal = ({ id, editing, setEditing }) => {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div
-              style={{ height: "85vh", minWidth: "80vw" }}
-              className="bg-white rounded-lg w-full pt-3 pb-4 text-left shadow-xl transform transition-all"
+              style={{ minHeight: "40vh" }}
+              className="bg-white rounded-lg overflow-hidden w-full pt-3 pb-4 text-left shadow-xl transform transition-all"
             >
-              {state.userEditingLoading ? (
+              {sending ? (
                 <button className="flex items-center justify-center h-full w-full">
                   <Spinner />
                 </button>
@@ -106,54 +96,33 @@ const EditModal = ({ id, editing, setEditing }) => {
                     </Dialog.Title>
                   </div>
                   <div className="flex-1 flex flex-col mt-5 pb-12 px-3 text-center overflow-auto">
-                    <label className="flex flex-col items-start">
+                    <label className="flex flex-col items-start px-2">
                       <span className="text-sm text-gray-800 font-medium">Name</span>
                       <input
-                        value={state.form.name}
+                        value={name}
                         name="name"
-                        onChange={updateUser}
+                        onChange={onChange}
                         placeholder="Your Name"
                         className="mt-1 w-full border border-gray-300 px-3 py-2 rounded"
                       />
                     </label>
-                    <label className="mt-6 flex flex-col items-start">
+                    <label className="mt-6 flex flex-col items-start px-2">
                       <span className="text-sm text-gray-800 font-medium">Job</span>
                       <input
                         name="job"
-                        value={state.form.job}
+                        value={job}
                         placeholder="Your Job"
-                        onChange={updateUser}
+                        onChange={onChange}
                         className="mt-1 w-full border border-gray-300 px-3 py-2 rounded"
                       />
                     </label>
-                    <label className="mt-6 mb-6 flex-1 flex flex-col items-start">
-                      <span className="text-sm text-gray-800 font-medium">Intro</span>
-                      <textarea
-                        rows="5"
-                        name="intro"
-                        value={state.form.intro}
-                        onChange={updateUser}
-                        placeholder="Your Intro"
-                        className="resize-none mt-1 w-full border border-gray-300 px-3 py-2 rounded"
-                      />
-                    </label>
-                    <div className="flex flex-col items-start pb-4">
-                      <span className="font-medium text-gray-800 text-sm mb-1">Your Interests</span>
-                      <SkillSelector
-                        allSkills={state.skillMap}
-                        userSkills={state.form.skills}
-                        handleClick={onSkillClick}
-                      />
-                    </div>
                   </div>
                   <div className="fixed bottom-0 w-full border-t border-gray-200 bg-gray-100 px-4 py-3">
                     <button
                       onClick={onSave}
-                      disabled={!state.userEditingChanged}
+                      disabled={!didChange}
                       className={`w-full px-5 py-2 font-medium rounded ${
-                        state.userEditingChanged
-                          ? "bg-giv-blue text-white shadow-xl"
-                          : "bg-gray-200 text-gray-600"
+                        didChange ? "bg-giv-blue text-white shadow-xl" : "bg-gray-200 text-gray-600"
                       }`}
                     >
                       Save
@@ -169,31 +138,26 @@ const EditModal = ({ id, editing, setEditing }) => {
   );
 };
 
-export default function EditUser({ id }) {
+export default function EditUser({ id, user }) {
   const [editing, setEditing] = React.useState(false);
 
-  // const debug = ()=>{
-  //   toast.info("🦄 Wow so easy!", {
-  //     position: "top-center",
-  //     autoClose: 3000,
-  //     hideProgressBar: true,
-  //     closeOnClick: true,
-  //     pauseOnHover: true,
-  //     draggable: true,
-  //     progress: undefined,
-  //   });
-  // }
   return (
-    <div className="flex justify-end mx-3">
+    <div className="flex justify-end">
       <button
         onClick={() => setEditing(true)}
         // onClick={debug}
-        className="flex items-center border border-gray-400 rounded px-4 py-1.5 text-sm font-medium leading-none"
+        className="flex items-center underline rounded px-4 py-1.5 text-sm font-medium leading-none"
       >
         <PencilIcon className="h-4 w-4 mr-1" />
         Edit Profile
       </button>
-      <EditModal editing={editing} setEditing={setEditing} id={id} />
+      <EditModal
+        initialName={user.name}
+        initialJob={user.job}
+        editing={editing}
+        setEditing={setEditing}
+        id={id}
+      />
     </div>
   );
 }

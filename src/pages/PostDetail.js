@@ -337,10 +337,10 @@ export default function PostDetail(props) {
                 <h4 className="font-medium text-lg">{post.author.name}</h4>
               </div>
             </Link>
-            {post.images && post.images.length && (
+            {post.images &&  (
               <Carousel
                 showStatus={false}
-                showThumbs={true}
+                showThumbs={false}
                 autoPlay={false}
                 swipeScrollTolerance={20}
               >
@@ -349,6 +349,7 @@ export default function PostDetail(props) {
                     key={i}
                     src={utils.parseUrl(i)}
                     alt={post.title}
+  className = "w-full object-cover"
                     fallbackSrc={null}
                   />
                 ))}
