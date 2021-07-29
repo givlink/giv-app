@@ -150,6 +150,12 @@ const reducer = (state = initialState, action) => {
         postSingleLoading: false,
         postById: getUpdatedPostMap([action.post], state),
       };
+    case "edit_post/new_data":
+      return {
+        ...state,
+        userEditingLoading: false,
+        postById: getUpdatedPostMap([action.post], state),
+      };
 
     //Users
     case "users/loading":
@@ -228,7 +234,6 @@ const reducer = (state = initialState, action) => {
         userEditingLoading: true,
       };
     case "edit_user/new_data":
-      console.log(action);
       return {
         ...state,
         userEditingLoading: false,

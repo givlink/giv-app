@@ -28,7 +28,7 @@ const PostDetailEditModal = ({
   };
   const onSave = async () => {
     setSending(true);
-    await api.updatePost({ title });
+    await api.updatePost({ id, title, message });
     //@todo err handling
     //update store with new user data , a bit hacky
     const post = await api.getPostById(id, false);
