@@ -58,6 +58,11 @@ const initialState = {
   userListScrollPos: 0,
   chatListScrollPos: 0,
   notificationListScrollPos: 0,
+
+  //notifications
+  notifications: [],
+  notificationsLoading: false,
+  notificationsUnreadCount: 0,
 };
 
 const didChangeEdit = (state, newState) => {
@@ -87,6 +92,17 @@ const reducer = (state = initialState, action) => {
       return { ...state, authLoading: true };
     case "auth/data":
       return { ...state, authUser: action.user, authLoading: false };
+
+    case "notifications/loading":
+      return { ...state, notificationsLoading: true };
+    case "notifications/data":
+      return {
+        ...state,
+        notificationsUnreadCount: action.notifications.length,
+        notifications: action.notifications,
+        notificationsLoading: false,
+      };
+
     case "auth/user_profile_loading":
       return { ...state, userLoading: true };
     case "auth/user_profile_data":
@@ -228,15 +244,9 @@ const reducer = (state = initialState, action) => {
       };
     case "nav/scroll":
       return { ...state, [action.page + "ScrollPos"]: action.pos };
-    case "edit_user/loading_start":
-      return {
-        ...state,
-        userEditingLoading: true,
-      };
     case "edit_user/new_data":
       return {
         ...state,
-        userEditingLoading: false,
         userById: getUpdatedUserMap([action.user], state),
       };
     case "edit_user/update_value": {

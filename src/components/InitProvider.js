@@ -12,6 +12,7 @@ const InitProvider = (props) => {
     if (loading || !user) return;
 
     dispatch(actions.loadUserProfileAndInitialPost());
+    dispatch(actions.watchNotifications());
     dispatch(actions.loadInitialUsers());
     dispatch(actions.loadInitialSkills());
     dispatch(actions.loadInitialAreas());

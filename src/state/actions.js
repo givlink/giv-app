@@ -100,6 +100,15 @@ const actions = {
       //@Todo dispatch toast to notify filter changed
     };
   },
+  watchNotifications: () => {
+    return async (dispatch, getState) => {
+      const { authUser } = getState();
+      dispatch({ type: "notifications/loading" });
+      api.watchNotifications(authUser.uid, (notifications) => {
+        dispatch({ type: "notifications/data", notifications });
+      });
+    };
+  },
   loadUserProfileAndInitialPost: () => {
     return async (dispatch, getState) => {
       const { authUser } = getState();

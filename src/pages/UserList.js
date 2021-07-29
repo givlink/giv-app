@@ -99,7 +99,7 @@ export default function UserList() {
   usePreserveScroll("userList");
 
   return (
-    <div className="pb-24">
+    <div className="pb-20">
       <HeaderUserList />
       <FilterBar />
       {loading && (
@@ -108,7 +108,7 @@ export default function UserList() {
         </div>
       )}
 
-      <ul className="divide-y">
+      <ul className="divide-y overflow-x-hidden">
         {users.map((u) => {
           return (
             <li key={u.id}>

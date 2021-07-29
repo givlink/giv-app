@@ -1,44 +1,80 @@
 import { useDispatch } from "react-redux";
 import React from "react";
-import { PencilIcon, ChevronLeftIcon } from "@heroicons/react/outline";
+import { PlusIcon, XIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import { Dialog, Transition } from "@headlessui/react";
 import Spinner from "components/Spinner";
 import api from "lib/api";
-// import { toast } from "react-hot-toast";
+import utils from "lib/utils";
 
-const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing }) => {
+const PostImagesEditModal = ({ id, initialImages = [], editing, setEditing }) => {
   const ref = React.useRef();
-  const [name, setName] = React.useState(initialName);
-  const [job, setJob] = React.useState(initialJob);
-
+  const [images, setImages] = React.useState(initialImages);
   const [sending, setSending] = React.useState(false);
-
   const dispatch = useDispatch();
 
   const closeModal = () => {
     if (sending) return;
     setEditing(false);
   };
-  const onChange = (e) => {
-    if (e.target.name === "name") setName(e.target.value);
-    if (e.target.name === "job") setJob(e.target.value);
+  const deleteImage = (idx) => {
+    const newImages = images.filter((img, i) => idx !== i);
+    setImages(newImages);
+  };
+
+  React.useEffect(() => {
+    setImages(initialImages);
+  }, [editing]);
+
+  const handleChange = (e) => {
+    if (!e.target.files.length) return;
+    //@Todo multiple file support
+    const file = e.target.files[0];
+    let isDuplicate = false;
+    images.forEach((i) => {
+      if (typeof i !== "string" && i.name === file.name) isDuplicate = true;
+    });
+    if (!isDuplicate) setImages([...images, file]);
+  };
+
+  const getKey = (i) => {
+    if (typeof i === "string") {
+      return i;
+    } else {
+      //its a file
+      return i.name;
+    }
+  };
+  const getSrc = (i) => {
+    if (typeof i === "string") {
+      return utils.parseUrl(i);
+    } else {
+      //its a file
+      return URL.createObjectURL(i);
+    }
   };
   const onSave = async () => {
     setSending(true);
-    await api.updateCurrentUser({ name, job });
     //@todo err handling
-    const user = await api.getUserProfile(id, false);
-    dispatch({ type: "edit_user/new_data", user });
+    await api.updatePostImages(id, images, initialImages)
+    //update store with new user data , a bit hacky
+    const post = await api.getPostById(id, false);
+    dispatch({ type: "edit_post/new_data", post });
     setSending(false);
     closeModal();
   };
-  const didChange = name !== initialName || job !== initialJob;
+
+  let isAnyFile = false;
+  images.forEach((i) => {
+    if (typeof i !== "string") isAnyFile = true;
+  });
+  const didChange = images.length !== initialImages.length || isAnyFile;
+  const isValid = images.length; //there should be at least 1 image
 
   return (
     <Transition.Root show={editing} as={React.Fragment}>
       <Dialog
-        as="div"
         initialFocus={ref}
+        as="div"
         static
         className="fixed z-10 inset-0 overflow-y-auto"
         open={editing}
@@ -71,7 +107,8 @@ const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing 
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div
-              style={{ minHeight: "40vh" }}
+              style={{ height: "90vh", minWidth: "100vw" }}
+              ref={ref}
               className="bg-white rounded-lg overflow-hidden w-full pt-3 pb-4 text-left shadow-xl transform transition-all"
             >
               {sending ? (
@@ -92,40 +129,55 @@ const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing 
                       as="h3"
                       className="flex-1 text-center mr-4 text-base leading-6 font-medium text-gray-900"
                     >
-                      Edit Profile
+                      Edit Images
                     </Dialog.Title>
                   </div>
-                  <div className="flex-1 flex flex-col mt-5 pb-20 px-3 text-center overflow-auto">
-                    <label className="flex flex-col items-start px-2">
-                      <span className="text-sm text-gray-800 font-medium">Name</span>
+                  <div className="flex-1 grid grid-cols-2 gap-x-3 gap-y-1 mt-5 pb-16 pt-6 pl-5 pr-3 text-center overflow-auto">
+                    {images.map((i, idx) => {
+                      return (
+                        <div key={getKey(i)} className="relative">
+                          <button
+                            onClick={() => deleteImage(idx)}
+                            className="animate-jiggle absolute z-10 top-0 right-0 -mr-2.5 -mt-3 p-1.5 bg-red-500 rounded-full text-red-100 shadow"
+                          >
+                            <XIcon className="h-4 w-4" />
+                          </button>
+
+                          <img className="object-cover rounded-md w-full h-52" src={getSrc(i)} />
+                        </div>
+                      );
+                    })}
+                    <label
+                      className={`${
+                        images.length < 3 ? "opacity-100" : "opacity-25 pointer-events-none"
+                      } rounded h-52 shadow bg-gray-50 border-2 border-gray-200 flex flex-col items-center justify-center`}
+                    >
                       <input
-                        value={name}
-                        name="name"
-                        onChange={onChange}
-                        placeholder="Your Name"
-                        className="mt-1 w-full border border-gray-300 px-3 py-2 rounded"
+                        onChange={handleChange}
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
                       />
-                    </label>
-                    <label className="mt-6 flex flex-col items-start px-2">
-                      <span className="text-sm text-gray-800 font-medium">Job</span>
-                      <input
-                        name="job"
-                        value={job}
-                        placeholder="Your Job"
-                        onChange={onChange}
-                        className="mt-1 w-full border border-gray-300 px-3 py-2 rounded"
-                      />
+                      <PlusIcon className="h-6 w-6 text-gray-500" />
+                      <span className="text-sm text-gray-600 mt-2">Upload Image</span>
                     </label>
                   </div>
                   <div className="fixed bottom-0 w-full border-t border-gray-200 bg-gray-100 px-4 py-3">
+                    {!isValid && (
+                      <span className="block text-red-600 pb-2 animate-shake text-center">
+                        Must have at least 1 image
+                      </span>
+                    )}
                     <button
                       onClick={onSave}
-                      disabled={!didChange}
+                      disabled={sending || !didChange || !isValid}
                       className={`w-full px-5 py-2 font-medium rounded ${
-                        didChange ? "bg-giv-blue text-white shadow-xl" : "bg-gray-200 text-gray-600"
+                        didChange && isValid
+                          ? "bg-giv-blue text-white shadow-xl"
+                          : "bg-gray-200 text-gray-600"
                       }`}
                     >
-                      Save
+                      Save Images
                     </button>
                   </div>
                 </div>
@@ -137,27 +189,4 @@ const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing 
     </Transition.Root>
   );
 };
-
-export default function EditUser({ id, user }) {
-  const [editing, setEditing] = React.useState(false);
-
-  return (
-    <div className="flex justify-end">
-      <button
-        onClick={() => setEditing(true)}
-        // onClick={debug}
-        className="flex items-center underline rounded px-4 py-1.5 text-sm font-medium leading-none"
-      >
-        <PencilIcon className="h-4 w-4 mr-1" />
-        Edit Profile
-      </button>
-      <EditModal
-        initialName={user.name}
-        initialJob={user.job}
-        editing={editing}
-        setEditing={setEditing}
-        id={id}
-      />
-    </div>
-  );
-}
+export default PostImagesEditModal;

@@ -5,6 +5,8 @@ import { Router } from "@reach/router";
 import UserList from "pages/UserList";
 import UserDetail from "pages/UserDetail";
 
+import NotificationList from "pages/NotificationList";
+
 import PostList from "pages/PostList";
 import PostDetail from "pages/PostDetail";
 import PostEdit from "pages/PostEdit";
@@ -22,7 +24,7 @@ const App = () => {
     <AuthProvider>
       <InitProvider>
         <Toaster />
-        <Router className="h-screen w-screen" primary={false}>
+        <Router className="h-full w-full" primary={false}>
           {/* Setup */}
           <Login path="login" />
           <Invite path="invite" />
@@ -35,6 +37,10 @@ const App = () => {
           <PostDetail path="posts/:id" />
           <PostEdit path="posts/:id/edit" />
           <PostList path="/" />
+
+
+          {/* Notifications */}
+          <NotificationList path="notifications" />
         </Router>
         <Footer />
       </InitProvider>

@@ -34,7 +34,7 @@ export default function PostList() {
   };
 
   return (
-    <div className="pb-24">
+    <div className="pb-20">
       <HeaderPostList />
       {loading && (
         <div className="mb-4">
@@ -46,8 +46,6 @@ export default function PostList() {
         onRefresh={handleRefresh}
         pullingContent={<PullDownHandle />}
         refreshingContent={<Spinner />}
-        pullDownThreshold={200}
-        maxPullDownDistance={200}
       >
         <ul className="space-y-2">
           {posts.map((p) => {
@@ -67,11 +65,7 @@ export default function PostList() {
             onClick={() => dispatch(actions.loadMorePosts())}
           >
             <span className="mr-2 mb-px">Load More</span>
-            {loadingMore ? (
-              <Spinner size="h-5 w-5" />
-            ) : (
-              <ChevronRightIcon className="h-5 w-5" />
-            )}
+            {loadingMore ? <Spinner size="h-5 w-5" /> : <ChevronRightIcon className="h-5 w-5" />}
           </button>
         </div>
       )}
