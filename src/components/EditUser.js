@@ -6,7 +6,13 @@ import Spinner from "components/Spinner";
 import api from "lib/api";
 // import { toast } from "react-hot-toast";
 
-const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing }) => {
+const EditModal = ({
+  initialName = "",
+  initialJob = "",
+  id,
+  editing,
+  setEditing,
+}) => {
   const ref = React.useRef();
   const [name, setName] = React.useState(initialName);
   const [job, setJob] = React.useState(initialJob);
@@ -58,7 +64,10 @@ const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing 
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
-          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+          <span
+            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+          >
             &#8203;
           </span>
           <Transition.Child
@@ -97,7 +106,9 @@ const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing 
                   </div>
                   <div className="flex-1 flex flex-col mt-5 pb-20 px-3 text-center overflow-auto">
                     <label className="flex flex-col items-start px-2">
-                      <span className="text-sm text-gray-800 font-medium">Name</span>
+                      <span className="text-sm text-gray-800 font-medium">
+                        Name
+                      </span>
                       <input
                         value={name}
                         name="name"
@@ -107,7 +118,9 @@ const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing 
                       />
                     </label>
                     <label className="mt-6 flex flex-col items-start px-2">
-                      <span className="text-sm text-gray-800 font-medium">Job</span>
+                      <span className="text-sm text-gray-800 font-medium">
+                        Job
+                      </span>
                       <input
                         name="job"
                         value={job}
@@ -122,7 +135,9 @@ const EditModal = ({ initialName = "", initialJob = "", id, editing, setEditing 
                       onClick={onSave}
                       disabled={!didChange}
                       className={`w-full px-5 py-2 font-medium rounded ${
-                        didChange ? "bg-giv-blue text-white shadow-xl" : "bg-gray-200 text-gray-600"
+                        didChange
+                          ? "bg-giv-blue text-white shadow-xl"
+                          : "bg-gray-200 text-gray-600"
                       }`}
                     >
                       Save
