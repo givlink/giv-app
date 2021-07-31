@@ -50,7 +50,10 @@ const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
             <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
           </Transition.Child>
           {/* This element is to trick the browser into centering the modal contents. */}
-          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+          <span
+            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+          >
             &#8203;
           </span>
           <Transition.Child
@@ -65,10 +68,16 @@ const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
             <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
               <div className="sm:flex sm:items-start">
                 <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                  <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+                  <ExclamationIcon
+                    className="h-6 w-6 text-red-600"
+                    aria-hidden="true"
+                  />
                 </div>
                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                  <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg leading-6 font-medium text-gray-900"
+                  >
                     Delete Comment
                   </Dialog.Title>
                   <div className="mt-2">
@@ -114,7 +123,11 @@ const CommentCard = ({ comment, user, onDelete }) => {
 
   return (
     <div className="flex mx-3 py-3 border-b border-gray-200">
-      <DeleteCommentModal open={deleteOpen} setOpen={setDeleteOpen} onDelete={handleDelete} />
+      <DeleteCommentModal
+        open={deleteOpen}
+        setOpen={setDeleteOpen}
+        onDelete={handleDelete}
+      />
       <div className="w-16 mr-2">
         <img
           src={utils.parseUrl(comment.author.photoURL)}
@@ -126,7 +139,10 @@ const CommentCard = ({ comment, user, onDelete }) => {
         <div className="flex items-center justify-between">
           <span className="font-medium text-lg">{comment.author.name}</span>
           {user && user.id === comment.author.id && (
-            <button onClick={() => setDeleteOpen(true)} className="p-2 rounded hover:bg-gray-100">
+            <button
+              onClick={() => setDeleteOpen(true)}
+              className="p-2 rounded hover:bg-gray-100"
+            >
               <XIcon className="h-4 w-4" />
             </button>
           )}
@@ -198,7 +214,9 @@ const CreateComment = ({ postId, onAddComment }) => {
               onClick={submitComment}
               disabled={!messageValid && !sending}
               className={`transition duration-150 flex items-center justify-center rounded-full h-12 w-12 ${
-                messageValid ? "bg-giv-blue text-white" : "bg-gray-100 text-gray-300"
+                messageValid
+                  ? "bg-giv-blue text-white"
+                  : "bg-gray-100 text-gray-300"
               }`}
             >
               {sending ? (
@@ -237,12 +255,18 @@ const CommentList = ({ postId }) => {
 
   return (
     <div>
-      <h4 className="border-b border-gray-300 font-medium text-xl py-2 px-4">Comments</h4>
+      <h4 className="border-b border-gray-300 font-medium text-xl py-2 px-4">
+        Comments
+      </h4>
       <CreateComment postId={postId} onAddComment={onAddComment} />
       <ul>
         {comments.map((c) => (
           <li key={c.id}>
-            <CommentCard comment={c} user={state.user} onDelete={onDeletComment} />
+            <CommentCard
+              comment={c}
+              user={state.user}
+              onDelete={onDeletComment}
+            />
           </li>
         ))}
       </ul>
@@ -251,6 +275,19 @@ const CommentList = ({ postId }) => {
 };
 
 //@Todo carousel Thumbs have some warning
+
+const EmptyPost = () => {
+  return (
+    <div className="flex flex-col items-center justify-center pt-20">
+      <img
+        className="w-24 h-24 animate-wobble-slow opacity-50"
+        src="/icons/tama_def_sleepy.png"
+        alt=""
+      />
+      <span className="text-sm text-gray-500 pt-2">Post Not Found</span>
+    </div>
+  );
+};
 
 export default function PostDetail(props) {
   const dispatch = useDispatch();
@@ -294,8 +331,6 @@ export default function PostDetail(props) {
 
   const isMyPost = true;
 
-  if (!post && !state.postSingleLoading) return null; //@todo show 404
-
   return (
     <div>
       <HeaderBack />
@@ -304,7 +339,7 @@ export default function PostDetail(props) {
           <div className="pt-24">
             <Spinner />
           </div>
-        ) : (
+        ) : post ? (
           <>
             <Link to={`/users/${post.author.id}`}>
               <div className="flex items-center ml-4 py-5">
@@ -335,7 +370,7 @@ export default function PostDetail(props) {
               </Carousel>
             )}
             <div className="px-4 pt-6 pb-4">
-            {isMyPost && <EditPost post={post} id={post.id} />}
+              {isMyPost && <EditPost post={post} id={post.id} />}
               <h3 className="font-medium text-2xl mb-2">{post.title}</h3>
               <p className="px-1 text-lg">{post.message}</p>
             </div>
@@ -382,7 +417,9 @@ export default function PostDetail(props) {
                 <div className="w-full flex flex-col">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-sm font-medium text-giv-blue">givを贈った人</span>
+                      <span className="text-sm font-medium text-giv-blue">
+                        givを贈った人
+                      </span>
                       <h4 className="font-medium text-lg">{post.giver.name}</h4>
                     </div>
                     <ChevronRightIcon className="h-6 w-6 text-gray-500" />
@@ -393,6 +430,8 @@ export default function PostDetail(props) {
 
             <CommentList postId={props.id} />
           </>
+        ) : (
+          !state.postSingleLoading && <EmptyPost />
         )}
       </div>
     </div>

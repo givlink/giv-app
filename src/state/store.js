@@ -85,22 +85,40 @@ const didChangeEdit = (state, newState) => {
   return changed;
 };
 
-const getUpdatedUserMap = (users, state) => {
+const getUpdatedUserMap = (users = [], state) => {
   const map = { ...state.userById };
-  users.forEach((p) => (map[p.id] = p));
+  users.forEach((p) => {
+    if (!p) return;
+    map[p.id] = p;
+  });
   return map;
 };
-const getUpdatedPostMap = (posts, state) => {
+const getUpdatedPostMap = (posts = [], state) => {
   const map = { ...state.postById };
-  posts.forEach((p) => (map[p.id] = p));
+  posts.forEach((p) => {
+    if (!p) return;
+    map[p.id] = p;
+  });
   return map;
 };
 
-//this assumes each item has .id field
+//this assumes each item has .id field else ignores it
 const mergeById = (oldList = [], newList = []) => {
   const byId = {};
-  oldList.forEach((i) => (byId[i.id] = i));
-  newList.forEach((i) => (byId[i.id] = i));
+  oldList.forEach((i) => {
+    if (!i || !i.id) {
+      console.warn("No id field found in item: mergeById");
+      return;
+    }
+    byId[i.id] = i;
+  });
+  newList.forEach((i) => {
+    if (!i || !i.id) {
+      console.warn("No id field found in item: mergeById");
+      return;
+    }
+    byId[i.id] = i;
+  });
   return Object.values(byId);
 };
 
