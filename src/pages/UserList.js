@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import UserListCard from "components/UserListCard";
 import Spinner from "components/Spinner";
 import actions from "state/actions";
-import { ChevronRightIcon } from "@heroicons/react/outline";
+import { XIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import usePreserveScroll from "hooks/scroll";
 
 const makeOptions = (map, type, category) => {
@@ -24,65 +24,114 @@ const makeOptions = (map, type, category) => {
 };
 
 const FilterBar = (props) => {
-  const {
-    selected,
-    skillMap,
-    areaMap,
-    skillCategories,
-    areaCategories,
-  } = useSelector((s) => ({
+  const state = useSelector((s) => ({
     skillCategories: s.skillCategories,
     skillMap: s.skills,
     areaCategories: s.areaCategories,
     areaMap: s.areas,
-    selected: s.selectedTag,
+    userSearchFilter: s.userSearchFilter,
+    usersLoading: s.usersLoading,
   }));
-  const handleChange = (e) => {};
-  return (
-    <div className="flex items-center space-x-0.5 text-xs mx-1.5 mt-2 mb-6">
-      <select
-        value={selected}
-        onChange={handleChange}
-        className="w-1/2 border border-gray-200 rounded h-12 px-1 py-2"
-      >
-        <option value="" className="text-center">
-          興味・関心フィルター
-        </option>
-        {makeOptions(skillMap, "skills", skillCategories).map(
-          ([cat, skills]) => {
-            return (
-              <optgroup key={cat.id} label={cat.tag}>
-                {skills.map((s) => (
-                  <option key={s.id} className="block pl-1 py-1" value={s.id}>
-                    {s.tag}
-                  </option>
-                ))}
-              </optgroup>
-            );
-          }
-        )}
-      </select>
-      <select
-        value={selected}
-        onChange={handleChange}
-        className="w-1/2 border border-gray-200 rounded h-12 px-1 py-2"
-      >
-        <option value="" className="text-center">
-          場所フィルター
-        </option>
+  const dispatch = useDispatch();
+  const handleChange = (e) => {
+    dispatch(
+      actions.updateSearchFilter({
+        type: e.target.value === "" ? null : e.target.name,
+        value: e.target.value === "" ? null : e.target.value,
+      })
+    );
+  };
+  const handleReset = () => {
+    dispatch(actions.updateSearchFilter({ type: null, value: null }));
+  };
 
-        {makeOptions(areaMap, "area", areaCategories).map(([cat, skills]) => {
-          return (
-            <optgroup key={cat.id} label={cat.tag}>
-              {skills.map((s) => (
-                <option key={s.id} className="block pl-1 py-1" value={s.id}>
-                  {s.tag}
-                </option>
-              ))}
-            </optgroup>
-          );
-        })}
-      </select>
+  return (
+    <div className="mx-1.5 mt-2 mb-6 text-xs">
+      <div className="flex items-center space-x-0.5">
+        <select
+          name="skills"
+          disabled={state.usersLoading}
+          value={
+            state.userSearchFilter.type === "skills"
+              ? state.userSearchFilter.value
+              : ""
+          }
+          onChange={handleChange}
+          className="w-1/2 border border-gray-200 rounded text-sm h-12 px-1 py-2"
+        >
+          <option value={""} className="text-center pr-2">
+            興味・関心フィルター
+          </option>
+          {makeOptions(state.skillMap, "skills", state.skillCategories).map(
+            ([cat, skills]) => {
+              return (
+                <optgroup key={cat.id} label={cat.tag}>
+                  {skills.map((s) => (
+                    <option key={s.id} className="block pl-1 py-1" value={s.id}>
+                      {s.tag}
+                    </option>
+                  ))}
+                </optgroup>
+              );
+            }
+          )}
+        </select>
+        <select
+          name="area"
+          disabled={state.usersLoading}
+          value={
+            state.userSearchFilter.type === "area"
+              ? state.userSearchFilter.value
+              : ""
+          }
+          onChange={handleChange}
+          className="w-1/2 border border-gray-200 rounded text-sm h-12 px-1 py-2"
+        >
+          <option value={""} className="text-center pr-2">
+            場所フィルター
+          </option>
+
+          {makeOptions(state.areaMap, "area", state.areaCategories).map(
+            ([cat, areas]) => {
+              return (
+                <optgroup key={cat.id} label={cat.tag}>
+                  {areas.map((s) => (
+                    <option key={s.id} className="block pl-1 py-1" value={s.id}>
+                      {s.tag}
+                    </option>
+                  ))}
+                </optgroup>
+              );
+            }
+          )}
+        </select>
+      </div>
+      {(state.userSearchFilter.type === "area" ||
+        state.userSearchFilter.type === "skills") &&
+        state.userSearchFilter.value !== "" &&
+        state.userSearchFilter.value !== null && (
+          <div className="flex justify-end pr-1 mt-2">
+            <button
+              onClick={handleReset}
+              className="flex items-center justify-center px-2 py-0.5 border border-red-300 rounded"
+            >
+              <XIcon className="h-4 w-4 mt-px mr-0.5 text-red-500" />
+              <span className="leading-none">Reset</span>
+            </button>
+          </div>
+        )}
+    </div>
+  );
+};
+const EmptyUserList = () => {
+  return (
+    <div className="flex flex-col items-center justify-center pt-20">
+      <img
+        className="w-24 h-24 animate-wobble-slow opacity-50"
+        src="/icons/tama_def_sleepy.png"
+        alt=""
+      />
+      <span className="text-sm text-gray-500 pt-2">No Users Found</span>
     </div>
   );
 };
@@ -116,6 +165,7 @@ export default function UserList() {
             </li>
           );
         })}
+        {!loading && users.length === 0 && <EmptyUserList />}
       </ul>
       {hasMore && !loading && (
         <div className="flex items-center justify-center mx-2">

@@ -44,7 +44,10 @@ const initialState = {
   areas: {},
 
   //Search
-  selectedTag: "",
+  userSearchFilter: {
+    type: null,
+    value: null,
+  },
 
   //Editing
   userEditBefore: DEFAULT_EDIT_BEFORE,
@@ -209,6 +212,8 @@ const reducer = (state = initialState, action) => {
     //Users
     case "users/loading":
       return { ...state, usersLoading: true };
+    case "users/loading_done":
+      return { ...state, usersLoading: false };
     case "users/loading_more":
       return { ...state, usersLoadingMore: true };
     case "users/data":
@@ -218,7 +223,20 @@ const reducer = (state = initialState, action) => {
         usersOffset: action.offset,
         usersLoading: false,
         userById: getUpdatedUserMap(action.users, state),
+        usersHasMore: action.hasMore,
       };
+    case "users/update_search":
+      const payload = {
+        userSearchFilter: action.filter,
+
+        //reset offset and existing users
+        usersOffset: null,
+        usersHasMore: true,
+
+        users: [],
+      };
+
+      return { ...state, ...payload };
     case "users/data_more":
       return {
         ...state,
@@ -227,6 +245,7 @@ const reducer = (state = initialState, action) => {
         usersOffset: action.offset,
         usersLoadingMore: false,
         userById: getUpdatedUserMap(action.users, state),
+        usersHasMore: action.hasMore,
       };
     case "users/data_single_loading":
       return {

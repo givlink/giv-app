@@ -167,17 +167,48 @@ const actions = {
         dispatch({ type: "users/loading" });
       }
       const [users, offset] = await api.listUsers();
-      dispatch({ type: "users/data", users, offset });
+      dispatch({ type: "users/data", users, offset, hasMore: true });
     };
   },
   loadMoreUsers: () => {
     return async (dispatch, getState) => {
       const state = getState();
+      const filter = state.userSearchFilter;
       dispatch({ type: "users/loading_more" });
+      //@Todo put userlimit in store
+      let limit = 10;
+      if (filter.type === "name") limit = 5; //for tighter name search
       const [users, offset] = await api.listUsers({
+        limit,
+        filter,
         offset: state.usersOffset,
       });
-      dispatch({ type: "users/data_more", users, offset });
+      dispatch({
+        type: "users/data_more",
+        users,
+        offset,
+        hasMore: users.length >= limit,
+      });
+    };
+  },
+  updateSearchFilter: (filter = { type: null, value: null }) => {
+    return async (dispatch, getState) => {
+      // const state = getState();
+      dispatch({ type: "users/loading" });
+      dispatch({ type: "users/update_search", filter });
+
+      let limit = 10;
+      if (filter.type === "name") limit = 5; //for tighter name search
+      const [users, offset] = await api.listUsers({
+        limit,
+        filter: filter.type ? filter : null,
+      });
+      dispatch({
+        type: "users/data",
+        users,
+        offset,
+        hasMore: users.length >= limit,
+      });
     };
   },
 };
