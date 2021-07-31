@@ -9,6 +9,7 @@ export default function RequestList() {
   const state = useSelector((s) => ({
     authUser: s.authUser,
     requests: s.requests,
+    chatsUnreadCount: s.chatsUnreadCount,
     requestsPendingCount: s.requestsPendingCount,
     loading: s.requestsLoading,
   }));
@@ -16,7 +17,11 @@ export default function RequestList() {
 
   return (
     <div className="pb-20">
-      <HeaderChatList active="requests" count={state.requestsPendingCount} />
+      <HeaderChatList
+        active="requests"
+        chatsCount={state.chatsUnreadCount}
+        requestsCount={state.requestsPendingCount}
+      />
       {state.loading && (
         <div className="mb-8">
           <Spinner />

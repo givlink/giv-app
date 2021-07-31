@@ -23,6 +23,7 @@ const ChatComingSoon = () => {
 export default function ChatList() {
   const state = useSelector((s) => ({
     chats: s.chats,
+    requestsPendingCount: s.requestsPendingCount,
     chatsUnreadCount: s.chatsUnreadCount,
     loading: s.chatsLoading,
   }));
@@ -30,7 +31,11 @@ export default function ChatList() {
 
   return (
     <div className="pb-20">
-      <HeaderChatList active="chats" />
+      <HeaderChatList
+        active="chats"
+        chatsCount={state.chatsUnreadCount}
+        requestsCount={state.requestsPendingCount}
+      />
       {state.loading && (
         <div className="mb-4">
           <Spinner />
