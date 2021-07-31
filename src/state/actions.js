@@ -106,11 +106,8 @@ const actions = {
       dispatch({ type: "requests/loading" });
       api.watchGivRequests(
         authUser.uid,
-        (requests) => 
-          dispatch({ type: "requests/data", requests })
-        ,
-        (requests) => 
-          dispatch({ type: "requests/data", requests })
+        (requests) => dispatch({ type: "requests/data", requests }),
+        (requests) => dispatch({ type: "requests/data", requests })
       );
     };
   },
