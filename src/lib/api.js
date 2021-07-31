@@ -1,4 +1,5 @@
 import firebase from "./firebase";
+import utils from "lib/utils";
 import shortId from "short-uuid";
 
 const login = (prov) => {
@@ -18,6 +19,7 @@ const onRedirectResult = () => {
 
 const cache = {
   users: {},
+  comments: {},
 };
 
 //@Todo better caching library
@@ -242,6 +244,11 @@ export const updateNotification = ({ userId, id, status = null }) => {
     .update(payload);
 };
 
+export const mock = async (payload) => {
+  const p = { ms: 2000, fail: false, ...payload };
+  await utils.sleep(p.ms);
+  if (p.fail) throw Error("Err: error in mock api");
+};
 export const acceptGivRequest = async (givRequestId) => {
   return firebase.functions().httpsCallable("acceptGivRequest")({
     givRequestId,
@@ -386,6 +393,7 @@ export const checkLiked = async (postId, userId) => {
   return resp.exists;
 };
 
+const SHOW_ALL = false && process.env.NODE_ENV === "development";
 export const watchNotifications = async (userId, cb, debug = false) => {
   if (!userId) {
     console.log("No user id in listNotifications");
@@ -394,7 +402,7 @@ export const watchNotifications = async (userId, cb, debug = false) => {
 
   let snap = firebase.firestore().collection(`/users/${userId}/notifications`);
 
-  if (!debug) snap = snap.where("status", "==", "unread");
+  if (!SHOW_ALL) snap = snap.where("status", "==", "unread");
 
   return snap.orderBy("createdAt", "desc").onSnapshot(async (qs) => {
     const nots = [];
@@ -402,7 +410,22 @@ export const watchNotifications = async (userId, cb, debug = false) => {
       const not = { ...doc.data(), id: doc.id };
 
       try {
+        //@Todo ideally we should delete the notification as well when
+        //deleting the comment or post
+        if (not.type === "commentCreated" && not.commentId && not.postId) {
+          //Check if post or comment is 404 and ignore this
+          not.post = await getPostById(not.postId);
+          not.comment = await getCommentById(not.commentId);
+          if (!not.post || !not.comment)
+            throw new Error("post or comment not found: " + not.commentId);
+        }
+
+        //@Todo ideally we should delete the notification as well when
+        //deleting the giv finished value
         if (not.type === "givFinished" && not.giverId) {
+          not.giv = await getGivById(not.givId);
+          if (!not.giv) throw new Error("giv not found: " + not.givId);
+
           not.giver = await getUserProfile(not.giverId);
           if (!not.giver) throw new Error("giver not found: " + not.giverId);
         }
@@ -419,9 +442,8 @@ export const watchNotifications = async (userId, cb, debug = false) => {
         //Only show notification if its clear of any error
         nots.push(not);
       } catch (err) {
-        console.log("err while parsing nots:", err);
         //@Todo notify err
-        console.log(err);
+        console.warn("Ignoring erred notification:", err.message);
       }
     }
 
@@ -641,6 +663,26 @@ export const deleteComment = async (id = null) => {
   await firebase.firestore().doc(`/comments/${id}`).delete();
 };
 
+const getCommentById = async (id) => {
+  const fromCache = cache.comments[id];
+  if (fromCache) {
+    return fromCache;
+  }
+  const doc = await firebase.firestore().doc(`comments/${id}`).get();
+  if (doc.exists) {
+    const comment = { ...doc.data(), id: doc.id };
+    console.log("comment id:", comment);
+    // const user = await getUserProfile(comment.author.id);
+    // post.author = user;
+
+    //Update cache
+    cache.comments[id] = comment;
+    return comment;
+  } else {
+    return null;
+  }
+};
+
 const listComments = async (postId, query = {}) => {
   const q = { ...DEFAULT_QUERY_LIST_COMMENTS, ...query };
 
@@ -743,6 +785,15 @@ const getFinishedGivs = async (receiverId) => {
   return givs;
 };
 //@Todo add caching
+const getGivById = async (id) => {
+  const doc = await firebase.firestore().doc(`givs/${id}`).get();
+  if (doc.exists) {
+    const result = { ...doc.data(), id: doc.id };
+    return result;
+  } else {
+    return null;
+  }
+};
 
 const getPostById = async (id) => {
   const doc = await firebase.firestore().doc(`posts/${id}`).get();
@@ -988,6 +1039,7 @@ const api = {
   getFinishedGivs,
   getPostByGivId,
   getPostById,
+  getGivById,
   getPostsForMe,
   getNewGivs,
   getGivRequests,
@@ -1000,7 +1052,9 @@ const api = {
   likePost,
   unlikePost,
   postComment,
+  getCommentById,
   deleteComment,
+  mock,
 
   login,
   logout,

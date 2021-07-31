@@ -19,6 +19,7 @@ const utils = {
     e.target.src = "/icons/tama_def_sleepy.png";
     e.target.style.width = "120px";
   },
+  //@Todo util for parsing duration ago.
   parseDate: (date) => {
     let d;
     if (typeof date.toDate !== "undefined") {

@@ -11,6 +11,9 @@ import PostList from "pages/PostList";
 import PostDetail from "pages/PostDetail";
 import PostEdit from "pages/PostEdit";
 
+import ChatList from "pages/ChatList";
+import RequestList from "pages/RequestList";
+
 import Login from "pages/Login";
 import Invite from "pages/Invite";
 
@@ -24,7 +27,7 @@ const App = () => {
     <AuthProvider>
       <InitProvider>
         <Toaster />
-        <Router className="h-full w-full" primary={false}>
+        <Router className="h-screen w-screen" primary={false}>
           {/* Setup */}
           <Login path="login" />
           <Invite path="invite" />
@@ -38,6 +41,9 @@ const App = () => {
           <PostEdit path="posts/:id/edit" />
           <PostList path="/" />
 
+          {/* Chats and Requests */}
+          <RequestList path="chats/requests" />
+          <ChatList path="chats" />
 
           {/* Notifications */}
           <NotificationList path="notifications" />

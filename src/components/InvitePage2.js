@@ -1,15 +1,10 @@
 import React from "react";
-import { useLocation } from "@reach/router";
-import ErrorComponent from "components/Error";
-import Steps from "components/InviteSteps";
 import Spinner from "components/Spinner";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "@reach/router";
-import api from "lib/api";
 import actions from "state/actions";
 
-const Page2 = ({ activeStepIndex = 0, steps, code, handleNext }) => {
-  const loc = useLocation();
+const Page2 = ({ activeStepIndex = 0, code, handleNext }) => {
   const dispatch = useDispatch();
   const state = useSelector((s) => ({
     authLoading: s.authLoading,

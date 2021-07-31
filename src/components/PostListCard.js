@@ -40,7 +40,7 @@ export default function PostListCard({ post }) {
           <img
             src={utils.parseUrl(post.giver.photoURL)}
             alt={post.giver.name}
-            className="h-14 w-14 bject-cover border-2 border-gray-500 mr-2 rounded-full"
+            className="flex-shrink-0 h-14 w-14 bject-cover border-2 border-gray-500 mr-2 rounded-full"
           />
           <div className="w-full flex flex-col">
             <div className="flex items-center justify-between">

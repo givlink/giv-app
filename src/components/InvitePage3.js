@@ -1,12 +1,5 @@
 import React from "react";
-import { useLocation } from "@reach/router";
-import ErrorComponent from "components/Error";
-import Steps from "components/InviteSteps";
-import Spinner from "components/Spinner";
-import { useSelector, useDispatch } from "react-redux";
-import { navigate } from "@reach/router";
-import api from "lib/api";
-import actions from "state/actions";
+import { useSelector } from "react-redux";
 
 //@Todo copy paste
 const makeOptions = (map, type, category) => {
@@ -25,7 +18,7 @@ const makeOptions = (map, type, category) => {
   return result;
 };
 
-const Page3 = ({ activeStepIndex = 0, steps, handleNext }) => {
+const Page3 = ({ activeStepIndex = 0, handleNext }) => {
   const [job, setJob] = React.useState("");
   const [intro, setIntro] = React.useState("");
   const [area, setArea] = React.useState("tokyo");

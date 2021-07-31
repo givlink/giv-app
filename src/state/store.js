@@ -63,6 +63,16 @@ const initialState = {
   notifications: [],
   notificationsLoading: false,
   notificationsUnreadCount: 0,
+
+  //Requests
+  requests: [],
+  requestsLoading: false,
+  requestsPendingCount: 0,
+
+  //Chats
+  chats: [],
+  chatsLoading: false,
+  chatsUnreadCount: 0,
 };
 
 const didChangeEdit = (state, newState) => {
@@ -83,6 +93,14 @@ const getUpdatedPostMap = (posts, state) => {
   return map;
 };
 
+//this assumes each item has .id field
+const mergeById = (oldList = [], newList = []) => {
+  const byId = {};
+  oldList.forEach((i) => (byId[i.id] = i));
+  newList.forEach((i) => (byId[i.id] = i));
+  return Object.values(byId);
+};
+
 const reducer = (state = initialState, action) => {
   if (!state) return initialState;
   switch (action.type) {
@@ -101,6 +119,21 @@ const reducer = (state = initialState, action) => {
         notificationsUnreadCount: action.notifications.length,
         notifications: action.notifications,
         notificationsLoading: false,
+      };
+    case "requests/loading":
+      return { ...state, requestsLoading: true };
+    case "requests/data":
+      const newReqs = mergeById(state.requests, action.requests);
+      newReqs.sort((a, b) => {
+        return a.createdAt < b.createdAt ? 1 : -1;
+      });
+      const requestsPendingCount = newReqs.filter((i) => i.status !== "match")
+        .length;
+      return {
+        ...state,
+        requestsPendingCount,
+        requests: newReqs,
+        requestsLoading: false,
       };
 
     case "auth/user_profile_loading":
@@ -317,5 +350,9 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(thunk)));
+const store = createStore(
+  reducer,
+  initialState,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 export default store;

@@ -9,7 +9,13 @@ import {
   UserIcon as UserIconSolid,
   BellIcon as BellIconSolid,
 } from "@heroicons/react/solid";
-import { SearchIcon, ClockIcon, ChatIcon, UserIcon, BellIcon } from "@heroicons/react/outline";
+import {
+  SearchIcon,
+  ClockIcon,
+  ChatIcon,
+  UserIcon,
+  BellIcon,
+} from "@heroicons/react/outline";
 
 export default function Footer() {
   const { unreadCount, user } = useSelector((s) => ({
@@ -21,11 +27,18 @@ export default function Footer() {
   const isPostList = !!useMatch("/");
   const isUserList = !!useMatch("/users");
   const isChatList = !!useMatch("/chats");
+  const isRequestList = !!useMatch("/chats/requests");
   const isNotsList = !!useMatch("/notifications");
 
   const isMyPage = loc.pathname === `/users/${user?.uid}`;
 
-  const shouldShow = isPostList || isUserList || isChatList || isNotsList || isMyPage;
+  const shouldShow =
+    isPostList ||
+    isUserList ||
+    isChatList ||
+    isRequestList ||
+    isNotsList ||
+    isMyPage;
 
   return (
     <Transition
@@ -44,7 +57,9 @@ export default function Footer() {
           <Link
             to="/"
             className={`${
-              isPostList ? "text-giv-blue-dark border-giv-blue" : "border-transparent"
+              isPostList
+                ? "text-giv-blue-dark border-giv-blue"
+                : "border-transparent"
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
             {isPostList ? (
@@ -56,28 +71,40 @@ export default function Footer() {
           <Link
             to="/users"
             className={`${
-              isUserList ? "text-giv-blue-dark border-giv-blue" : "border-transparent"
+              isUserList
+                ? "text-giv-blue-dark border-giv-blue"
+                : "border-transparent"
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
             <SearchIcon className="h-8 w-8" />
           </Link>
-          {
-            // <Link
-            //   to="/chats"
-            //   className={`${
-            //     isChatList ? "text-giv-blue-dark border-giv-blue" : "border-transparent"
-            //   } flex flex-1 flex-col py-2 items-center border-b-4`}
-            // >
-            //   {isChatList ? <ChatIconSolid className="h-8 w-8" /> : <ChatIcon className="h-8 w-8" />}
-            // </Link>
-          }
+          <Link
+            to="/chats/requests" //@Todo For now directly go to requests, in future go to chats
+            className={`${
+              isChatList || isRequestList
+                ? "text-giv-blue-dark border-giv-blue"
+                : "border-transparent"
+            } flex flex-1 flex-col py-2 items-center border-b-4`}
+          >
+            {isChatList || isRequestList ? (
+              <ChatIconSolid className="h-8 w-8" />
+            ) : (
+              <ChatIcon className="h-8 w-8" />
+            )}
+          </Link>
           <Link
             to="/notifications"
             className={`${
-              isNotsList ? "text-giv-blue-dark border-giv-blue" : "border-transparent"
+              isNotsList
+                ? "text-giv-blue-dark border-giv-blue"
+                : "border-transparent"
             } flex flex-1 flex-col py-2 items-center border-b-4 relative`}
           >
-            {isNotsList ? <BellIconSolid className="h-8 w-8" /> : <BellIcon className="h-8 w-8" />}
+            {isNotsList ? (
+              <BellIconSolid className="h-8 w-8" />
+            ) : (
+              <BellIcon className="h-8 w-8" />
+            )}
             {unreadCount > 0 && (
               <div className="w-6 h-6 text-xs p-1 text-white flex items-center justify-center rounded-full absolute mt-0 mr-0.5 top-0 right-0 bg-giv-blue">
                 {unreadCount}
@@ -87,10 +114,16 @@ export default function Footer() {
           <Link
             to={`/users/${user?.uid}`}
             className={`${
-              isMyPage ? "text-giv-blue-dark border-giv-blue" : "border-transparent"
+              isMyPage
+                ? "text-giv-blue-dark border-giv-blue"
+                : "border-transparent"
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
-            {isMyPage ? <UserIconSolid className="h-8 w-8" /> : <UserIcon className="h-8 w-8" />}
+            {isMyPage ? (
+              <UserIconSolid className="h-8 w-8" />
+            ) : (
+              <UserIcon className="h-8 w-8" />
+            )}
           </Link>
         </div>
       </nav>

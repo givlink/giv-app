@@ -6,7 +6,12 @@ import Spinner from "components/Spinner";
 import api from "lib/api";
 import utils from "lib/utils";
 
-const PostImagesEditModal = ({ id, initialImages = [], editing, setEditing }) => {
+const PostImagesEditModal = ({
+  id,
+  initialImages = [],
+  editing,
+  setEditing,
+}) => {
   const ref = React.useRef();
   const [images, setImages] = React.useState(initialImages);
   const [sending, setSending] = React.useState(false);
@@ -23,7 +28,7 @@ const PostImagesEditModal = ({ id, initialImages = [], editing, setEditing }) =>
 
   React.useEffect(() => {
     setImages(initialImages);
-  }, [editing]);
+  }, [editing, initialImages]);
 
   const handleChange = (e) => {
     if (!e.target.files.length) return;
@@ -55,7 +60,7 @@ const PostImagesEditModal = ({ id, initialImages = [], editing, setEditing }) =>
   const onSave = async () => {
     setSending(true);
     //@todo err handling
-    await api.updatePostImages(id, images, initialImages)
+    await api.updatePostImages(id, images, initialImages);
     //update store with new user data , a bit hacky
     const post = await api.getPostById(id, false);
     dispatch({ type: "edit_post/new_data", post });
@@ -94,7 +99,10 @@ const PostImagesEditModal = ({ id, initialImages = [], editing, setEditing }) =>
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
-          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+          <span
+            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+          >
             &#8203;
           </span>
           <Transition.Child
@@ -143,13 +151,19 @@ const PostImagesEditModal = ({ id, initialImages = [], editing, setEditing }) =>
                             <XIcon className="h-4 w-4" />
                           </button>
 
-                          <img className="object-cover rounded-md w-full h-52" src={getSrc(i)} />
+                          <img
+                            className="object-cover rounded-md w-full h-52"
+                            src={getSrc(i)}
+                            alt=""
+                          />
                         </div>
                       );
                     })}
                     <label
                       className={`${
-                        images.length < 3 ? "opacity-100" : "opacity-25 pointer-events-none"
+                        images.length < 3
+                          ? "opacity-100"
+                          : "opacity-25 pointer-events-none"
                       } rounded h-52 shadow bg-gray-50 border-2 border-gray-200 flex flex-col items-center justify-center`}
                     >
                       <input
@@ -159,7 +173,9 @@ const PostImagesEditModal = ({ id, initialImages = [], editing, setEditing }) =>
                         accept="image/*"
                       />
                       <PlusIcon className="h-6 w-6 text-gray-500" />
-                      <span className="text-sm text-gray-600 mt-2">Upload Image</span>
+                      <span className="text-sm text-gray-600 mt-2">
+                        Upload Image
+                      </span>
                     </label>
                   </div>
                   <div className="fixed bottom-0 w-full border-t border-gray-200 bg-gray-100 px-4 py-3">

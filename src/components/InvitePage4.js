@@ -1,6 +1,6 @@
 import React from "react";
 import SkillSelector from "components/SkillSelector";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Page4 = ({ activeStepIndex = 0, handleNext }) => {
   const [selectedSkills, setSelectedSkills] = React.useState({});

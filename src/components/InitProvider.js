@@ -13,6 +13,7 @@ const InitProvider = (props) => {
 
     dispatch(actions.loadUserProfileAndInitialPost());
     dispatch(actions.watchNotifications());
+    dispatch(actions.watchRequests());
     dispatch(actions.loadInitialUsers());
     dispatch(actions.loadInitialSkills());
     dispatch(actions.loadInitialAreas());

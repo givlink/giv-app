@@ -1,6 +1,4 @@
 import React from "react";
-import ErrorComponent from "components/Error";
-import Spinner from "components/Spinner";
 import Steps from "components/InviteSteps";
 import Page1 from "components/InvitePage1";
 import Page2 from "components/InvitePage2";
@@ -8,8 +6,7 @@ import Page3 from "components/InvitePage3";
 import Page4 from "components/InvitePage4";
 import Page5 from "components/InvitePage5";
 import Page6 from "components/InvitePage6";
-import api from "lib/api";
-import { useLocation, useParams } from "@reach/router";
+import { useLocation } from "@reach/router";
 import { parse } from "query-string";
 
 const steps = [
@@ -35,7 +32,7 @@ export default function Invite() {
         setActiveStepIndex(parseInt(searchParams.step));
       }
     }
-  }, [loc.hash]);
+  }, [loc.hash, data, searchParams]);
 
   const setInviteCode = (code) => {
     setData({ ...data, code });
@@ -52,7 +49,7 @@ export default function Invite() {
 
   return (
     <div className="h-full flex flex-col items-center justify-center">
-      {activeStepIndex != steps.length && (
+      {activeStepIndex !== steps.length && (
         <div className="mt-10 mb-6">
           <Steps steps={steps} activeStepIndex={activeStepIndex} />
         </div>

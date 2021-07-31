@@ -1,16 +1,9 @@
 import React from "react";
 import ErrorComponent from "components/Error";
-import Steps from "components/InviteSteps";
 import Spinner from "components/Spinner";
 import api from "lib/api";
 
-const Page1 = ({
-  activeStepIndex = 0,
-  code,
-  setInviteCode,
-  steps,
-  handleNext,
-}) => {
+const Page1 = ({ activeStepIndex = 0, code, setInviteCode, handleNext }) => {
   const [error, setError] = React.useState(null);
   const [checking, setChecking] = React.useState(false);
 

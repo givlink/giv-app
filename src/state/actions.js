@@ -100,13 +100,18 @@ const actions = {
       //@Todo dispatch toast to notify filter changed
     };
   },
-  watchNotifications: () => {
+  watchRequests: () => {
     return async (dispatch, getState) => {
       const { authUser } = getState();
-      dispatch({ type: "notifications/loading" });
-      api.watchNotifications(authUser.uid, (notifications) => {
-        dispatch({ type: "notifications/data", notifications });
-      });
+      dispatch({ type: "requests/loading" });
+      api.watchGivRequests(
+        authUser.uid,
+        (requests) => 
+          dispatch({ type: "requests/data", requests })
+        ,
+        (requests) => 
+          dispatch({ type: "requests/data", requests })
+      );
     };
   },
   loadUserProfileAndInitialPost: () => {
@@ -125,6 +130,15 @@ const actions = {
       dispatch({ type: "posts/loading" });
       const [posts, offset] = await api.listPosts({ area: postAreaFilter });
       dispatch({ type: "posts/data", posts, offset });
+    };
+  },
+  watchNotifications: () => {
+    return async (dispatch, getState) => {
+      const { authUser } = getState();
+      dispatch({ type: "notifications/loading" });
+      api.watchNotifications(authUser.uid, (notifications) => {
+        dispatch({ type: "notifications/data", notifications });
+      });
     };
   },
   loadInitialPosts: (setLoading = true) => {
