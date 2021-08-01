@@ -29,7 +29,7 @@ const FloatingBackHeader = () => {
             leaveFrom="rotate-0"
             leaveTo="rotate-90"
           >
-            <ChevronLeftIcon className="h-6 w-6" />
+            <ChevronLeftIcon className="h-6 w-7" />
           </Transition.Child>
         </button>
       </header>

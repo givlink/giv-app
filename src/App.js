@@ -18,6 +18,7 @@ import Login from "pages/Login";
 import Invite from "pages/Invite";
 
 import Footer from "components/Footer";
+import AppUpdateProvider from "components/AppUpdateProvider";
 import AuthProvider from "components/AuthProvider";
 import InitProvider from "components/InitProvider";
 import { Toaster } from "react-hot-toast";
@@ -26,29 +27,31 @@ const App = () => {
   return (
     <AuthProvider>
       <InitProvider>
-        <Toaster />
-        <Router className="h-screen w-screen" primary={false}>
-          {/* Setup */}
-          <Login path="login" />
-          <Invite path="invite" />
+        <AppUpdateProvider>
+          <Toaster />
+          <Router className="h-screen w-screen" primary={false}>
+            {/* Setup */}
+            <Login path="login" />
+            <Invite path="invite" />
 
-          {/* Users */}
-          <UserList path="users" />
-          <UserDetail path="users/:id" />
+            {/* Users */}
+            <UserList path="users" />
+            <UserDetail path="users/:id" />
 
-          {/* Posts */}
-          <PostDetail path="posts/:id" />
-          <PostEdit path="posts/:id/edit" />
-          <PostList path="/" />
+            {/* Posts */}
+            <PostDetail path="posts/:id" />
+            <PostEdit path="posts/:id/edit" />
+            <PostList path="/" />
 
-          {/* Chats and Requests */}
-          <RequestList path="chats/requests" />
-          <ChatList path="chats" />
+            {/* Chats and Requests */}
+            <RequestList path="chats/requests" />
+            <ChatList path="chats" />
 
-          {/* Notifications */}
-          <NotificationList path="notifications" />
-        </Router>
-        <Footer />
+            {/* Notifications */}
+            <NotificationList path="notifications" />
+          </Router>
+          <Footer />
+        </AppUpdateProvider>
       </InitProvider>
     </AuthProvider>
   );
