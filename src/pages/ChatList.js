@@ -13,9 +13,7 @@ const ChatComingSoon = () => {
         src="/icons/tama_def_sleepy.png"
         alt=""
       />
-      <span className="text-sm text-gray-500 pt-2">
-        Chat Feature Coming Soon
-      </span>
+      <span className="text-sm text-gray-500 pt-2">Chats Coming Soon</span>
     </div>
   );
 };

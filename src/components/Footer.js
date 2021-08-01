@@ -1,5 +1,5 @@
 import { Link } from "@reach/router";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import React from "react";
 import { useLocation, useMatch } from "@reach/router";
 import { Transition } from "@headlessui/react";
@@ -18,7 +18,7 @@ import {
 } from "@heroicons/react/outline";
 
 export default function Footer() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { unreadCount, user } = useSelector((s) => ({
     unreadCount: s.notificationsUnreadCount,
     user: s.authUser,
@@ -69,9 +69,9 @@ export default function Footer() {
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
             {isPostList ? (
-              <ClockIconSolid className="h-8 w-8" />
+              <ClockIconSolid className="h-7 w-7" />
             ) : (
-              <ClockIcon className="h-8 w-8" />
+              <ClockIcon className="h-7 w-7" />
             )}
           </Link>
           <Link
@@ -82,7 +82,7 @@ export default function Footer() {
                 : "border-transparent"
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
-            <SearchIcon className="h-8 w-8" />
+            <SearchIcon className="h-7 w-7" />
           </Link>
           <Link
             to="/chats/requests" //@Todo For now directly go to requests, in future go to chats
@@ -93,9 +93,9 @@ export default function Footer() {
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
             {isChatList || isRequestList ? (
-              <ChatIconSolid className="h-8 w-8" />
+              <ChatIconSolid className="h-7 w-7" />
             ) : (
-              <ChatIcon className="h-8 w-8" />
+              <ChatIcon className="h-7 w-7" />
             )}
           </Link>
           <Link
@@ -107,12 +107,12 @@ export default function Footer() {
             } flex flex-1 flex-col py-2 items-center border-b-4 relative`}
           >
             {isNotsList ? (
-              <BellIconSolid className="h-8 w-8" />
+              <BellIconSolid className="h-7 w-7" />
             ) : (
-              <BellIcon className="h-8 w-8" />
+              <BellIcon className="h-7 w-7" />
             )}
             {unreadCount > 0 && (
-              <div className="w-6 h-6 text-xs p-1 text-white flex items-center justify-center rounded-full absolute mt-0 mr-0.5 top-0 right-0 bg-giv-blue">
+              <div className="w-5 h-5 text-xs p-1 text-white flex items-center justify-center rounded-full absolute mt-0 mr-1 top-0 right-0 bg-giv-blue">
                 {unreadCount}
               </div>
             )}
@@ -126,9 +126,9 @@ export default function Footer() {
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
             {isMyPage ? (
-              <UserIconSolid className="h-8 w-8" />
+              <UserIconSolid className="h-7 w-7" />
             ) : (
-              <UserIcon className="h-8 w-8" />
+              <UserIcon className="h-7 w-7" />
             )}
           </Link>
         </div>

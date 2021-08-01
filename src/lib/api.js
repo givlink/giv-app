@@ -426,6 +426,11 @@ export const watchNotifications = async (userId, cb, debug = false) => {
           not.giv = await getGivById(not.givId);
           if (!not.giv) throw new Error("giv not found: " + not.givId);
 
+          const post = await getPostByGivId(not.givId);
+          if (post) {
+            throw new Error("already have a post for this giv:", not.givId);
+          }
+
           not.giver = await getUserProfile(not.giverId);
           if (!not.giver) throw new Error("giver not found: " + not.giverId);
         }
@@ -601,6 +606,7 @@ export const createPost = async ({
   title = "",
   message = "",
   giv,
+  giver,
 }) => {
   //@Todo error handling
   const author = await getUserProfile(authorId);
@@ -614,17 +620,17 @@ export const createPost = async ({
     authorId,
     givId: giv.id,
     giver: {
-      id: giv.giver.id,
-      name: giv.giver.name,
-      photoURL: giv.giver.photoURL,
+      id: giver.id,
+      name: giver.name,
+      photoURL: giver.photoURL,
     },
     title,
     message,
     images: [],
     createdAt: new Date().toISOString(),
   };
-  if (giv && giv.giver && giv.giver.area) {
-    payload.area = giv.giver.area;
+  if (giver && giver.area) {
+    payload.area = giver.area;
   }
 
   const doc = await firebase.firestore().collection("posts").add(payload);

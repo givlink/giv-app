@@ -130,7 +130,7 @@ const EditModal = ({
                       />
                     </label>
                   </div>
-                  <div className="fixed bottom-0 w-full overflow-hidden border-t border-gray-200 bg-gray-100 px-4 py-3">
+                  <div className="fixed bottom-0 w-full rounded-b-lg border-t border-gray-200 bg-gray-100 px-4 py-3">
                     <button
                       onClick={onSave}
                       disabled={!didChange}
