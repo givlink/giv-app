@@ -15,9 +15,9 @@ export default function NotificationList() {
   usePreserveScroll("notificationList", true);
 
   return (
-    <div className="pb-20 h-full">
+    <div className="h-full">
       <HeaderNotificationList />
-      {state.loading && <Spinner />}
+      {state.loading && <Spinner className="pt-2" />}
 
       <ul className="pb-20">
         {state.notifications.map((n) => {
@@ -28,7 +28,7 @@ export default function NotificationList() {
           );
         })}
 
-        {state.notifications.length === 0 && (
+        {!state.loading && state.notifications.length === 0 && (
           <div className="flex flex-col items-center justify-center py-4">
             <img
               className="w-16 h-16 animate-wobble-slow"
