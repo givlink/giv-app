@@ -103,7 +103,7 @@ const translations = {
   //edit post
   'Edit Images': 'Edit Images',
   'Edit Post': 'Edit Post',
-  'Upload Image': 'Upload Image',
+  // 'Upload Image': 'Upload Image', //duplicate
 
   'Must have at least 1 image': 'Must have at least 1 image',
   'Save Images': 'Save Images',
@@ -121,6 +121,7 @@ const translations = {
 
   //request accept
   'Request Accepted': 'Request Accepted',
+  'acceptDetail': 'Accept Giv request from {{name}}?',
   'Close': 'Close',
   'Accept': 'Accept',
   'Cancel': 'Cancel',
@@ -141,9 +142,17 @@ const translations = {
   'New Giv Request': `New Giv Request from {{name}}`,
   'You Got Giv': 'You got a Giv from {{name}}. Click to write a Thanks card.',
   'You Got Comment': '{{name}} wrote a new comment on your post',
+  'wantSendRequest': '{{name}} wants to send a Giv to you.',
+  'wantReceiveRequest': '{{name}} wants to receive a Giv from you.',
 
   'Filter by Skills': 'Filter by Skills',
   'Filter by Area': 'Filter by Area',
+
+  //user edit
+  'Edit': 'Edit',
+  'Edit Your Intro': 'Edit Your Intro',
+
+  'Pull down to refresh': 'Pull down to refresh',
 }
 
 export default translations

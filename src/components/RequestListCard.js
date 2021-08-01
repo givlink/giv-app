@@ -106,7 +106,7 @@ const AcceptRequestModal = ({ request, requester, open, setOpen }) => {
                           {requester.name}
                         </Dialog.Title>
                         <p className='text-sm text-left text-gray-500 mt-1'>
-                          Accept Giv request from {requester.name}?
+                          {t('acceptDetail', { name: requester.name })}
                         </p>
                       </div>
                     </>
@@ -170,11 +170,11 @@ export default function RequestListCard({ request }) {
   let msg = ''
   if (type === 'send') {
     requester = sender
-    msg = `${requester.name} wants to send a Giv to you.`
+    msg = t('wantSendRequest', { name: requester.name })
   }
   if (type === 'receive') {
     requester = receiver
-    msg = `${requester.name} wants to receive a Giv from you.`
+    msg = t('wantReceiveRequest', { name: requester.name })
   }
   if (!requester) return null
 

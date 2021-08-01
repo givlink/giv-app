@@ -10,10 +10,11 @@ import { useTranslation } from 'react-i18next'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 
 const PullDownHandle = () => {
+  const { t } = useTranslation()
   return (
     <div className='flex flex-col items-center justify-center pb-4'>
       <ArrowDownIcon className='h-7 w-7 text-gray-600' />
-      <span className='text-gray-700'>Pull down to refresh</span>
+      <span className='text-gray-700'>{t('Pull down to refresh')}</span>
     </div>
   )
 }

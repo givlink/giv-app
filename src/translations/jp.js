@@ -1,25 +1,25 @@
 const translations = {
   //Login
-  'Login': 'ログインする',
+  'Login': 'ログイン',
   'Privacy Policy': 'プライバシーポリシー',
-  'Sign in with Apple': 'Sign in with Apple',
+  'Sign in with Apple': 'Appleサインイン',
 
   //Invite: page1
-  'Enter your invite code': '招待コードを入力してください',
+  'Enter your invite code': '招待コードを入力',
   'Invite Code': '招待コード',
   'No Code?': '招待コードを取得するにはこちらからご登録ください。',
   'Next': '次へ',
 
   //Invite: page2
   'Logged in as': 'Logged in as',
-  'Not you? Logout': 'Not you? Logout',
-  'Login with Facebook': 'Login with Facebook',
+  'Not you? Logout': 'あなたでなければログアウトします',
+  'Login with Facebook': 'Facebookでログイン',
 
   //Invite: page3
-  'Name': 'Name',
-  'Job': 'Job',
+  'Name': '氏名',
+  'Job': '職業',
   'Area': '提供場所',
-  'Intro': 'Intro',
+  'Intro': 'プロフィール',
 
   //Invite: page4
   'Select your Skills': 'あなたのgivを選択してください',
@@ -29,10 +29,10 @@ const translations = {
   'Save': '保存',
 
   //Invite page6
-  'Please contact Giv support team': 'Please contact Giv support team',
-  'Registration Finished': 'Registration Finished',
+  'Please contact Giv support team': 'giv事務局に確認してください',
+  'Registration Finished': '登録が完了しました',
   'Thank You': 'ありがとうございました。',
-  'Go to Home': 'Go to Home',
+  'Go to Home': 'ホームに戻る',
 
   'Back': '戻る',
 
@@ -44,7 +44,7 @@ const translations = {
   'All': '全体',
 
   //Header user list
-  'Search by last name': 'Search by last name',
+  'Search by last name': '名前(名字)で検索',
 
   //Header chat list
   'Chats': 'チャット',
@@ -54,97 +54,106 @@ const translations = {
 
   //user detail
   'User Not Found': 'ユーザが見つかりませんでした。',
-  'Skills': 'Skills',
+  'Skills': '提供できるgiv',
   'Giv Given': '贈ったgiv',
   'Giv Received': '受け取ったgiv',
 
-  'Send Request': 'Send Request',
-  'Request sent': 'Request sent',
+  'Send Request': 'リクエストを送る',
+  'Request sent': 'リクエストを送りました',
 
   'Want to Send': 'givを贈りたい',
   'Want to Receive': ' givを受け取りたい',
 
-  'Edit Profile': 'Edit Profile',
-  'Your Name': 'Your Name',
-  'Your Job': 'Your Job',
+  'Edit Profile': 'プロフィールを編集する',
+  'Your Name': '氏名',
+  'Your Job': '職業',
 
   //edit profile pic
-  'Change Image': 'Change Image',
-  'Change Profile Image': 'Change Profile Image',
-  'Upload Image': 'Upload Image',
-  'Change': 'Change',
+  'Change Image': '画像を変更',
+  'Change Profile Image': 'プロフィール画像を変更e',
+  'Upload Image': '画像を投稿',
+  'Change': '修正',
 
   //about edit page
-  'About': 'About',
+  'About': 'プロフィール',
 
   //interests edit page
-  'Interests': 'Interests',
+  'Interests': '興味・関心',
   //interests edit page
-  'Edit Your Interests': 'Edit Your Interests',
+  'Edit Your Interests': '興味・関心を修正',
 
   //giv list
-  'No Givs Found': 'No Givs Found',
+  'No Givs Found': 'givはありません',
 
   //notifications
   'No new notifications': 'お知らせはありません。',
 
   //Request card
-  'View Profile': 'View Profile',
-  'Accepted': 'Accepted',
-  'Accept Request': 'Accept Request',
+  'View Profile': 'プロフィールを見る',
+  'Accepted': 'リクエスト承認済',
+  'Accept Request': '承認リクエスト',
 
-  'Chats Coming Soon': 'Chats Coming Soon',
+  'Chats Coming Soon': 'チャットのスレッドがもうすぐ用意されます',
 
   //post detail
   'Giv sender': 'givを贈った人',
-  'Comments': 'Comments',
-  'Your Comment': 'Your Comment',
+  'Comments': 'コメント',
+  'Your Comment': 'あなたのコメント',
 
   //edit post
-  'Edit Images': 'Edit Images',
-  'Edit Post': 'Edit Post',
-  'Upload Image': 'Upload Image',
+  'Edit Images': '画像を修正',
+  'Edit Post': '投稿を修正',
+  // 'Upload Image': '画像を投稿', duplicate
 
-  'Must have at least 1 image': 'Must have at least 1 image',
-  'Save Images': 'Save Images',
+  'Must have at least 1 image': '最低1つは画像を投稿してください',
+  'Save Images': '画像を保存する',
 
-  'Edit Your Post': 'Edit Your Post',
+  'Edit Your Post': '投稿を修正',
 
-  'Title': 'Title',
-  'Post Title': 'Post Title',
-  'Message': 'Message',
-  'Post Message': 'Post Message',
+  'Title': 'タイトル',
+  'Post Title': 'Thanks Cardのタイトル',
+  'Message': 'メッセージ',
+  'Post Message': '投稿メッセージ',
 
   //userlist
-  'No Users Found': 'No Users Found',
-  'Reset': 'Reset',
+  'No Users Found': 'メンバーが見つかりません',
+  'Reset': 'リセット',
 
   //request accept
   'Request Accepted': 'リクエストを承認しました！',
-  'Close': 'Close',
-  'Accept': 'Accept',
-  'Cancel': 'Cancel',
+  'acceptDetail': '{{name}}さんからのGivリクエストを承認する？',
+  'Close': '閉じる',
+  'Accept': '受け入れる',
+  'Cancel': 'キャンセル',
 
   'requestAcceptedMessage': `運営事務局にて詳細をやりとりする<br />メッセージグループをご用意いたします。<br />少しお待ちください。`,
 
   //post create
-  'Upload Images (Upto 3)': 'Upload Images (Upto 3)',
+  'Upload Images (Upto 3)': '画像を投稿',
   'Post Created': 'リクエストを承認しました！',
-  'View Post': 'View Post',
+  'View Post': '投稿を閲覧する',
   'TitlePlaceholder': '例：○○さんから〇〇のgivを頂きました！',
 
-  'Skip Images': 'Skip Images',
-  'Create': 'Create',
-  'Create Post Modal Title': 'Thanks Card for {{name}}',
+  'Skip Images': '画像をスキップする',
+  'Create': '新しいThanks Cardを用意',
+  'Create Post Modal Title': '{{name}}さんへのThanks Card',
 
   //Notifications
-  'New Giv Request': `{{name}}ーさんから新しいGivリクエストがあります。`,
+  'New Giv Request': `{{name}}さんから新しいGivリクエストがあります。`,
   'You Got Giv':
-    '{{name}}ーさんからのGivが完了しました。サンクスカードを書きましょう。',
-  'You Got Comment': '{{name}}ーさんから新しいコメントがあります。',
+    '{{name}}さんからのGivが完了しました。サンクスカードを書きましょう。',
+  'You Got Comment': '{{name}}さんから新しいコメントがあります。',
+  'wantSendRequest': '{{name}}さんがGivを贈りたい',
+  'wantReceiveRequest': '{{name}}さんがGivを受け取りたい',
 
   'Filter by Skills': '興味・関心フィルター',
   'Filter by Area': '場所フィルター',
+
+  //user edit
+  'Edit': '編集',
+  'Edit Your Intro': 'プロフィールを修正する',
+
+  'Pull down to refresh': 'リストをリフレッシュする',
 }
 
 export default translations
