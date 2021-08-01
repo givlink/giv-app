@@ -2,9 +2,11 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { navigate } from "@reach/router";
 import { useAuth } from "hooks/auth";
+import { useTranslation } from "react-i18next";
 import actions from "state/actions";
 
 export default function Login() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const dispatch = useDispatch();
 
@@ -26,7 +28,7 @@ export default function Login() {
         onClick={() => handleLogin()}
         className="px-6 py-3 w-2/3 bg-giv-blue text-white rounded-lg font-medium mb-8"
       >
-        Login
+        {t("Login")}
       </button>
       <a
         href="https://giv.link/privacy-policy/"
@@ -34,7 +36,7 @@ export default function Login() {
         rel="noreferrer"
         className="border-b border-gray-400"
       >
-        Privacy Policy
+        {t("Privacy Policy")}
       </a>
       <div className="flex-1"></div>
       <button
@@ -42,7 +44,7 @@ export default function Login() {
         className="mb-4 flex items-center leading-0 text-sm shadow-sm hover:shadow-xl transition duration-150 rounded-md px-4 py-2 bg-gray-900 font-semibold text-white"
       >
         <img className="h-5 w-5 mr-2" src="/image/apple_logo.svg" alt="apple" />
-        <span className="mt-1">Sign in with Apple</span>
+        <span className="mt-1">{t("Sign in with Apple")}</span>
       </button>
     </div>
   );

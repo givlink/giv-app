@@ -60,7 +60,7 @@ export default function AppUpdateProvider({ children }) {
   const onUpdateAvailable = () => setAvailable(true);
   const showDebug = false;
 
-  useUpdateNotifier({ disableInDev: false, onUpdateAvailable });
+  useUpdateNotifier({ disableInDev: true, onUpdateAvailable });
 
   return (
     <>
