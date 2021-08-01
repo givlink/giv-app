@@ -50,7 +50,7 @@ const EditModal = ({
         open={editing}
         onClose={closeModal}
       >
-        <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex items-center justify-center overflow-hidden min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={React.Fragment}
             enter="ease-out duration-150"
@@ -130,7 +130,7 @@ const EditModal = ({
                       />
                     </label>
                   </div>
-                  <div className="fixed bottom-0 w-full border-t border-gray-200 bg-gray-100 px-4 py-3">
+                  <div className="fixed bottom-0 w-full overflow-hidden border-t border-gray-200 bg-gray-100 px-4 py-3">
                     <button
                       onClick={onSave}
                       disabled={!didChange}

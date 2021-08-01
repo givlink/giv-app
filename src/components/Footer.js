@@ -1,5 +1,5 @@
 import { Link } from "@reach/router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import React from "react";
 import { useLocation, useMatch } from "@reach/router";
 import { Transition } from "@headlessui/react";
@@ -18,6 +18,7 @@ import {
 } from "@heroicons/react/outline";
 
 export default function Footer() {
+  const dispatch = useDispatch();
   const { unreadCount, user } = useSelector((s) => ({
     unreadCount: s.notificationsUnreadCount,
     user: s.authUser,
@@ -56,6 +57,11 @@ export default function Footer() {
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <Link
             to="/"
+            // onClick={() => {
+            //   isPostList &&
+            //     window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+            //     This doesn't smooth on ios safari
+            // }}
             className={`${
               isPostList
                 ? "text-giv-blue-dark border-giv-blue"

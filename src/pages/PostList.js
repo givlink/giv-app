@@ -36,16 +36,12 @@ export default function PostList() {
   return (
     <div className="pb-20">
       <HeaderPostList />
-      {loading && (
-        <div className="mb-4">
-          <Spinner />
-        </div>
-      )}
+      {loading && <Spinner className="pt-2" />}
 
       <PullToRefresh
         onRefresh={handleRefresh}
         pullingContent={<PullDownHandle />}
-        refreshingContent={<Spinner />}
+        refreshingContent={<Spinner className="" />}
       >
         <ul className="space-y-2">
           {posts.map((p) => {

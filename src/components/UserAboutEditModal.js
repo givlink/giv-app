@@ -5,7 +5,12 @@ import { Dialog, Transition } from "@headlessui/react";
 import Spinner from "components/Spinner";
 import api from "lib/api";
 
-const UserInterestsEditModal = ({ id, initialIntro = "", editing, setEditing }) => {
+const UserInterestsEditModal = ({
+  id,
+  initialIntro = "",
+  editing,
+  setEditing,
+}) => {
   const ref = React.useRef();
   const [intro, setIntro] = React.useState(initialIntro);
   const [sending, setSending] = React.useState(false);
@@ -53,7 +58,10 @@ const UserInterestsEditModal = ({ id, initialIntro = "", editing, setEditing }) 
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
-          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+          <span
+            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+          >
             &#8203;
           </span>
           <Transition.Child
@@ -68,14 +76,14 @@ const UserInterestsEditModal = ({ id, initialIntro = "", editing, setEditing }) 
             <div
               style={{ height: "65vh", minWidth: "80vw" }}
               ref={ref}
-              className="bg-white rounded-lg w-full pt-3 pb-4 text-left shadow-xl transform transition-all"
+              className="bg-white rounded-lg overflow-hidden w-full pt-3 pb-4 text-left shadow-xl transform transition-all"
             >
               {sending ? (
                 <button className="flex items-center justify-center h-full w-full">
                   <Spinner />
                 </button>
               ) : (
-                <div className="flex flex-col overflow-hidden h-full">
+                <div className="flex flex-col h-full">
                   <div className="flex items-center mx-2">
                     <button
                       type="button"

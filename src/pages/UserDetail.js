@@ -79,7 +79,7 @@ export default function UserDetail(props) {
       )}
       <div className="pb-24">
         {!user && state.userSingleLoading ? (
-          <div className="pt-24">
+          <div className="pt-2">
             <Spinner />
           </div>
         ) : user ? (

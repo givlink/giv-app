@@ -17,11 +17,7 @@ export default function NotificationList() {
   return (
     <div className="pb-20 h-full">
       <HeaderNotificationList />
-      {state.loading && (
-        <div className="mb-4">
-          <Spinner />
-        </div>
-      )}
+      {state.loading && <Spinner />}
 
       <ul className="pb-20">
         {state.notifications.map((n) => {

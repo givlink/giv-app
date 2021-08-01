@@ -151,11 +151,7 @@ export default function UserList() {
     <div className="pb-20">
       <HeaderUserList />
       <FilterBar />
-      {loading && (
-        <div className="mb-4">
-          <Spinner />
-        </div>
-      )}
+      {loading && <Spinner className="" />}
 
       <ul className="divide-y overflow-x-hidden">
         {users.map((u) => {

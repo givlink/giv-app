@@ -22,11 +22,7 @@ export default function RequestList() {
         chatsCount={state.chatsUnreadCount}
         requestsCount={state.requestsPendingCount}
       />
-      {state.loading && (
-        <div className="mb-8">
-          <Spinner />
-        </div>
-      )}
+      {state.loading && <Spinner className="pt-2" />}
 
       <ul className="">
         {state.requests.map((p) => {

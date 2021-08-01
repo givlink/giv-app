@@ -42,35 +42,37 @@ export default function Header() {
   };
 
   return (
-    <header className="z-10 border-b border-gray-200 bg-white px-3 py-2 shadow mb-3 sticky top-0">
-      <div className="flex items-center justify-between">
-        <img
-          width="40"
-          src="/image/giv_logo.png"
-          alt="Giv"
-          className="object-cover"
-        />
-        <div className="relative ml-2 flex-1 flex justify-end mt-1">
-          <SearchIcon className="absolute left-0 mt-2.5 ml-3 h-5 w-5 text-gray-500" />
-          <input
-            disabled={state.usersLoading}
-            value={value}
-            name="name"
-            onChange={handleChange}
-            onKeyDown={handleSubmit}
-            placeholder="Search by last name"
-            className="border border-gray-300 text-sm pl-9 pr-9 py-2 rounded-full w-full focus:outline-none"
+    <div className="mb-16">
+      <header className="z-10 border-b border-gray-200 bg-white px-3 py-2 shadow fixed w-full top-0">
+        <div className="flex items-center justify-between">
+          <img
+            width="40"
+            src="/image/giv_logo.png"
+            alt="Giv"
+            className="object-cover"
           />
-          {value !== "" && (
-            <button
-              onClick={handleReset}
-              className="absolute right-0 mt-2.5 mr-3 h-5 w-5"
-            >
-              <XIcon className="h-5 w-5 text-red-500" />
-            </button>
-          )}
+          <div className="relative ml-2 flex-1 flex justify-end mt-1">
+            <SearchIcon className="absolute left-0 mt-2.5 ml-3 h-5 w-5 text-gray-500" />
+            <input
+              disabled={state.usersLoading}
+              value={value}
+              name="name"
+              onChange={handleChange}
+              onKeyDown={handleSubmit}
+              placeholder="Search by last name"
+              className="border border-gray-300 text-sm pl-9 pr-9 py-2 rounded-full w-full focus:outline-none"
+            />
+            {value !== "" && (
+              <button
+                onClick={handleReset}
+                className="absolute right-0 mt-2.5 mr-3 h-5 w-5"
+              >
+                <XIcon className="h-5 w-5 text-red-500" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 }
