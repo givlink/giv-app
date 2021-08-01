@@ -17,13 +17,13 @@ export default function Header({
             alt='Giv'
             className='w-10 object-cover'
           />
-          <div className='flex-1 flex items-center ml-5 mr-3'>
+          <div className='flex-1 flex items-center'>
             <Link
               className={`${
                 active === 'chats'
                   ? 'border-giv-blue-dark text-giv-blue-dark'
                   : 'border-transparent text-gray-500'
-              } -mb-px text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-1/2 text-center inline-block`}
+              } -mb-px text-xs sm:text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-1/2 text-center inline-block`}
               to='/chats'
             >
               <span className='relative'>
@@ -44,7 +44,7 @@ export default function Header({
                 active === 'requests'
                   ? 'border-giv-blue-dark text-giv-blue-dark'
                   : 'border-transparent text-gray-500'
-              } -mb-px text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-1/2 text-center inline-block`}
+              } -mb-px text-xs sm:text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-1/2 text-center inline-block`}
               to='/chats/requests'
             >
               <span className='relative'>
