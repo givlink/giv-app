@@ -1,45 +1,43 @@
-import React from "react";
+import React from 'react'
 
 const DEFAULT_OPTS = {
   pollInterval: 10000, //ms
   disableInDev: false,
-  key: "assetManifest",
-  fetchUrl: "/asset-manifest.json",
+  key: 'assetManifest',
+  fetchUrl: '/asset-manifest.json',
   onUpdateAvailable: () => {
-    console.log("app update available.");
+    console.log('app update available.')
   },
-};
+}
 
 export default function useUpdateNotifier(config = {}) {
   React.useEffect(() => {
-    const opts = { ...DEFAULT_OPTS, ...config };
+    const opts = { ...DEFAULT_OPTS, ...config }
 
-    if (opts.disableInDev && process.env.NODE_ENV === "development") {
-      return;
+    if (opts.disableInDev && process.env.NODE_ENV === 'development') {
+      return
     }
-
-    let value = window.localStorage.getItem(opts.key);
 
     const refetchAndCompare = async () => {
       try {
-        const resp = await fetch(opts.fetchUrl);
-        const result = await resp.json();
-        const newValue = JSON.stringify(result);
+        const resp = await fetch(opts.fetchUrl)
+        const result = await resp.json()
+        const newValue = JSON.stringify(result)
 
-        if (value && newValue !== value) opts.onUpdateAvailable();
+        const value = window.localStorage.getItem(opts.key)
+        if (value && newValue !== value) opts.onUpdateAvailable()
 
-        value = newValue;
+        window.localStorage.setItem(opts.key, newValue) //Save last checked value
       } catch (err) {
-        console.warn("unable to check for app updates:", err.message);
+        console.warn('unable to check for app updates:', err.message)
       }
-    };
+    }
 
-    const t = setInterval(refetchAndCompare, opts.pollInterval);
+    const t = setInterval(refetchAndCompare, opts.pollInterval)
     return () => {
-      clearInterval(t);
-      window.localStorage.setItem(opts.key, value); //Save last checked value
-    };
-  }, [config]);
+      clearInterval(t)
+    }
+  }, [config])
 
-  return null;
+  return null
 }

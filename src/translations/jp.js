@@ -158,6 +158,8 @@ const translations = {
   'Delete Comment': 'コメントを削除する',
   'Are you sure?': '本当に削除しますか？',
   'Delete': '削除',
+  'Update available. Click to update':
+    'アップリアップデートがあります。<br/>ここをクリックして更新してください。',
 }
 
 export default translations
