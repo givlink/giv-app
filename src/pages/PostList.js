@@ -40,7 +40,6 @@ export default function PostList() {
     <div className='pb-20'>
       <HeaderPostList />
       {loading && <Spinner className='pt-2' />}
-
       <PullToRefresh
         onRefresh={handleRefresh}
         pullingContent={<PullDownHandle />}

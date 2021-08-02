@@ -6,7 +6,7 @@ import { navigate } from '@reach/router'
 import Spinner from 'components/Spinner'
 import Steps from 'components/InviteSteps'
 import api from 'lib/api'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 const Modal = ({ open, setOpen, giv, giver, markRead }) => {
   const { t } = useTranslation()

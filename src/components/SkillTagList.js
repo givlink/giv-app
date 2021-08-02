@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
 const SkillTagList = ({ skills = [], limit = 5, size = 'normal' }) => {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const skillMap = useSelector(s => s.skills)
 
   const tagField = i18n.language === 'en' ? 'tagEn' : 'tag'
