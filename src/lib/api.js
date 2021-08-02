@@ -2,12 +2,16 @@ import firebase from './firebase'
 import utils from 'lib/utils'
 import shortId from 'short-uuid'
 
+const SHOULD_REAUTH = process.env.NODE_ENV !== 'development'
+
 const login = prov => {
   let provider = new firebase.auth.FacebookAuthProvider()
   if (prov && prov === 'apple') {
     provider = new firebase.auth.OAuthProvider('apple.com')
   } else {
-    provider.setCustomParameters({ auth_type: 'reauthenticate' })
+    if (SHOULD_REAUTH) {
+      provider.setCustomParameters({ auth_type: 'reauthenticate' })
+    }
   }
 
   firebase.auth().signInWithRedirect(provider)
@@ -193,6 +197,10 @@ export const getCurrentUserProfile = async () => {
   return getUserProfile(user.uid)
 }
 export const getUserReceivedPosts = async (uid, limit = 20, offset = null) => {
+  if (!getCurrentUser()) {
+    return []
+  }
+
   let postSnap = await firebase
     .firestore()
     .collection('posts')
@@ -206,6 +214,10 @@ export const getUserReceivedPosts = async (uid, limit = 20, offset = null) => {
 }
 
 export const getUserPosts = async (uid, limit = 20, offset = null) => {
+  if (!getCurrentUser()) {
+    return []
+  }
+
   let postSnap = await firebase
     .firestore()
     .collection('posts')
@@ -254,7 +266,7 @@ export const acceptGivRequest = async givRequestId => {
     givRequestId,
   })
 }
-export const watchGivRequests = async (userId, cb1, cb2) => {
+export const watchGivRequests = (userId, cb1, cb2) => {
   if (!userId) {
     console.log('No user id in request')
     return null
@@ -394,7 +406,7 @@ export const checkLiked = async (postId, userId) => {
 }
 
 const SHOW_ALL = false && process.env.NODE_ENV === 'development'
-export const watchNotifications = async (userId, cb, debug = false) => {
+export const watchNotifications = (userId, cb, debug = false) => {
   if (!userId) {
     console.log('No user id in listNotifications')
     return 0

@@ -41,7 +41,7 @@ export default function UserDetail(props) {
     userSingleLoading: s.userSingleLoading,
     areaMap: s.areas,
   }))
-  const { user } = state
+  const { user, authUser } = state
 
   const tagField = i18n.language === 'en' ? 'tagEn' : 'tag'
 
@@ -54,7 +54,7 @@ export default function UserDetail(props) {
   usePreserveScroll('userDetail', true)
 
   React.useEffect(() => {
-    if (user) return
+    if (user || !authUser) return
 
     //Else call api and update user list
     const run = async () => {
@@ -64,7 +64,7 @@ export default function UserDetail(props) {
       dispatch({ type: 'users/data_single', user })
     }
     run()
-  }, [dispatch, user, props.id])
+  }, [dispatch, user, props.id, authUser])
 
   const isMyPage = loc.pathname === `/users/${state.authUser?.uid}`
 

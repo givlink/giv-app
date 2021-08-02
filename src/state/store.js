@@ -15,6 +15,8 @@ const DEFAULT_EDIT_BEFORE = {
 }
 
 const initialState = {
+  appListeners: [],
+
   authLoading: true,
   authUser: null,
 
@@ -130,6 +132,22 @@ const mergeById = (oldList = [], newList = []) => {
 const reducer = (state = initialState, action) => {
   if (!state) return initialState
   switch (action.type) {
+    case 'app/update_listeners':
+      return {
+        ...state,
+        appListeners: [...state.appListeners, ...action.listeners],
+      }
+    case 'app/exit':
+      //assuming that we just have to call each
+      try {
+        console.log('cleaning up app listeners')
+        for (let unsub of state.appListeners) {
+          unsub()
+        }
+      } catch (err) {
+        console.log('err cleaning up:', err.message)
+      }
+      return { ...state, appListeners: [] }
     case 'auth/init':
       return { ...state, authLoading: true, authUser: null }
     case 'auth/loading':

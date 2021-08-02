@@ -28,6 +28,10 @@ const InitProvider = props => {
         console.log('err setting up push token:', err.message)
       })
     }
+
+    return () => {
+      dispatch({ type: 'app/exit' }) //for resetting all listeners
+    }
   }, [dispatch, user, loading])
 
   return props.children
