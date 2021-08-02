@@ -157,7 +157,6 @@ const translations = {
   'Delete Comment': 'Delete Comment',
   'Are you sure?': 'Are you sure?',
   'Delete': 'Delete',
-  'Cancel': 'Cancel',
 }
 
 export default translations
