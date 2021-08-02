@@ -154,6 +154,11 @@ const translations = {
   'Edit Your Intro': 'プロフィールを修正する',
 
   'Pull down to refresh': 'リストをリフレッシュする',
+
+  'Delete Comment': 'コメントを削除する',
+  'Are you sure?': '本当に削除しますか？',
+  'Delete': '削除',
+  'Cancel': '戻る',
 }
 
 export default translations

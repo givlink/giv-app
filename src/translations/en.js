@@ -153,6 +153,11 @@ const translations = {
   'Edit Your Intro': 'Edit Your Intro',
 
   'Pull down to refresh': 'Pull down to refresh',
+
+  'Delete Comment': 'Delete Comment',
+  'Are you sure?': 'Are you sure?',
+  'Delete': 'Delete',
+  'Cancel': 'Cancel',
 }
 
 export default translations

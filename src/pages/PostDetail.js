@@ -24,6 +24,7 @@ import usePreserveScroll from 'hooks/scroll'
 import actions from 'state/actions'
 
 const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
+  const { t } = useTranslation()
   const cancelButtonRef = React.useRef(null)
   const closeModal = () => {
     setOpen(false)
@@ -79,10 +80,12 @@ const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
                     as='h3'
                     className='text-lg leading-6 font-medium text-gray-900'
                   >
-                    Delete Comment
+                    {t('Delete Comment')}
                   </Dialog.Title>
                   <div className='mt-2'>
-                    <p className='text-sm text-gray-500'>Are you sure?</p>
+                    <p className='text-sm text-gray-500'>
+                      {t('Are you sure?')}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -92,7 +95,7 @@ const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
                   className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
                   onClick={onDelete}
                 >
-                  Delete Comment
+                  {t('Delete')}
                 </button>
                 <button
                   type='button'
@@ -100,7 +103,7 @@ const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
                   ref={cancelButtonRef}
                   onClick={() => setOpen(false)}
                 >
-                  Cancel
+                  {t('Cancel')}
                 </button>
               </div>
             </div>
