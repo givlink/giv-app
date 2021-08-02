@@ -1,0 +1,32 @@
+import { LogoutIcon } from '@heroicons/react/outline'
+import actions from 'state/actions'
+import { useDispatch } from 'react-redux'
+import { Link } from '@reach/router'
+import { useTranslation } from 'react-i18next'
+export default function Header() {
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
+  return (
+    <div className='mb-16'>
+      <header className='z-10 border-b border-gray-200 bg-white px-3 py-2 shadow fixed w-full top-0'>
+        <div className='flex items-center justify-between'>
+          <Link to='/' replace={true}>
+            <img
+              width='40'
+              src='/image/giv_logo.png'
+              alt='Giv'
+              className='object-cover'
+            />
+          </Link>
+          <button
+            onClick={() => dispatch(actions.logout())}
+            className='text-gray-600 flex items-center text-xs pl-3 pr-1 py-2 font-medium hover:bg-gray-100 rounded'
+          >
+            {t('Logout')}
+            <LogoutIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
+          </button>
+        </div>
+      </header>
+    </div>
+  )
+}
