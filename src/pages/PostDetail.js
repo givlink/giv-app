@@ -317,7 +317,7 @@ export default function PostDetail(props) {
       }
       run()
     }
-  }, [dispatch, state.user, state.isLiked, props.id])
+  }, [dispatch, state.user, state.isLiked, props.id, state.authUser])
 
   React.useEffect(() => {
     if (post) return
