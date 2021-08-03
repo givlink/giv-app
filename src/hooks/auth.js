@@ -6,7 +6,7 @@ export const useInitAuth = () => {
   const dispatch = useDispatch()
 
   React.useEffect(() => {
-    const unsub = firebase.auth().onAuthStateChanged((user) => {
+    const unsub = firebase.auth().onAuthStateChanged(user => {
       dispatch({ type: 'auth/data', user })
     })
     return unsub
@@ -16,5 +16,5 @@ export const useInitAuth = () => {
 }
 
 export const useAuth = () => {
-  return useSelector((s) => ({ user: s.authUser, loading: s.authLoading }))
+  return useSelector(s => ({ user: s.authUser, loading: s.authLoading }))
 }
