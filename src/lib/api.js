@@ -392,11 +392,11 @@ export const postComment = async ({
 export const checkLiked = async (postId, userId) => {
   if (!postId) {
     console.log('No postId in checklike')
-    return
+    return false
   }
   if (!userId) {
     console.log('No userId in checklike')
-    return
+    return false
   }
   const resp = await firebase
     .firestore()

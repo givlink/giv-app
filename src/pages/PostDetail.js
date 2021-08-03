@@ -299,6 +299,7 @@ export default function PostDetail(props) {
   const dispatch = useDispatch()
   const state = useSelector(s => ({
     post: s.postById[props.id],
+    authUser: s.authUser,
     user: s.user,
     postSingleLoading: s.postSingleLoading,
     isLiked: s.postLikeById[props.id],
@@ -311,7 +312,7 @@ export default function PostDetail(props) {
       //Else call api and update user list
       const run = async () => {
         //@Todo err handling
-        const liked = await api.checkLiked(props.id, state.user?.id)
+        const liked = await api.checkLiked(props.id, state.authUser?.uid)
         dispatch({ type: 'postLike/data', postId: props.id, liked })
       }
       run()

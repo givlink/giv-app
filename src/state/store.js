@@ -216,11 +216,11 @@ const reducer = (state = initialState, action) => {
       const postLikeById = {
         ...state.postLikeById,
         [action.postId]: action.liked,
-        postLikeLoading: false,
       }
       return {
         ...state,
         postLikeById,
+        postLikeLoading: false,
       }
     case 'posts/data_more':
       return {
