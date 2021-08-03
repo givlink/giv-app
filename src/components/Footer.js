@@ -83,7 +83,7 @@ export default function Footer() {
                 : 'border-transparent'
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
-            <SearchIcon className='h-7 w-7 mt-0.5' />
+            <SearchIcon className='pt-px h-7 w-7' />
             <label className='hidden md:block'>Search</label>
           </Link>
           <Link
