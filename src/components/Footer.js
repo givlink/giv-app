@@ -53,7 +53,7 @@ export default function Footer() {
       leaveFrom='translate-y-0 opacity-100'
       leaveTo='translate-y-1/2 opacity-0'
     >
-      <nav className='bg-white text-gray-600 my-3 mx-2 px-1 fixed z-10 left-0 right-0 bottom-0 rounded-xl shadow-lg border border-gray-300'>
+      <nav className='max-w-2xl md:mx-auto bg-white text-gray-600 my-3 mx-2 px-1 fixed z-10 left-0 right-0 bottom-0 rounded-xl shadow-lg border border-gray-300'>
         <div className='max-w-xl mx-auto flex items-center justify-between'>
           <Link
             to='/'
@@ -73,6 +73,7 @@ export default function Footer() {
             ) : (
               <ClockIcon className='h-7 w-7' />
             )}
+            <label className='hidden md:block'>Posts</label>
           </Link>
           <Link
             to='/users'
@@ -83,6 +84,7 @@ export default function Footer() {
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
             <SearchIcon className='h-7 w-7 mt-0.5' />
+            <label className='hidden md:block'>Search</label>
           </Link>
           <Link
             to='/chats/requests' //@Todo For now directly go to requests, in future go to chats
@@ -97,6 +99,7 @@ export default function Footer() {
             ) : (
               <ChatIcon className='h-7 w-7' />
             )}
+            <label className='hidden md:block'>Chat</label>
           </Link>
           <Link
             to='/notifications'
@@ -116,6 +119,7 @@ export default function Footer() {
                 {unreadCount}
               </div>
             )}
+            <label className='hidden md:block'>Notifications</label>
           </Link>
           <Link
             to={`/users/${user?.uid}`}
@@ -130,6 +134,7 @@ export default function Footer() {
             ) : (
               <UserIcon className='h-7 w-7' />
             )}
+            <label className='hidden md:block'>My Page</label>
           </Link>
         </div>
       </nav>

@@ -45,7 +45,7 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
   const onSubmit = async () => {
     handleNext({
       job,
-      name: state.authUser.displayName,
+      name: state.authUser?.displayName,
       intro,
       area,
     })
@@ -57,7 +57,7 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
         <span className='font-medium'>{t('Name')}</span>
         <input
           readOnly
-          defaultValue={state.authUser.displayName}
+          defaultValue={state.authUser?.displayName}
           className='mt-1 text-lg border bg-gray-200 opacity-75 border-gray-300 py-2 px-3 rounded'
         />
       </label>

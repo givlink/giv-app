@@ -82,7 +82,7 @@ export default function UserDetail(props) {
           )}
         </>
       )}
-      <div className='pb-24'>
+      <div className='pb-24 max-w-2xl mx-auto'>
         {!user && state.userSingleLoading ? (
           <div className='pt-2'>
             <Spinner />

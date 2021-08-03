@@ -27,7 +27,7 @@ const GivCard = ({ post, type = 'receive' }) => {
       <SafeImage
         src={utils.parseUrl(firstImage)}
         alt=''
-        className='h-32 w-full object-cover rounded-md shadow-lg'
+        className='h-32 md:h-64 w-full object-cover rounded-md shadow-lg'
         classNameFallback='w-32 h-32 opacity-25 object-fit rounded-md shadow'
       />
       <span className='block mt-1 text-sm'>{renderName()}</span>

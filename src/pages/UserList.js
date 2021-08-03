@@ -49,7 +49,7 @@ const FilterBar = props => {
   }
 
   return (
-    <div className='mx-1.5 mt-2 mb-6 text-xs'>
+    <div className='mx-1.5 mt-2 mb-6 text-xs md:pt-4 max-w-2xl md:mx-auto'>
       <div className='flex items-center space-x-0.5'>
         <select
           name='skills'
@@ -158,7 +158,7 @@ export default function UserList() {
       <FilterBar />
       {loading && <Spinner className='' />}
 
-      <ul className='divide-y overflow-x-hidden'>
+      <ul className='max-w-2xl mx-auto divide-y overflow-x-hidden'>
         {users.map(u => {
           return (
             <li key={u.id}>
@@ -169,10 +169,10 @@ export default function UserList() {
         {!loading && users.length === 0 && <EmptyUserList />}
       </ul>
       {hasMore && !loading && (
-        <div className='flex items-center justify-center mx-2'>
+        <div className='max-w-2xl md:mx-auto flex items-center justify-end mx-2'>
           <button
             disabled={loadingMore}
-            className='flex items-center justify-end px-6 w-full border border-gray-400 shadow rounded py-3 my-3'
+            className='flex items-center justify-end px-6 w-full md:w-auto border border-gray-400 shadow rounded py-3 my-3'
             onClick={() => dispatch(actions.loadMoreUsers())}
           >
             <span className='mr-2 mb-px'>{t('Load More')}</span>

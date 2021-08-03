@@ -25,7 +25,7 @@ const GivRequest = ({ notification, markRead }) => {
     <Link
       onClick={() => markRead(notification.id)}
       to={`/chats/requests`}
-      className='flex space-x-3 pt-2 pb-3 px-3'
+      className='w-full flex space-x-3 pt-2 pb-3 px-3'
     >
       <SafeImage
         src={utils.parseUrl(requester.photoURL)}
@@ -33,7 +33,7 @@ const GivRequest = ({ notification, markRead }) => {
         className='h-12 w-12 object-cover border-2 border-gray-500 rounded-full'
         classNameFallback='w-12 object-cover rounded-full'
       />
-      <div className='flex flex-col pt-1'>
+      <div className='w-full flex flex-col pt-1'>
         <span className='text-sm pb-3'>{msg}</span>
         <span className='block flex justify-end items-center text-gray-500 text-xs py-1'>
           <CalendarIcon className='h-4 w-4 mr-1.5 text-gray-400' />
@@ -59,7 +59,7 @@ const GivFinished = ({ notification, markRead }) => {
       />
       <button
         onClick={() => setOpen(true)}
-        className='flex space-x-3 pt-2 pb-3 px-3'
+        className='w-full flex space-x-3 pt-2 pb-3 px-3'
       >
         <SafeImage
           src={utils.parseUrl(giver?.photoURL)}
@@ -67,7 +67,7 @@ const GivFinished = ({ notification, markRead }) => {
           className='h-12 w-12 object-cover border-2 border-gray-500 rounded-full'
           classNameFallback='h-12 opacity-50 object-cover rounded-full'
         />
-        <div className='flex flex-col pt-1'>
+        <div className='w-full flex flex-col pt-1'>
           <span className='text-sm pb-3 text-left'>
             {t('You Got Giv', { name: giver ? giver.name : 'someone' })}
           </span>
@@ -88,7 +88,7 @@ const CommentCard = ({ notification, markRead }) => {
     <Link
       onClick={() => markRead(notification.id)}
       to={`/posts/${notification.postId}`}
-      className='flex space-x-3 pt-2 pb-3 px-3'
+      className='w-full flex space-x-3 pt-2 pb-3 px-3'
     >
       <SafeImage
         src={utils.parseUrl(comment.author?.photoURL)}
@@ -96,7 +96,7 @@ const CommentCard = ({ notification, markRead }) => {
         className='h-12 w-12 object-cover border-2 border-gray-500 rounded-full'
         classNameFallback='w-12 object-cover rounded-full'
       />
-      <div className='flex flex-col pt-1'>
+      <div className='w-full flex flex-col pt-1'>
         <span className='text-sm pb-3'>
           {t('You Got Comment', {
             name: comment.author ? comment.author.name : 'Someone',

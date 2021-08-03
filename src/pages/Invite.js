@@ -52,7 +52,7 @@ export default function Invite() {
   }
 
   return (
-    <div className='h-full flex flex-col items-center justify-center'>
+    <div className='h-full flex flex-col items-center justify-center mx-auto max-w-2xl'>
       {activeStepIndex !== steps.length && (
         <div className='mt-10 mb-6'>
           <Steps steps={steps} activeStepIndex={activeStepIndex} />

@@ -46,7 +46,7 @@ const UserInterestsEditModal = ({
         open={editing}
         onClose={closeModal}
       >
-        <div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+        <div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center'>
           <Transition.Child
             as={React.Fragment}
             enter='ease-out duration-150'
@@ -78,7 +78,7 @@ const UserInterestsEditModal = ({
             <div
               style={{ height: '65vh', minWidth: '80vw' }}
               ref={ref}
-              className='bg-white rounded-lg overflow-hidden w-full pt-3 pb-4 text-left shadow-xl transform transition-all'
+              className='bg-white max-w-2xl rounded-lg overflow-hidden w-full pt-3 pb-4 text-left shadow-xl transform transition-all'
             >
               {sending ? (
                 <button className='flex items-center justify-center h-full w-full'>

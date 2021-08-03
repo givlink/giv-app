@@ -56,10 +56,10 @@ export default function PostList() {
         </ul>
       </PullToRefresh>
       {hasMore && !loading && (
-        <div className='flex items-center justify-center mx-2'>
+        <div className='max-w-2xl md:mx-auto flex items-center justify-end mx-2'>
           <button
             disabled={loadingMore}
-            className='flex items-center justify-end px-6 w-full border border-gray-400 shadow rounded py-3 my-3'
+            className='flex items-center justify-end px-6 w-full md:w-auto border border-gray-400 shadow rounded py-3 my-3'
             onClick={() => dispatch(actions.loadMorePosts())}
           >
             <span className='mr-2 mb-px'>{t('Load More')}</span>

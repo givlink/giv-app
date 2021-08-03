@@ -45,13 +45,15 @@ const BackHeader = React.forwardRef((props, ref) => {
       ref={ref}
       className='z-10 border-b border-gray-200 bg-white px-3 py-2 shadow'
     >
-      <button
-        onClick={() => window.history.go(-1)}
-        className='focus:translate-y-1 transform py-2 flex items-center justify-center bg-white'
-      >
-        <ChevronLeftIcon className='h-6 w-6 mr-1' />
-        <span>{t('Back')}</span>
-      </button>
+      <div className='max-w-2xl mx-auto'>
+        <button
+          onClick={() => window.history.go(-1)}
+          className='focus:translate-y-1 transform py-2 flex items-center justify-center bg-white'
+        >
+          <ChevronLeftIcon className='h-6 w-6 mr-1' />
+          <span>{t('Back')}</span>
+        </button>
+      </div>
     </header>
   )
 })

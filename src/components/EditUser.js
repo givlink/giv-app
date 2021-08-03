@@ -52,7 +52,7 @@ const EditModal = ({
         open={editing}
         onClose={closeModal}
       >
-        <div className='flex items-center justify-center overflow-hidden min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+        <div className='flex items-center justify-center overflow-hidden min-h-screen pt-4 px-4 pb-20 text-center'>
           <Transition.Child
             as={React.Fragment}
             enter='ease-out duration-150'
@@ -83,7 +83,7 @@ const EditModal = ({
           >
             <div
               style={{ minHeight: '40vh' }}
-              className='bg-white rounded-lg overflow-hidden w-full pt-3 pb-4 text-left shadow-xl transform transition-all'
+              className='bg-white rounded-lg overflow-hidden max-w-2xl w-full pt-3 pb-4 text-left shadow-xl transform transition-all'
             >
               {sending ? (
                 <button className='flex items-center justify-center h-full w-full'>

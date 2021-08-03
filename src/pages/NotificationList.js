@@ -21,7 +21,7 @@ export default function NotificationList() {
       <HeaderNotificationList />
       {state.loading && <Spinner className='pt-2' />}
 
-      <ul className='pb-20'>
+      <ul className='pb-20 max-w-2xl mx-auto'>
         {state.notifications.map(n => {
           return (
             <li key={n.id}>

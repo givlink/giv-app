@@ -56,7 +56,7 @@ const EditModal = ({ id, editing, setEditing }) => {
         open={editing}
         onClose={closeModal}
       >
-        <div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+        <div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center'>
           <Transition.Child
             as={React.Fragment}
             enter='ease-out duration-150'
@@ -85,7 +85,7 @@ const EditModal = ({ id, editing, setEditing }) => {
             leaveFrom='opacity-100 translate-y-0 sm:scale-100'
             leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
           >
-            <div className='bg-white rounded-lg w-full pt-3 pb-4 text-left shadow-xl transform transition-all'>
+            <div className='bg-white rounded-lg max-w-2xl w-full pt-3 pb-4 text-left shadow-xl transform transition-all'>
               {sending ? (
                 <button className='flex items-center justify-center h-full w-full'>
                   <Spinner />
@@ -108,7 +108,11 @@ const EditModal = ({ id, editing, setEditing }) => {
                     </Dialog.Title>
                   </div>
                   <div className='py-3 px-1 mb-10'>
-                    <img src={getSrc()} className='rounded shadow' alt='' />
+                    <img
+                      src={getSrc()}
+                      className='rounded shadow md:h-96 md:mx-auto'
+                      alt=''
+                    />
                     <label
                       className={`flex items-center justify-center ${
                         newImage

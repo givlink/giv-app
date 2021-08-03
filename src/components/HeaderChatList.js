@@ -11,7 +11,7 @@ export default function Header({
   return (
     <div className='mb-16'>
       <header className='z-10 border-b border-gray-200 bg-white px-3 shadow mb-3 fixed w-full top-0'>
-        <div className='flex items-center mt-0.5 justify-between'>
+        <div className='flex items-center mt-0.5 justify-between max-w-2xl mx-auto'>
           <img
             src='/image/giv_logo.png'
             alt='Giv'

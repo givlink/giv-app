@@ -340,7 +340,7 @@ export default function PostDetail(props) {
   return (
     <div>
       <HeaderBack />
-      <div className='pb-20 bg-white'>
+      <div className='pb-20 bg-white max-w-2xl mx-auto'>
         {!post && state.postSingleLoading ? (
           <div className='pt-24'>
             <Spinner />
@@ -369,7 +369,7 @@ export default function PostDetail(props) {
                     key={i}
                     src={utils.parseUrl(i)}
                     alt={post.title}
-                    className='w-full object-cover'
+                    className='w-full object-cover md:rounded'
                     fallbackSrc={null}
                   />
                 ))}

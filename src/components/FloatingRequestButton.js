@@ -64,7 +64,7 @@ const RequestModal = ({ open, setOpen, userId }) => {
               leaveFrom='opacity-100 translate-y-2'
               leaveTo='opacity-50 translate-y-6'
             >
-              <div className='inline-block w-full text-left align-middle transition-all transform bg-white shadow-xl rounded-sm'>
+              <div className='block max-w-2xl mx-auto w-full text-left align-middle transition-all transform bg-white shadow-xl rounded-sm'>
                 <Dialog.Title
                   as='h3'
                   className='relative px-4 pt-4 pb-3 font-medium leading-6 flex items-center justify-center'

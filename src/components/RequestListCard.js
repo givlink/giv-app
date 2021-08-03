@@ -44,7 +44,7 @@ const AcceptRequestModal = ({ request, requester, open, setOpen }) => {
         open={open}
         onClose={closeModal}
       >
-        <div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+        <div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center'>
           <Transition.Child
             as={React.Fragment}
             enter='ease-out duration-150'
@@ -133,7 +133,7 @@ const AcceptRequestModal = ({ request, requester, open, setOpen }) => {
                   </button>
                 </>
               ) : (
-                <div className='mt-5 sm:mt-4 sm:flex sm:flex-row-reverse'>
+                <div className='mt-5 sm:mt-4 max-w-sm mx-auto'>
                   <div className='flex justify-center'>
                     {<Error error={error} />}
                   </div>
