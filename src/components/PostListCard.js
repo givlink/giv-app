@@ -31,8 +31,8 @@ export default function PostListCard({ post }) {
           />
         )}
         <div className='px-2 py-2'>
-          <h3 className='font-medium text-xl mb-2'>{post.title}</h3>
-          <p className=''>{utils.snipText(post.message)}</p>
+          <h3 className='font-medium text-lg sm:text-xl mb-2'>{post.title}</h3>
+          <p className='text-sm'>{utils.snipText(post.message)}</p>
         </div>
       </Link>
       <Link to={`/users/${post.giver.id}`}>

@@ -141,7 +141,9 @@ const CommentCard = ({ comment, user, onDelete }) => {
       </div>
       <div className='flex-1'>
         <div className='flex items-center justify-between'>
-          <span className='font-medium text-lg'>{comment.author.name}</span>
+          <span className='font-medium text-base sm:text-lg'>
+            {comment.author.name}
+          </span>
           {user && user.id === comment.author.id && (
             <button
               onClick={() => setDeleteOpen(true)}
@@ -151,7 +153,9 @@ const CommentCard = ({ comment, user, onDelete }) => {
             </button>
           )}
         </div>
-        <p className='pr-2'>{comment.message}</p>
+        <p className='pr-2 text-sm sm:text-base font-light'>
+          {comment.message}
+        </p>
         <span className='block text-gray-500 text-sm text-right'>
           {utils.parseDate(comment.createdAt)}
         </span>
@@ -378,8 +382,12 @@ export default function PostDetail(props) {
             )}
             <div className='px-4 pt-6 pb-4'>
               {isMyPost && <EditPost post={post} id={post.id} />}
-              <h3 className='font-medium text-2xl mb-2'>{post.title}</h3>
-              <p className='px-1 text-lg'>{post.message}</p>
+              <h3 className='font-medium text-xl sm:text-xl mb-2'>
+                {post.title}
+              </h3>
+              <p className='px-1 font-light text-base sm:text-lg'>
+                {post.message}
+              </p>
             </div>
             <div className='px-4 py-2 pb-8 flex items-center justify-between'>
               <button

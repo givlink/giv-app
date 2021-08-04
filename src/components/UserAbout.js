@@ -26,7 +26,9 @@ const UserAbout = ({ user, editable = false }) => {
         )}
       </div>
       <div className='pt-2'>
-        <p className='whitespace-pre-line leading-7 px-4'>{user?.intro}</p>
+        <p className='whitespace-pre-line leading-7 px-4 text-sm sm:text-base font-light'>
+          {user?.intro}
+        </p>
       </div>
     </div>
   )
