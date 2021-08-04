@@ -3,6 +3,10 @@
 html {
   /* scroll-behavior: smooth; */
   -webkit-touch-callout: none;
+
+  /* This font also works but it doesn't have that good bold types */
+  /* font-family: '游ゴシック体', YuGothic, '游ゴシック', 'Yu Gothic', sans-serif; */
+  font-family: 'Noto Sans JP', sans-serif;
 }
 
 .debug {
