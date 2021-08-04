@@ -34,7 +34,7 @@ const GivRequest = ({ notification, markRead }) => {
         classNameFallback='w-12 object-cover rounded-full'
       />
       <div className='w-full flex flex-col pt-1'>
-        <span className='text-sm pb-3'>{msg}</span>
+        <span className='text-xs sm:text-sm pb-3'>{msg}</span>
         <span className='block flex justify-end items-center text-gray-500 text-xs py-1'>
           <CalendarIcon className='h-4 w-4 mr-1.5 text-gray-400' />
           {utils.parseDate(notification.createdAt)}
@@ -68,7 +68,7 @@ const GivFinished = ({ notification, markRead }) => {
           classNameFallback='h-12 opacity-50 object-cover rounded-full'
         />
         <div className='w-full flex flex-col pt-1'>
-          <span className='text-sm pb-3 text-left'>
+          <span className='text-xs sm:text-sm pb-3 text-left'>
             {t('You Got Giv', { name: giver ? giver.name : 'someone' })}
           </span>
           <span className='block flex justify-end items-center text-gray-500 text-xs py-1'>
@@ -97,7 +97,7 @@ const CommentCard = ({ notification, markRead }) => {
         classNameFallback='w-12 object-cover rounded-full'
       />
       <div className='w-full flex flex-col pt-1'>
-        <span className='text-sm pb-3'>
+        <span className='text-xs sm:text-sm pb-3'>
           {t('You Got Comment', {
             name: comment.author ? comment.author.name : 'Someone',
           })}

@@ -196,7 +196,9 @@ export default function RequestListCard({ request }) {
           classNameFallback='w-12 object-cover rounded-full'
         />
         <div className='flex flex-col pt-1'>
-          <span className='text-base font-medium pb-1'>{requester?.name}</span>
+          <span className='text-sm sm:text-base font-medium pb-1'>
+            {requester?.name}
+          </span>
           <p className='text-sm text-gray-600'>{msg}</p>
 
           <span className='block flex justify-end items-center text-gray-500 text-xs pt-1'>

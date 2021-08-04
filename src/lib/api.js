@@ -405,7 +405,7 @@ export const checkLiked = async (postId, userId) => {
   return resp.exists
 }
 
-const SHOW_ALL = false && process.env.NODE_ENV === 'development'
+const SHOW_ALL = true && process.env.NODE_ENV === 'development'
 export const watchNotifications = (userId, cb, debug = false) => {
   if (!userId) {
     console.log('No user id in listNotifications')
