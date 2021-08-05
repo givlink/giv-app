@@ -1,5 +1,43 @@
 import React from 'react'
 
+/*
+How it works
+=============
+The hook periodically checks for /asset-manifest.json file
+and then compares the content with an earlier snapshot stored in localStorage, 
+if the content has changed meaning there is a new bundle update available 
+and you can either notify user or reload page etc. 
+
+/asset-manifest.json file is a common file available if you are using create-react-app 
+or have configured webpack.
+
+
+Why not use other PWA solutions based on service workers?
+============================================================
+Because they require SW setup which is clunky and doesn't work
+everywhere (like WkWebview in iOS, hopefully in ios14 it will) so its not a cross platform
+compatible solution. 
+
+Our way is more "hacky" but simple. And you can always change the check logic.
+Like instead of checking for asset-manifest.json you can check for any arbitrary
+endpoint and compare results
+
+
+Usage:
+========
+
+import useUpdateNotifier from './updateNotifier'
+
+const YourAppRootComponent = props=>{
+  useUpdateNotifier()
+
+  return (
+  ....Your Stuff
+  )
+}
+
+ */
+
 const DEFAULT_OPTS = {
   pollInterval: 10000, //ms
   disableInDev: false,
@@ -34,9 +72,7 @@ export default function useUpdateNotifier(config = {}) {
     }
 
     const t = setInterval(refetchAndCompare, opts.pollInterval)
-    return () => {
-      clearInterval(t)
-    }
+    return () => clearInterval(t)
   }, [config])
 
   return null
