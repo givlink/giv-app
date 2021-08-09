@@ -74,7 +74,7 @@ const actions = {
       dispatch({ type: 'auth/user_profile_data', user })
       dispatch({
         type: 'posts/switch_area_filter',
-        postAreaFilter: user.area === 'senboku' ? 'senboku' : null,
+        postAreaFilter: user?.area === 'senboku' ? 'senboku' : null,
       })
     }
   },
