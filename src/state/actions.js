@@ -119,7 +119,7 @@ const actions = {
       const user = await api.getUserProfile(authUser.uid, false)
       dispatch({ type: 'auth/user_profile_data', user })
 
-      const postAreaFilter = user.area === 'senboku' ? 'senboku' : null
+      const postAreaFilter = user?.area === 'senboku' ? 'senboku' : null
       dispatch({
         type: 'posts/switch_area_filter',
         postAreaFilter,
