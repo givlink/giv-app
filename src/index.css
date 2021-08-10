@@ -1,20 +1,27 @@
 @tailwind base;
 
 html {
-  /* scroll-behavior: smooth; */
   -webkit-touch-callout: none;
 
   font-family: 'メイリオ', Meiryo, '游ゴシック体', YuGothic, '游ゴシック',
     'Yu Gothic', sans-serif;
-  /* font-family: 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', '游ゴシック', */
-  /*   '游ゴシック体', YuGothic, 'Yu Gothic', 'メイリオ', Meiryo, 'ＭＳ ゴシック', */
-  /*   'MS Gothic', HiraKakuProN-W3, 'TakaoExゴシック', TakaoExGothic, */
-  /*   'MotoyaLCedar', 'Droid Sans Japanese', sans-serif; */
-  /* font-family: 'Noto Sans JP', sans-serif; */
 }
 
 .debug {
   background: red !important;
+}
+
+/* That little pointy arrow in message bubble */
+.chat-mine:after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  bottom: -5px;
+  right: 0;
+  width: 15px;
+  height: 20px;
+  background: inherit;
+  border-bottom-left-radius: 20px;
 }
 
 .animate-shake {
@@ -118,7 +125,5 @@ html {
   margin-top: 20px;
 }
 
-@tailwind components;
-@tailwind utilities;
 @tailwind components;
 @tailwind utilities;
