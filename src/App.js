@@ -12,6 +12,7 @@ import PostDetail from 'pages/PostDetail'
 import PostEdit from 'pages/PostEdit'
 
 import ChatList from 'pages/ChatList'
+import ChatDetail from 'pages/ChatDetail'
 import RequestList from 'pages/RequestList'
 
 import Login from 'pages/Login'
@@ -48,6 +49,7 @@ const App = () => {
             {/* Chats and Requests */}
             <RequestList path='chats/requests' />
             <ChatList path='chats' />
+            <ChatDetail path='chats/:id' />
 
             {/* Notifications */}
             <NotificationList path='notifications' />

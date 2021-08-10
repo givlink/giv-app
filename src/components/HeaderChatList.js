@@ -1,6 +1,9 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { Link } from '@reach/router'
+
+const IS_ADMIN = user => user?.uid === '5ccf0b6a-770e-4753-8370-5f3318649938'
 
 export default function Header({
   active = 'chats',
@@ -8,6 +11,8 @@ export default function Header({
   requestsCount = 0,
 }) {
   const { t } = useTranslation()
+  const authUser = useSelector(s => s.authUser)
+  const enableChat = IS_ADMIN(authUser)
   return (
     <div className='mb-16'>
       <header className='z-10 border-b border-gray-200 bg-white px-3 shadow mb-3 fixed w-full top-0'>
@@ -18,33 +23,35 @@ export default function Header({
             className='w-10 object-cover'
           />
           <div className='flex-1 flex items-center'>
-            <Link
-              className={`${
-                active === 'chats'
-                  ? 'border-giv-blue-dark text-giv-blue-dark'
-                  : 'border-transparent text-gray-500'
-              } -mb-px text-xs sm:text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-1/2 text-center inline-block`}
-              to='/chats'
-            >
-              <span className='relative'>
-                {t('Chats')}
-                <span
-                  className={`${chatsCount > 0 ? 'visible ' : 'hidden'} ${
-                    active === 'chats'
-                      ? 'text-white bg-giv-blue'
-                      : 'bg-gray-300 text-gray-900 opacity-50'
-                  } absolute top-0 right-0 -mr-7 -mt-3 w-6 h-6 p-1 flex items-center justify-center leading-0 text-xs rounded-full`}
-                >
-                  {chatsCount > 10 ? '9+' : chatsCount}
+            {enableChat && (
+              <Link
+                className={`${
+                  active === 'chats'
+                    ? 'border-giv-blue-dark text-giv-blue-dark'
+                    : 'border-transparent text-gray-500'
+                } -mb-px text-xs sm:text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-full text-center inline-block`}
+                to='/chats'
+              >
+                <span className='relative'>
+                  {t('Chats')}
+                  <span
+                    className={`${chatsCount > 0 ? 'visible ' : 'hidden'} ${
+                      active === 'chats'
+                        ? 'text-white bg-giv-blue'
+                        : 'bg-gray-300 text-gray-900 opacity-50'
+                    } absolute top-0 right-0 -mr-7 -mt-3 w-6 h-6 p-1 flex items-center justify-center leading-0 text-xs rounded-full`}
+                  >
+                    {chatsCount > 10 ? '9+' : chatsCount}
+                  </span>
                 </span>
-              </span>
-            </Link>
+              </Link>
+            )}
             <Link
               className={`${
                 active === 'requests'
                   ? 'border-giv-blue-dark text-giv-blue-dark'
                   : 'border-transparent text-gray-500'
-              } -mb-px text-xs sm:text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-1/2 text-center inline-block`}
+              } -mb-px text-xs sm:text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-full text-center inline-block`}
               to='/chats/requests'
             >
               <span className='relative'>

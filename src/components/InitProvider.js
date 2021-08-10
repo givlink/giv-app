@@ -20,6 +20,7 @@ const InitProvider = props => {
     dispatch(actions.loadInitialAreas())
     dispatch(actions.loadInitialSkillCategories())
     dispatch(actions.loadInitialAreaCategories())
+    dispatch(actions.watchChatGroups())
 
     //setup push notifications
     const token = localStorage.getItem('pushToken')

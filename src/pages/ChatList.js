@@ -2,6 +2,7 @@ import HeaderChatList from 'components/HeaderChatList'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import PostListCard from 'components/PostListCard'
+import ChatGroupCard from 'components/ChatGroupCard'
 import Spinner from 'components/Spinner'
 import { useTranslation } from 'react-i18next'
 import usePreserveScroll from 'hooks/scroll'
@@ -24,7 +25,9 @@ const ChatComingSoon = () => {
 
 export default function ChatList() {
   const state = useSelector(s => ({
+    authUser: s.authUser,
     chats: s.chats,
+    chatGroups: s.chatGroups,
     requestsPendingCount: s.requestsPendingCount,
     chatsUnreadCount: s.chatsUnreadCount,
     loading: s.chatsLoading,
@@ -32,7 +35,7 @@ export default function ChatList() {
   usePreserveScroll('chatList')
 
   return (
-    <div className='pb-20'>
+    <div className='pb-20 overflow-hidden'>
       <HeaderChatList
         active='chats'
         chatsCount={state.chatsUnreadCount}
@@ -40,13 +43,11 @@ export default function ChatList() {
       />
       {state.loading && <Spinner className='pt-2' />}
 
-      <ChatComingSoon />
-
-      <ul className='space-y-2'>
-        {state.chats.map(p => {
+      <ul className='space-y-2 overflow-auto md:max-w-2xl md:mx-auto'>
+        {Object.values(state.chatGroups).map(p => {
           return (
             <li key={p.id}>
-              <PostListCard post={p} />
+              <ChatGroupCard authUser={state.authUser} group={p} />
             </li>
           )
         })}

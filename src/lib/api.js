@@ -406,6 +406,67 @@ export const checkLiked = async (postId, userId) => {
 }
 
 const SHOW_ALL = true && process.env.NODE_ENV === 'development'
+export const sendMessage = async (groupId, msg) => {
+  if (!groupId || !msg || msg === '') {
+    console.log('Invalid groupId or msg')
+    return
+  }
+  return firebase.database().ref(`chat_messages/${groupId}`).push({
+    senderId: getCurrentUser().uid,
+    content: msg,
+    timestamp: new Date().toISOString(), //@Todo validate this server side
+  })
+}
+export const watchChatMessages = (groupId, cb) => {
+  if (!groupId) {
+    console.log('No group id in watchChatMessages')
+    return null
+  }
+  //@Todo optimize limit getting only latest messages
+  //@Todo err handling
+  return firebase
+    .database()
+    .ref(`chat_messages/${groupId}`)
+    .on('value', s => {
+      const result = []
+      if (s) {
+        Object.entries(s.val()).forEach(([id, v]) => {
+          result.push({ id, ...v })
+        })
+      }
+      cb(result)
+    })
+}
+export const watchChatGroups = (userId, cb) => {
+  if (!userId) {
+    console.log('No user id in listNotifications')
+    return 0
+  }
+
+  //first watch /users/:id/chat_groups
+  return firebase
+    .firestore()
+    .collection(`/users/${userId}/chat_groups`)
+    .onSnapshot(async qs => {
+      //then for Each get the data from realtime db
+      const groups = []
+      const db = firebase.database()
+      try {
+        for (let doc of qs.docs) {
+          //@Todo err handling
+          const snap = await db.ref(`chat_groups/${doc.id}`).get()
+          if (snap.exists()) {
+            groups.push({ id: doc.id, ...snap.val() })
+          }
+          //@Todo get unread count
+        }
+      } catch (err) {
+        console.log('err getting chat groups:', err)
+      }
+
+      cb(groups)
+    })
+}
 export const watchNotifications = (userId, cb, debug = false) => {
   if (!userId) {
     console.log('No user id in listNotifications')
@@ -1028,6 +1089,9 @@ const api = {
   listNotifications,
   getUnreadNotificationCount,
   watchNotifications,
+  watchChatGroups,
+  watchChatMessages,
+  sendMessage,
   watchGivRequests,
   acceptGivRequest,
   updateNotification,

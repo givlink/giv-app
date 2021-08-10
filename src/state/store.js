@@ -80,9 +80,12 @@ const initialState = {
   requestsPendingCount: 0,
 
   //Chats
-  chats: [],
   chatsLoading: false,
   chatsUnreadCount: 0,
+  chatMessagesLoading: false,
+
+  chatGroups: {},
+  chatMessages: {},
 }
 
 const didChangeEdit = (state, newState) => {
@@ -154,6 +157,34 @@ const reducer = (state = initialState, action) => {
       return { ...state, authLoading: true }
     case 'auth/data':
       return { ...state, authUser: action.user, authLoading: false }
+
+    //Chats
+
+    case 'chat_groups/loading':
+      return { ...state, chatsLoading: true }
+    case 'chat_groups/data':
+      let chatsUnreadCount = 0
+      const chatGroups = {}
+      action.chatGroups.forEach(g => {
+        chatGroups[g.id] = g
+        chatsUnreadCount += g.unreadCount || 0
+      })
+      return {
+        ...state,
+        chatsUnreadCount,
+        chatGroups,
+        chatsLoading: false,
+      }
+    case 'chat_messages/loading':
+      return { ...state, chatMessagesLoading: true }
+    case 'chat_messages/data':
+      const chatMessages = { ...state.chatMessages }
+      chatMessages[action.chatGroupId] = action.messages
+      return {
+        ...state,
+        chatMessages,
+        chatMessagesLoading: false,
+      }
 
     case 'notifications/loading':
       return { ...state, notificationsLoading: true }

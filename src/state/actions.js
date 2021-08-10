@@ -134,8 +134,18 @@ const actions = {
     return async (dispatch, getState) => {
       const { authUser } = getState()
       dispatch({ type: 'notifications/loading' })
-      const listener = api.watchNotifications(authUser.uid, notifications => {
+      const listener = api.watchNotifications(authUser?.uid, notifications => {
         dispatch({ type: 'notifications/data', notifications })
+      })
+      dispatch({ type: 'app/update_listeners', listeners: [listener] })
+    }
+  },
+  watchChatGroups: () => {
+    return async (dispatch, getState) => {
+      const { authUser } = getState()
+      dispatch({ type: 'chat_groups/loading' })
+      const listener = api.watchChatGroups(authUser?.uid, chatGroups => {
+        dispatch({ type: 'chat_groups/data', chatGroups })
       })
       dispatch({ type: 'app/update_listeners', listeners: [listener] })
     }
