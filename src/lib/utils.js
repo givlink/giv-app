@@ -22,6 +22,7 @@ const utils = {
     e.target.style.width = '120px'
   },
   parseAgo: date => {
+    if(!date) return ""
     let d = date
     try {
       if (typeof d === 'string') {

@@ -4,15 +4,12 @@ import MessageRowItem from 'components/MessageRowItem'
 import Spinner from 'components/Spinner'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import utils from 'lib/utils'
 import api from 'lib/api'
 import { useTranslation } from 'react-i18next'
-import useScrollToBottom from 'hooks/scroll-to-bottom'
 const makeGroupName = async (group, authUser) => {
   if (group) {
-    const memKeys = Object.keys(group.members)
-    if (memKeys.length == 2) {
-      for (let m of memKeys) {
+    if (group.members.length === 2) {
+      for (let m of group.members) {
         if (m !== authUser?.uid) {
           const user = await api.getUserProfile(m)
           if (user) {
@@ -27,7 +24,7 @@ const makeGroupName = async (group, authUser) => {
 
 export default function ChatDetail({ id, messages = [] }) {
   const [groupName, setGroupName] = React.useState('Group')
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const ref = React.useRef(null)
   const state = useSelector(s => ({
@@ -65,39 +62,30 @@ export default function ChatDetail({ id, messages = [] }) {
     run()
   }, [state.group, state.authUser])
 
-  const makeRefParams = idx => {
-    const result = {}
-    if (idx === state.messages.length - 1) {
-      result.ref = ref
-    }
-    return result
-  }
-
   return (
     <div className='h-screen flex flex-col bg-white max-w-2xl md:mx-auto'>
       <Header title={groupName} />
       {state.chatMessagesLoading && <Spinner className='pt-2' />}
       <ul
         id='chats'
-        className='md:max-w-lg md:mx-auto overflow-auto pt-4 mb-1 flex-1 h-full bg-white px-2'
+        className='bg-gray-50 md:max-w-lg md:mx-auto overflow-auto pt-4 flex-1 h-full bg-white px-2'
       >
         {state.messages &&
           state.messages.map((m, idx) => (
             <li id={`msg-${m.id}`} key={m.id}>
-              <MessageRowItem group={state.group} message={m} />
+              <MessageRowItem group={state.group} message={m} authUser={state.authUser}/>
             </li>
           ))}
+
+        {state.messages?.length === 0 && (
+          <span className='text-xs h-full flex justify-center items-end'>
+            {t('Start chatting')}...
+          </span>
+        )}
+
         <div ref={ref} />
       </ul>
       <Footer groupId={id} />
     </div>
   )
 }
-//   methods: {
-//     scrollToLastItem(target) {
-//       const container = this.$el.querySelector("#chats");
-//       if (target) {
-//         container.scrollTop = target.offsetTop;
-//       } else {
-//         container.scrollTop = container.scrollHeight;
-//       }

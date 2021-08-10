@@ -1,11 +1,9 @@
-import api from 'lib/api'
 import utils from 'lib/utils'
 
-export default function MessageRowItem({ message, group }) {
+export default function MessageRowItem({ message, group, authUser }) {
   //@Todo show name instead of id
 
-  const isSenderCurrent =
-    message?.senderId === '5ccf0b6a-770e-4753-8370-5f3318649938'
+  const isSenderCurrent = message?.senderId === authUser.uid
 
   const showName =
     group && Object.keys(group?.members).length > 2 && !isSenderCurrent

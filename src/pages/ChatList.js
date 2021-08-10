@@ -1,7 +1,6 @@
 import HeaderChatList from 'components/HeaderChatList'
 import React from 'react'
 import { useSelector } from 'react-redux'
-import PostListCard from 'components/PostListCard'
 import ChatGroupCard from 'components/ChatGroupCard'
 import Spinner from 'components/Spinner'
 import { useTranslation } from 'react-i18next'
@@ -42,6 +41,12 @@ export default function ChatList() {
         requestsCount={state.requestsPendingCount}
       />
       {state.loading && <Spinner className='pt-2' />}
+
+    {
+      Object.keys(state.chatGroups).length === 0 && (
+        <ChatComingSoon/>
+      )
+    }
 
       <ul className='space-y-2 overflow-auto md:max-w-2xl md:mx-auto'>
         {Object.values(state.chatGroups).map(p => {

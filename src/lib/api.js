@@ -2,7 +2,7 @@ import firebase from './firebase'
 import utils from 'lib/utils'
 import shortId from 'short-uuid'
 
-const SHOULD_REAUTH = process.env.NODE_ENV !== 'development'
+const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
 
 const login = prov => {
   let provider = new firebase.auth.FacebookAuthProvider()
@@ -429,7 +429,7 @@ export const watchChatMessages = (groupId, cb) => {
     .ref(`chat_messages/${groupId}`)
     .on('value', s => {
       const result = []
-      if (s) {
+      if (s && s.exists()) {
         Object.entries(s.val()).forEach(([id, v]) => {
           result.push({ id, ...v })
         })
@@ -446,24 +446,14 @@ export const watchChatGroups = (userId, cb) => {
   //first watch /users/:id/chat_groups
   return firebase
     .firestore()
-    .collection(`/users/${userId}/chat_groups`)
+    .collection(`/chat_groups`)
+    .where('members', 'array-contains', userId)
     .onSnapshot(async qs => {
       //then for Each get the data from realtime db
       const groups = []
-      const db = firebase.database()
-      try {
-        for (let doc of qs.docs) {
-          //@Todo err handling
-          const snap = await db.ref(`chat_groups/${doc.id}`).get()
-          if (snap.exists()) {
-            groups.push({ id: doc.id, ...snap.val() })
-          }
-          //@Todo get unread count
-        }
-      } catch (err) {
-        console.log('err getting chat groups:', err)
-      }
-
+      qs.forEach(doc => {
+        groups.push({ id: doc.id, ...doc.data() })
+      })
       cb(groups)
     })
 }

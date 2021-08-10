@@ -10,9 +10,8 @@ export default function ChatGroupCard({ group, authUser }) {
 
   React.useEffect(() => {
     const run = async () => {
-      const memKeys = Object.keys(group?.members)
-      if (memKeys.length == 2) {
-        for (let m of memKeys) {
+      if (group?.members.length === 2) {
+        for (let m of group?.members) {
           if (m !== authUser.uid) {
             const user = await api.getUserProfile(m)
             if (user) {
@@ -25,6 +24,8 @@ export default function ChatGroupCard({ group, authUser }) {
     }
     run()
   }, [group, authUser])
+
+  const unreadCount = group?.unreadCount[authUser.uid]
 
   return (
     <Link to={`/chats/${group?.id}`}>
@@ -41,23 +42,21 @@ export default function ChatGroupCard({ group, authUser }) {
             <h2 className='text-sm font-bold'>
               {utils.snipText(groupName, 30)}
             </h2>
-            <span className='text-xs font-medium'>
-              {utils.parseAgo(group?.lastMessage.timestamp)}
-            </span>
-          </div>
-          <div className='flex-1 grid grid-cols-10' style={{ height: '60px' }}>
-            {group?.lastMessage && (
-              <p className='text-xs col-span-8 overflow-clip overflow-hidden'>
-                {utils.snipText(group?.lastMessage?.content, 50)}
-              </p>
-            )}
-            <div className='col-span-2 flex items-end justify-end'>
-              {group?.unreadCount && (
+            <div className='flex items-end justify-end'>
+              {!!unreadCount && (
                 <span className='text-xs bg-giv-blue text-white font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-sm'>
-                  {group.unreadCount}
+                  {unreadCount}
                 </span>
               )}
             </div>
+          </div>
+          <div className='flex-1 flex flex-col items-between' style={{ height: '60px' }}>
+              <p className='flex-1 text-xs mt-1 col-span-7 overflow-clip overflow-hidden'>
+                {utils.snipText(group?.lastMessage?.content ?? 'Start Chatting...', 50)}
+              </p>
+            <span className='text-xs flex justify-end items-end font-medium'>
+              {utils.parseAgo(group?.lastMessage?.timestamp)}
+            </span>
           </div>
         </div>
       </div>

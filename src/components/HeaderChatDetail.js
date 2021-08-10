@@ -2,7 +2,6 @@ import { ChevronLeftIcon } from '@heroicons/react/outline'
 import React from 'react'
 import { useInView } from 'react-intersection-observer'
 import { Transition } from '@headlessui/react'
-import { useTranslation } from 'react-i18next'
 
 const FloatingBackHeader = () => {
   return (
@@ -39,7 +38,6 @@ const FloatingBackHeader = () => {
 }
 
 const BackHeader = React.forwardRef((props, ref) => {
-  const { t } = useTranslation()
   return (
     <header
       ref={ref}
