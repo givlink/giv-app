@@ -21,7 +21,7 @@ export default function MessageRowItem({ message, group, authUser }) {
         </span>
       )}
       <div className='pt-3 pb-2 px-2.5 mx-1'>
-        <p className='whitespace-pre text-sm font-medium'>{message?.content}</p>
+        <p className='whitespace-pre-wrap text-sm font-medium'>{message?.content}</p>
         <span
           className={`-mt-1 block text-right text-xs ${
             isSenderCurrent ? 'text-gray-200' : 'text-gray-400'
