@@ -88,7 +88,7 @@ export default function Footer() {
             <label className='hidden md:block'>Search</label>
           </Link>
           <Link
-            to='/chats/requests' //@Todo For now directly go to requests, in future go to chats
+            to='/chats' 
             className={`${
               isChatList || isRequestList
                 ? 'text-giv-blue-dark border-giv-blue'

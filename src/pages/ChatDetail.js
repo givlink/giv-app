@@ -30,15 +30,17 @@ export default function ChatDetail({ id }) {
   const ref = React.useRef(null)
   const state = useSelector(s => ({
     chatMessagesLoading: s.chatMessagesLoading,
-    messages: s.chatMessages[id],
+    messages: s.chatMessages[id] || [],
     group: s.chatGroups[id],
     authUser: s.authUser,
   }))
 
-  //@Todo scroll to last unread
   React.useEffect(() => {
+    //@Todo scroll to last unread
     ref.current?.scrollIntoView()
+  }, [state.messages.length, id])
 
+  React.useEffect(() => {
     //Update last read item
     if (state.messages && state.messages.length) {
       const lastItem = state.messages[state.messages.length - 1]
@@ -53,9 +55,9 @@ export default function ChatDetail({ id }) {
     //Setup listener
     const run = async () => {
       //@Todo err handling
-      dispatch({ type: 'chat_messages/loading' })
-      listener = api.watchChatMessages(id, messages => {
-        dispatch({ type: 'chat_messages/data', chatGroupId: id, messages })
+      dispatch({ type: 'chat_messages/loading', chatGroupId: id })
+      listener = api.watchChatMessages(id, message => {
+        dispatch({ type: 'chat_messages/data', chatGroupId: id, message })
       })
     }
     run()

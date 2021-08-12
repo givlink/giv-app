@@ -1,7 +1,6 @@
 import { Link } from '@reach/router'
 import utils from 'lib/utils'
 import React from 'react'
-import useLocalStorage from 'hooks/localstorage'
 import SafeImage from 'components/SafeImage'
 import api from 'lib/api'
 
@@ -11,7 +10,7 @@ export default function ChatGroupCard({ group, authUser }) {
 
   //@Todo this a poor man's implementation of unread count
   //once we have correct data in backend replace it.
-  const [lastRead] = useLocalStorage(`lastRead-${group.id}`, null)
+  const lastRead = localStorage.getItem(`lastRead-${group.id}`)
 
   React.useEffect(() => {
     const run = async () => {

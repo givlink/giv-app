@@ -411,11 +411,13 @@ export const sendMessage = async (groupId, msg) => {
     console.log('Invalid groupId or msg')
     return
   }
-  return firebase.database().ref(`chat_messages/${groupId}`).push({
+  const result = await firebase.database().ref(`chat_messages/${groupId}`).push({
     senderId: getCurrentUser().uid,
     content: msg,
     timestamp: new Date().toISOString(), //@Todo validate this server side
   })
+  //@Todo err handling
+  return result.key
 }
 export const watchChatMessages = (groupId, cb) => {
   if (!groupId) {
@@ -424,18 +426,16 @@ export const watchChatMessages = (groupId, cb) => {
   }
   //@Todo optimize limit getting only latest messages
   //@Todo err handling
-  return firebase
-    .database()
-    .ref(`chat_messages/${groupId}`)
-    .on('value', s => {
-      const result = []
-      if (s && s.exists()) {
-        Object.entries(s.val()).forEach(([id, v]) => {
-          result.push({ id, ...v })
-        })
-      }
+  const ref = firebase.database().ref(`chat_messages/${groupId}`)
+
+  ref.on('child_added', s => {
+    if (s) {
+      const result = { id: s.key, ...s.val() }
       cb(result)
-    })
+    }
+  })
+
+  return () => ref.off('child_added')
 }
 export const getUserGroups = async userId => {
   const snap = await firebase
@@ -466,17 +466,16 @@ export const watchChatGroups = async (userId, cb) => {
   //user.
   const listeners = []
   for (let group of userGroups) {
-    const l = firebase
-      .database()
-      .ref(`chat_groups/${group.id}`)
-      .on('value', s => {
-        if (s.exists()) {
-          cb(group.id, { ...s.val(), id: group.id })
-        } else {
-          cb(group.id, null)
-        }
-      })
-    listeners.push(l)
+    const ref = firebase.database().ref(`chat_groups/${group.id}`)
+
+    ref.on('value', s => {
+      if (s.exists()) {
+        cb(group.id, { ...s.val(), id: group.id })
+      } else {
+        cb(group.id, null)
+      }
+    })
+    listeners.push(() => ref.off('value'))
   }
   return listeners
 }
@@ -501,6 +500,7 @@ export const watchNotifications = (userId, cb, debug = false) => {
           //Ignore these as chat handles them
           //Note: Make sure these nots are marked as read by default (in backend)
           //otherwise we will have 100s of unread messageReceived nots
+          continue
         }
 
         // @Todo If we discover an unread notification

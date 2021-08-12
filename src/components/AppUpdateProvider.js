@@ -3,10 +3,13 @@ import useUpdateNotifier from 'hooks/updateNotifier'
 import { Transition } from '@headlessui/react'
 import { RefreshIcon } from '@heroicons/react/outline'
 import { Trans } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 
 const AppRefreshButton = ({ available, setAvailable }) => {
+  const dispatch = useDispatch()
   const onOk = () => {
     setAvailable(false)
+    dispatch({ type: 'auth/loading' })
     setTimeout(() => window.location.reload(), 300)
   }
 

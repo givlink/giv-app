@@ -198,13 +198,18 @@ const reducer = (state = initialState, action) => {
         chatGroups,
         chatsLoading: false,
       }
-    case 'chat_messages/loading':
-      return { ...state, chatMessagesLoading: true }
+    case 'chat_messages/loading': {
+      const chatMessages = { ...state.chatMessages }
+      chatMessages[action.chatGroupId] = [] //Reset @Todo optmize can we  not fetch old msgs EVERYTIME??
+      return { ...state, chatMessagesLoading: true , chatMessages}
+    }
     case 'chat_messages/loading_done':
       return { ...state, chatMessagesLoading: false }
     case 'chat_messages/data':
       const chatMessages = { ...state.chatMessages }
-      chatMessages[action.chatGroupId] = action.messages
+      const msgs = chatMessages[action.chatGroupId] || []
+      msgs.push(action.message)
+      chatMessages[action.chatGroupId] = msgs
       return {
         ...state,
         chatMessages,
