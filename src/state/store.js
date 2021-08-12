@@ -88,12 +88,18 @@ const initialState = {
   chatMessages: {},
 }
 
-const recalcUnreadCount = (chatGroupMap) => {
+const recalcUnreadCount = chatGroupMap => {
   let result = 0
 
   Object.values(chatGroupMap).forEach(g => {
     let lastReadId = localStorage.getItem(`lastRead-${g.id}`)
-    if(lastReadId) lastReadId = JSON.parse(lastReadId)
+    if (lastReadId) {
+      try {
+        lastReadId = JSON.parse(lastReadId)
+      } catch (err) {
+        //ignore
+      }
+    }
     const currentMsgId = g.lastMessage?.id
     if (lastReadId !== currentMsgId) {
       result++
@@ -194,6 +200,8 @@ const reducer = (state = initialState, action) => {
       }
     case 'chat_messages/loading':
       return { ...state, chatMessagesLoading: true }
+    case 'chat_messages/loading_done':
+      return { ...state, chatMessagesLoading: false }
     case 'chat_messages/data':
       const chatMessages = { ...state.chatMessages }
       chatMessages[action.chatGroupId] = action.messages

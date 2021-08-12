@@ -8,9 +8,14 @@ export default function FooterChatDetail({ groupId }) {
   const sendMessage = async () => {
     if (!groupId) return //@Todo err
     setSending(true)
-    await api.sendMessage(groupId, msg)
-    setMsg('')
-    setSending(false)
+    try {
+      await api.sendMessage(groupId, msg)
+      setMsg('')
+      setSending(false)
+    } catch (err) {
+      //@Todo err hadnling
+      setSending(false)
+    }
   }
 
   const adjustHeight = e => {
@@ -22,7 +27,7 @@ export default function FooterChatDetail({ groupId }) {
   const checkSend = e => {
     if (e.ctrlKey && e.key === 'Enter') {
       sendMessage()
-      adjustHeight(e)
+      setTimeout(()=>adjustHeight(e), 300)
     }
   }
   const handleChange = e => {

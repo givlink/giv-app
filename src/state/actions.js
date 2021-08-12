@@ -147,6 +147,7 @@ const actions = {
       const listeners = await api.watchChatGroups(authUser?.uid, (groupId, data) => {
         dispatch({ type: 'chat_groups/data', groupId, data })
       })
+      dispatch({ type: 'chat_groups/loading_done' })
       dispatch({ type: 'app/update_listeners', listeners })
     }
   },

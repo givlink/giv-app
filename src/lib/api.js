@@ -471,7 +471,7 @@ export const watchChatGroups = async (userId, cb) => {
       .ref(`chat_groups/${group.id}`)
       .on('value', s => {
         if (s.exists()) {
-          cb(group.id, {...s.val(), id:group.id})
+          cb(group.id, { ...s.val(), id: group.id })
         } else {
           cb(group.id, null)
         }
@@ -497,6 +497,15 @@ export const watchNotifications = (userId, cb, debug = false) => {
       const not = { ...doc.data(), id: doc.id }
 
       try {
+        if (not.type === 'messageReceived') {
+          //Ignore these as chat handles them
+          //Note: Make sure these nots are marked as read by default (in backend)
+          //otherwise we will have 100s of unread messageReceived nots
+        }
+
+        // @Todo If we discover an unread notification
+        // which doesn't have correct data delete it
+
         //@Todo ideally we should delete the notification as well when
         //deleting the comment or post
         if (not.type === 'commentCreated' && not.commentId && not.postId) {
