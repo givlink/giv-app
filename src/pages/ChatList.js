@@ -40,23 +40,28 @@ export default function ChatList() {
         chatsCount={state.chatsUnreadCount}
         requestsCount={state.requestsPendingCount}
       />
-      {state.loading && <Spinner className='pt-2' />}
+    {state.loading ? <Spinner className='pt-2' />:(
+      <>
 
-    {
-      Object.keys(state.chatGroups).length === 0 && (
-        <ChatComingSoon/>
-      )
-    }
+
+      {
+        Object.keys(state.chatGroups).length === 0 && (
+          <ChatComingSoon/>
+        )
+      }
 
       <ul className='space-y-2 overflow-auto md:max-w-2xl md:mx-auto'>
-        {Object.values(state.chatGroups).map(p => {
-          return (
-            <li key={p.id}>
-              <ChatGroupCard authUser={state.authUser} group={p} />
-            </li>
-          )
-        })}
+      {Object.values(state.chatGroups).map(p => {
+        return (
+          <li key={p.id}>
+          <ChatGroupCard authUser={state.authUser} group={p} />
+          </li>
+        )
+      })}
       </ul>
+      </>
+    )}
+
     </div>
   )
 }

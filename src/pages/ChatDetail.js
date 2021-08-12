@@ -8,8 +8,9 @@ import api from 'lib/api'
 import { useTranslation } from 'react-i18next'
 const makeGroupName = async (group, authUser) => {
   if (group) {
-    if (group.members.length === 2) {
-      for (let m of group.members) {
+    const memKeys = Object.keys(group?.members)
+    if (memKeys.length === 2) {
+      for (let m of memKeys) {
         if (m !== authUser?.uid) {
           const user = await api.getUserProfile(m)
           if (user) {
@@ -22,8 +23,8 @@ const makeGroupName = async (group, authUser) => {
   return 'Group'
 }
 
-export default function ChatDetail({ id, messages = [] }) {
-  const [groupName, setGroupName] = React.useState('Group')
+export default function ChatDetail({ id }) {
+  const [groupName, setGroupName] = React.useState('')
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const ref = React.useRef(null)
@@ -37,7 +38,13 @@ export default function ChatDetail({ id, messages = [] }) {
   //@Todo scroll to last unread
   React.useEffect(() => {
     ref.current?.scrollIntoView()
-  }, [ref, state.messages])
+
+    //Update last read item
+    if (state.messages && state.messages.length) {
+      const lastItem = state.messages[state.messages.length - 1]
+      localStorage.setItem(`lastRead-${id}`, lastItem.id)
+    }
+  }, [state.messages, id])
 
   React.useEffect(() => {
     if (!id) return
@@ -65,26 +72,35 @@ export default function ChatDetail({ id, messages = [] }) {
   return (
     <div className='h-screen flex flex-col bg-white max-w-2xl md:mx-auto'>
       <Header title={groupName} />
-      {state.chatMessagesLoading && <Spinner className='pt-2' />}
-      <ul
-        id='chats'
-        className='bg-gray-50 md:max-w-lg md:mx-auto overflow-auto pt-4 flex-1 h-full bg-white px-2'
-      >
-        {state.messages &&
-          state.messages.map((m, idx) => (
-            <li id={`msg-${m.id}`} key={m.id}>
-              <MessageRowItem group={state.group} message={m} authUser={state.authUser}/>
-            </li>
-          ))}
+      {state.chatMessagesLoading ? (
+        <Spinner className='pt-2 h-full' />
+      ) : (
+        <ul
+          id='chats'
+          className='w-full bg-gray-50 md:max-w-2xl md:mx-auto overflow-auto pt-4 flex-1 h-full bg-white px-2'
+        >
+          {state.messages &&
+            state.messages.map((m, idx) => (
+              <li
+                id={`msg-${m.id}`}
+                key={m.id}
+                ref={idx === state.messages.length - 1 ? ref : null}
+              >
+                <MessageRowItem
+                  group={state.group}
+                  message={m}
+                  authUser={state.authUser}
+                />
+              </li>
+            ))}
 
-        {state.messages?.length === 0 && (
-          <span className='text-xs h-full flex justify-center items-end'>
-            {t('Start chatting')}...
-          </span>
-        )}
-
-        <div ref={ref} />
-      </ul>
+          {state.messages?.length === 0 && (
+            <span className='text-xs h-full flex justify-center items-end'>
+              {t('Start chatting')}...
+            </span>
+          )}
+        </ul>
+      )}
       <Footer groupId={id} />
     </div>
   )

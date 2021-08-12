@@ -29,6 +29,7 @@
     "short-uuid": "^4.2.0"
   },
   "scripts": {
+    "dev": "craco start",
     "start": "craco start",
     "start-mac": "HTTPS=true craco start",
     "build": "craco build",

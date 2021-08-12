@@ -33,7 +33,7 @@ export default function Header({
                     active === 'chats'
                       ? 'text-white bg-giv-blue'
                       : 'bg-gray-300 text-gray-900 opacity-50'
-                  } absolute top-0 right-0 -mr-7 -mt-3 w-6 h-6 p-1 flex items-center justify-center leading-0 text-xs rounded-full`}
+                  } absolute top-0 right-0 -mr-7 -mt-3 w-6 h-6 p-1 flex items-center justify-center leading-0 font-mono text-xs rounded-full`}
                 >
                   {chatsCount > 10 ? '9+' : chatsCount}
                 </span>

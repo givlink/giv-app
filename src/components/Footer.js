@@ -19,8 +19,9 @@ import {
 
 export default function Footer() {
   // const dispatch = useDispatch();
-  const { unreadCount, user } = useSelector(s => ({
+  const { unreadCount, user, chatsUnreadCount } = useSelector(s => ({
     unreadCount: s.notificationsUnreadCount,
+    chatsUnreadCount: s.chatsUnreadCount,
     user: s.authUser,
   }))
   const loc = useLocation()
@@ -92,12 +93,17 @@ export default function Footer() {
               isChatList || isRequestList
                 ? 'text-giv-blue-dark border-giv-blue'
                 : 'border-transparent'
-            } flex flex-1 flex-col py-2 items-center border-b-4`}
+            } relative flex flex-1 flex-col py-2 items-center border-b-4`}
           >
             {isChatList || isRequestList ? (
               <ChatIconSolid className='h-7 w-7' />
             ) : (
               <ChatIcon className='h-7 w-7' />
+            )}
+            {chatsUnreadCount > 0 && (
+              <div className='w-5 h-5 text-xs leading-none font-mono p-1 text-white flex items-center justify-center rounded-full absolute mt-0 mr-1 top-0 right-0 bg-giv-blue'>
+                {chatsUnreadCount}
+              </div>
             )}
             <label className='hidden md:block'>Chat</label>
           </Link>

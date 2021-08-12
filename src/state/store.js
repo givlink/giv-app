@@ -88,6 +88,20 @@ const initialState = {
   chatMessages: {},
 }
 
+const recalcUnreadCount = (chatGroupMap) => {
+  let result = 0
+
+  Object.values(chatGroupMap).forEach(g => {
+    let lastReadId = localStorage.getItem(`lastRead-${g.id}`)
+    if(lastReadId) lastReadId = JSON.parse(lastReadId)
+    const currentMsgId = g.lastMessage?.id
+    if (lastReadId !== currentMsgId) {
+      result++
+    }
+  })
+  return result
+}
+
 const didChangeEdit = (state, newState) => {
   const before = JSON.stringify(state.userEditBefore)
   const after = JSON.stringify(newState.userEditForm)
@@ -163,15 +177,18 @@ const reducer = (state = initialState, action) => {
     case 'chat_groups/loading':
       return { ...state, chatsLoading: true }
     case 'chat_groups/data':
-      let chatsUnreadCount = 0
-      const chatGroups = {}
-      action.chatGroups.forEach(g => {
-        chatGroups[g.id] = g
-        chatsUnreadCount += g.unreadCount || 0
-      })
+      const chatGroups = { ...state.chatGroups }
+      if (action.data) {
+        chatGroups[action.groupId] = action.data
+      } else {
+        //removed
+        delete chatGroups[action.groupId]
+      }
+
       return {
         ...state,
-        chatsUnreadCount,
+        //@Todo unread count is wrong atm. Incomplete
+        chatsUnreadCount: recalcUnreadCount(chatGroups),
         chatGroups,
         chatsLoading: false,
       }
@@ -183,6 +200,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         chatMessages,
+        chatsUnreadCount: recalcUnreadCount(state.chatGroups),
         chatMessagesLoading: false,
       }
 

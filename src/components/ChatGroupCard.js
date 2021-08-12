@@ -1,6 +1,7 @@
 import { Link } from '@reach/router'
 import utils from 'lib/utils'
 import React from 'react'
+import useLocalStorage from 'hooks/localstorage'
 import SafeImage from 'components/SafeImage'
 import api from 'lib/api'
 
@@ -8,10 +9,15 @@ export default function ChatGroupCard({ group, authUser }) {
   const [groupName, setGroupName] = React.useState('Group')
   const [groupImg, setGroupImg] = React.useState()
 
+  //@Todo this a poor man's implementation of unread count
+  //once we have correct data in backend replace it.
+  const [lastRead] = useLocalStorage(`lastRead-${group.id}`, null)
+
   React.useEffect(() => {
     const run = async () => {
-      if (group?.members.length === 2) {
-        for (let m of group?.members) {
+      const memKeys = Object.keys(group?.members)
+      if (memKeys.length === 2) {
+        for (let m of memKeys) {
           if (m !== authUser.uid) {
             const user = await api.getUserProfile(m)
             if (user) {
@@ -25,7 +31,7 @@ export default function ChatGroupCard({ group, authUser }) {
     run()
   }, [group, authUser])
 
-  const unreadCount = group?.unreadCount[authUser.uid]
+  const hasUnread = lastRead !== group?.lastMessage?.id
 
   return (
     <Link to={`/chats/${group?.id}`}>
@@ -43,17 +49,21 @@ export default function ChatGroupCard({ group, authUser }) {
               {utils.snipText(groupName, 30)}
             </h2>
             <div className='flex items-end justify-end'>
-              {!!unreadCount && (
-                <span className='text-xs bg-giv-blue text-white font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-sm'>
-                  {unreadCount}
-                </span>
+              {hasUnread && (
+                <span className='animate-pulse text-xs bg-giv-blue text-white font-bold w-3 h-3 flex items-center justify-center rounded-full shadow-sm'></span>
               )}
             </div>
           </div>
-          <div className='flex-1 flex flex-col items-between' style={{ height: '60px' }}>
-              <p className='flex-1 text-xs mt-1 col-span-7 overflow-clip overflow-hidden'>
-                {utils.snipText(group?.lastMessage?.content ?? 'Start Chatting...', 50)}
-              </p>
+          <div
+            className='flex-1 flex flex-col items-between'
+            style={{ height: '60px' }}
+          >
+            <p className='flex-1 text-xs mt-1 col-span-7 overflow-clip overflow-hidden'>
+              {utils.snipText(
+                group?.lastMessage?.content ?? 'Start Chatting...',
+                50,
+              )}
+            </p>
             <span className='text-xs flex justify-end items-end font-medium'>
               {utils.parseAgo(group?.lastMessage?.timestamp)}
             </span>
