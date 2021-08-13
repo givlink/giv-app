@@ -1034,6 +1034,7 @@ export const setupNotifications = async (token = null) => {
     } catch (err) {
       console.log('Err setting notifications')
       console.log(err)
+      throw err
     }
   }
 }

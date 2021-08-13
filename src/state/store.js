@@ -15,6 +15,7 @@ const DEFAULT_EDIT_BEFORE = {
 }
 
 const initialState = {
+  debugLogs:[],
   appListeners: [],
 
   authLoading: true,
@@ -155,6 +156,11 @@ const mergeById = (oldList = [], newList = []) => {
 const reducer = (state = initialState, action) => {
   if (!state) return initialState
   switch (action.type) {
+    case 'app/debug':
+      return {
+        ...state,
+        debugLogs: [...state.debugLogs, action.log],
+      }
     case 'app/update_listeners':
       return {
         ...state,

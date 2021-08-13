@@ -25,9 +25,17 @@ const InitProvider = props => {
 
     //setup push notifications
     const token = localStorage.getItem('pushToken')
+    dispatch({
+      type: 'app/debug',
+      log: { msg: `Getting Token`, token, loc: window.location },
+    })
     if (token) {
       api.setupNotifications(token).catch(err => {
         console.log('err setting up push token:', err.message)
+        dispatch({
+          type: 'app/debug',
+          log: { msg: `Err: ${err.message}`, loc: window.location },
+        })
         Sentry.captureException(err)
       })
     }

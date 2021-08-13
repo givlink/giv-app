@@ -16,6 +16,7 @@ import { LocationMarkerIcon } from '@heroicons/react/outline'
 import { useTranslation } from 'react-i18next'
 import EditUser from 'components/EditUser'
 import usePreserveScroll from 'hooks/scroll'
+const safeJsonStringify = require('safe-json-stringify');
 
 const ADMIN_ID = '5ccf0b6a-770e-4753-8370-5f3318649938'
 
@@ -51,7 +52,7 @@ const Debug = ({ userId }) => {
         <span className='bg-gray-100 py-2 px-2'>LocalStorage</span>
         {getAllVars().map(item => {
           return (
-            <div className='flex flex-col py-1 ml-2'>
+            <div key={item.key}className='flex flex-col py-1 ml-2'>
               <span className='font-medium underline mb-1'>{item.key}</span>
               <code className='pl-3 pb-2 overflow-x-auto whitespace-pre-wrap'>
                 {item.val}
@@ -64,7 +65,9 @@ const Debug = ({ userId }) => {
         <span className='bg-gray-100 py-2 px-2'>Redux State</span>
             <div className='flex flex-col py-1 ml-2'>
               <code className='pl-3 pb-2 overflow-x-auto whitespace-pre-wrap'>
-    { JSON.stringify(debugState, null, 2) }
+    { safeJsonStringify(debugState, null, 2) }
+
+
               </code>
             </div>
       </div>
