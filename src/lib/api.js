@@ -453,7 +453,6 @@ export const watchChatGroups = async (userId, cb) => {
         groups[key] = { ...doc, id: key }
       })
     }
-
     cb(groups)
   })
 

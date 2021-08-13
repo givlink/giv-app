@@ -22,6 +22,7 @@ import Footer from 'components/Footer'
 import AppUpdateProvider from 'components/AppUpdateProvider'
 import AuthProvider from 'components/AuthProvider'
 import InitProvider from 'components/InitProvider'
+import NavigationProvider from 'components/NavigationProvider'
 import useSavePushToken from 'hooks/savePushToken'
 import { Toaster } from 'react-hot-toast'
 
@@ -31,6 +32,7 @@ const App = () => {
     <AuthProvider>
       <InitProvider>
         <AppUpdateProvider>
+    <NavigationProvider>
           <Toaster />
           <Router className='h-screen w-screen' primary={false}>
             {/* Setup */}
@@ -55,6 +57,7 @@ const App = () => {
             <NotificationList path='notifications' />
           </Router>
           <Footer />
+    </NavigationProvider>
         </AppUpdateProvider>
       </InitProvider>
     </AuthProvider>
