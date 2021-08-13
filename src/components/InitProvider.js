@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAuth } from 'hooks/auth'
 import { useDispatch } from 'react-redux'
+import * as Sentry from '@sentry/browser'
 import actions from 'state/actions'
 import api from 'lib/api'
 
@@ -23,10 +24,11 @@ const InitProvider = props => {
     dispatch(actions.watchChatGroups())
 
     //setup push notifications
-    const token = localStorage.getItem('pushtoken')
+    const token = localStorage.getItem('pushToken')
     if (token) {
       api.setupNotifications(token).catch(err => {
         console.log('err setting up push token:', err.message)
+        Sentry.captureException(err)
       })
     }
 
