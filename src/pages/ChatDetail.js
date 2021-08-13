@@ -31,7 +31,7 @@ export default function ChatDetail({ id }) {
   const state = useSelector(s => ({
     chatMessagesLoading: s.chatMessagesLoading,
     messages: s.chatMessages[id] || [],
-    group: s.chatGroups[id],
+    group: s.chatGroups[id] || null,
     authUser: s.authUser,
   }))
 
@@ -66,6 +66,7 @@ export default function ChatDetail({ id }) {
   }, [dispatch, id])
 
   React.useEffect(() => {
+    if(!state.group) return
     const run = async () => {
       makeGroupName(state.group, state.authUser).then(n => setGroupName(n))
     }

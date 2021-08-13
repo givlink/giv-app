@@ -15,12 +15,7 @@ export default function useSavePushToken() {
       localStorage.setItem('pushToken', token)
       dispatch({
         type: 'app/debug',
-        log: { msg: `Token set in LocalStorage`, token, loc },
-      })
-    } else {
-      dispatch({
-        type: 'app/debug',
-        log: { msg: `No Token in SavePushToken`, loc },
+        log: { msg: `Token stored in LocalStorage`, token, loc },
       })
     }
   }, [loc, dispatch])

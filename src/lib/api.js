@@ -440,21 +440,6 @@ export const watchChatMessages = (groupId, cb) => {
 
   return () => ref.off('child_added')
 }
-export const watchUserGroups = async (userId, cb) => {
-  const listener = firebase
-    .firestore()
-    .collection(`/chat_groups`)
-    .where('members', 'array-contains', userId)
-    .onSnapshot(snap => {
-      const result = []
-      snap.forEach(doc => {
-        result.push({ ...doc.data(), id: doc.id })
-      })
-      cb(result)
-    })
-  return listener
-}
-
 export const watchChatGroups = async (userId, cb) => {
   if (!userId) {
     console.log('No user id in listNotifications')
@@ -462,10 +447,10 @@ export const watchChatGroups = async (userId, cb) => {
   }
   const ref = firebase.database().ref(`user_chat_groups/${userId}`)
   ref.on('value', s => {
-    let groups = []
+    let groups = {}
     if (s.exists()) {
       Object.entries(s.val()).forEach(([key, doc]) => {
-        groups.push({ ...doc, id: key })
+        groups[key] = { ...doc, id: key }
       })
     }
 
