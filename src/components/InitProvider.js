@@ -23,7 +23,7 @@ const InitProvider = props => {
     dispatch(actions.watchChatGroups())
 
     //setup push notifications
-    const token = localStorage.getItem('pushToken')
+    const token = localStorage.getItem('pushtoken')
     if (token) {
       api.setupNotifications(token).catch(err => {
         console.log('err setting up push token:', err.message)

@@ -101,7 +101,7 @@ const recalcUnreadCount = chatGroupMap => {
       }
     }
     const currentMsgId = g.lastMessage?.id
-    if (lastReadId !== currentMsgId) {
+    if (!!lastReadId && !!currentMsgId && lastReadId !== currentMsgId) {
       result++
     }
   })
@@ -183,25 +183,24 @@ const reducer = (state = initialState, action) => {
     case 'chat_groups/loading':
       return { ...state, chatsLoading: true }
     case 'chat_groups/data':
-      const chatGroups = { ...state.chatGroups }
-      if (action.data) {
-        chatGroups[action.groupId] = action.data
-      } else {
-        //removed
-        delete chatGroups[action.groupId]
-      }
+      const { groups } = action
 
       return {
         ...state,
         //@Todo unread count is wrong atm. Incomplete
-        chatsUnreadCount: recalcUnreadCount(chatGroups),
-        chatGroups,
+        chatsUnreadCount: recalcUnreadCount(groups),
+        chatGroups: groups,
         chatsLoading: false,
       }
     case 'chat_messages/loading': {
       const chatMessages = { ...state.chatMessages }
       chatMessages[action.chatGroupId] = [] //Reset @Todo optmize can we  not fetch old msgs EVERYTIME??
-      return { ...state, chatMessagesLoading: true , chatMessages}
+      return { ...state, chatMessagesLoading: true, chatMessages }
+    }
+    case 'chat_messages/reset': {
+      const chatMessages = { ...state.chatMessages }
+      chatMessages[action.chatGroupId] = [] //Reset @Todo optmize can we  not fetch old msgs EVERYTIME??
+      return { ...state, chatMessages }
     }
     case 'chat_messages/loading_done':
       return { ...state, chatMessagesLoading: false }

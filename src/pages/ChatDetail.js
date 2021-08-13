@@ -55,7 +55,8 @@ export default function ChatDetail({ id }) {
     //Setup listener
     const run = async () => {
       //@Todo err handling
-      dispatch({ type: 'chat_messages/loading', chatGroupId: id })
+      // dispatch({ type: 'chat_messages/loading', chatGroupId: id })
+      dispatch({ type: 'chat_messages/reset', chatGroupId: id })
       listener = api.watchChatMessages(id, message => {
         dispatch({ type: 'chat_messages/data', chatGroupId: id, message })
       })

@@ -405,17 +405,20 @@ export const checkLiked = async (postId, userId) => {
   return resp.exists
 }
 
-const SHOW_ALL = true && process.env.NODE_ENV === 'development'
+const SHOW_ALL = false && process.env.NODE_ENV === 'development'
 export const sendMessage = async (groupId, msg) => {
   if (!groupId || !msg || msg === '') {
     console.log('Invalid groupId or msg')
     return
   }
-  const result = await firebase.database().ref(`chat_messages/${groupId}`).push({
-    senderId: getCurrentUser().uid,
-    content: msg,
-    timestamp: new Date().toISOString(), //@Todo validate this server side
-  })
+  const result = await firebase
+    .database()
+    .ref(`chat_messages/${groupId}`)
+    .push({
+      senderId: getCurrentUser().uid,
+      content: msg,
+      timestamp: new Date().toISOString(), //@Todo validate this server side
+    })
   //@Todo err handling
   return result.key
 }
@@ -437,47 +440,39 @@ export const watchChatMessages = (groupId, cb) => {
 
   return () => ref.off('child_added')
 }
-export const getUserGroups = async userId => {
-  const snap = await firebase
+export const watchUserGroups = async (userId, cb) => {
+  const listener = firebase
     .firestore()
     .collection(`/chat_groups`)
     .where('members', 'array-contains', userId)
-    .get()
-  const result = []
-  snap.forEach(doc => {
-    result.push({ ...doc.data(), id: doc.id })
-  })
-
-  return result
+    .onSnapshot(snap => {
+      const result = []
+      snap.forEach(doc => {
+        result.push({ ...doc.data(), id: doc.id })
+      })
+      cb(result)
+    })
+  return listener
 }
 
 export const watchChatGroups = async (userId, cb) => {
   if (!userId) {
     console.log('No user id in listNotifications')
-    return 0
+    return []
   }
+  const ref = firebase.database().ref(`user_chat_groups/${userId}`)
+  ref.on('value', s => {
+    let groups = []
+    if (s.exists()) {
+      Object.entries(s.val()).forEach(([key, doc]) => {
+        groups.push({ ...doc, id: key })
+      })
+    }
 
-  //@Todo incomplete , this doesn't track any new groups
-  //until app is restarted
-  //first watch /users/:id/chat_groups
-  const userGroups = await getUserGroups(userId)
-  //Then listen for Each of those
-  //@Todo optimize this if the number of groups become too large for any
-  //user.
-  const listeners = []
-  for (let group of userGroups) {
-    const ref = firebase.database().ref(`chat_groups/${group.id}`)
+    cb(groups)
+  })
 
-    ref.on('value', s => {
-      if (s.exists()) {
-        cb(group.id, { ...s.val(), id: group.id })
-      } else {
-        cb(group.id, null)
-      }
-    })
-    listeners.push(() => ref.off('value'))
-  }
-  return listeners
+  return () => ref.off('value')
 }
 
 export const watchNotifications = (userId, cb, debug = false) => {

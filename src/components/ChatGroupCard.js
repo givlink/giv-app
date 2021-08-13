@@ -30,7 +30,7 @@ export default function ChatGroupCard({ group, authUser }) {
     run()
   }, [group, authUser])
 
-  const hasUnread = lastRead !== group?.lastMessage?.id
+  const hasUnread = (!!lastRead && !!group.lastMessage) && lastRead !== group?.lastMessage?.id
 
   return (
     <Link to={`/chats/${group?.id}`}>

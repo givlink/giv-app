@@ -143,12 +143,12 @@ const actions = {
   watchChatGroups: () => {
     return async (dispatch, getState) => {
       const { authUser } = getState()
-      dispatch({ type: 'chat_groups/loading' })
-      const listeners = await api.watchChatGroups(authUser?.uid, (groupId, data) => {
-        dispatch({ type: 'chat_groups/data', groupId, data })
+      // dispatch({ type: 'chat_groups/loading' })
+      const listener = await api.watchChatGroups(authUser?.uid, (groups) => {
+        dispatch({ type: 'chat_groups/data', groups })
       })
       dispatch({ type: 'chat_groups/loading_done' })
-      dispatch({ type: 'app/update_listeners', listeners })
+      dispatch({ type: 'app/update_listeners', listeners:[listener] })
     }
   },
   loadInitialPosts: (setLoading = true) => {
