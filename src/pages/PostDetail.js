@@ -385,7 +385,7 @@ export default function PostDetail(props) {
               <h3 className='font-medium text-xl sm:text-xl mb-2'>
                 {post.title}
               </h3>
-              <p className='px-1 font-light text-sm sm:text-base leading-9'>
+              <p className='px-1 font-light text-sm sm:text-base'>
                 {post.message}
               </p>
             </div>
