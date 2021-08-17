@@ -18,6 +18,8 @@ const makeGroupName = async (group, authUser) => {
           }
         }
       }
+    }else{
+      return group.name || 'Group'
     }
   }
   return 'Group'
