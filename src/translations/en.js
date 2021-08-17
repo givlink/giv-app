@@ -158,6 +158,7 @@ const translations = {
   'Are you sure?': 'Are you sure?',
   'Delete': 'Delete',
   'Update available. Click to update': 'Update available. Click to update',
+  'Terms': 'Terms',
 }
 
 export default translations

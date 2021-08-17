@@ -159,6 +159,7 @@ const translations = {
   'Are you sure?': '本当に削除しますか？',
   'Delete': '削除',
   'Update available. Click to update': 'クリックしてアプリを更新',
+  'Terms': '利用規約',
 }
 
 export default translations

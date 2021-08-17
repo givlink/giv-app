@@ -33,6 +33,14 @@ export default function ChatList() {
   }))
   usePreserveScroll('chatList')
 
+  const sortedChatGroups = Object.values(state.chatGroups || {})
+  sortedChatGroups.sort((a, b) => {
+    try {
+      return a.lastMessage?.timestamp > b.lastMessage?.timestamp ? -1 : 1
+    } catch (err) {}
+  })
+
+  console.log('sort:', sortedChatGroups)
   return (
     <div className='pb-20 overflow-hidden'>
       <HeaderChatList
@@ -47,7 +55,7 @@ export default function ChatList() {
           {Object.keys(state.chatGroups).length === 0 && <ChatComingSoon />}
 
           <ul className='space-y-2 overflow-auto md:max-w-2xl md:mx-auto'>
-            {Object.values(state.chatGroups).map(p => {
+            {sortedChatGroups.map(p => {
               return (
                 <li key={p.id}>
                   <ChatGroupCard authUser={state.authUser} group={p} />

@@ -30,22 +30,32 @@ export default function Login() {
       >
         {t('Login')}
       </button>
-      <a
-        href='https://giv.link/privacy-policy/'
-        target='_blank'
-        rel='noreferrer'
-        className='border-b border-gray-400'
-      >
-        {t('Privacy Policy')}
-      </a>
       <div className='flex-1'></div>
       <button
         onClick={() => handleLogin('apple')}
-        className='mb-4 flex items-center leading-0 text-sm shadow-sm hover:shadow-xl transition duration-150 rounded-md px-4 py-2 bg-gray-900 font-semibold text-white'
+        className='mb-8 flex items-center leading-0 text-xs shadow-sm hover:shadow-xl transition duration-150 rounded-md px-4 py-2 bg-gray-900 font-semibold text-white'
       >
-        <img className='h-5 w-5 mr-2' src='/image/apple_logo.svg' alt='apple' />
+        <img className='h-4 w-4 mr-2' src='/image/apple_logo.svg' alt='apple' />
         <span className='mt-1'>{t('Sign in with Apple')}</span>
       </button>
+      <div className='mb-4 flex justify-center space-x-4 text-xs'>
+        <a
+          href='https://giv.link/privacy-policy/'
+          target='_blank'
+          rel='noreferrer'
+          className='underline'
+        >
+          {t('Privacy Policy')}
+        </a>
+        <a
+          href='https://giv.link/terms/'
+          target='_blank'
+          rel='noreferrer'
+          className='underline'
+        >
+          {t('Terms')}
+        </a>
+      </div>
     </div>
   )
 }

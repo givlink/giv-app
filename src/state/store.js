@@ -17,6 +17,8 @@ const DEFAULT_EDIT_BEFORE = {
 const initialState = {
   debugLogs:[],
   appListeners: [],
+  gotoLink: 'home',
+  token:'', //device token, unused @Todo
 
   authLoading: true,
   authUser: null,
@@ -160,6 +162,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         debugLogs: [...state.debugLogs, action.log],
+      }
+    case 'app/gotoLink':
+      return {
+        ...state,
+        gotoLink: action.gotoLink,
+      }
+    case 'app/token':
+      return {
+        ...state,
+        token: action.token,
       }
     case 'app/update_listeners':
       return {
