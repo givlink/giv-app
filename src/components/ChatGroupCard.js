@@ -28,6 +28,9 @@ export default function ChatGroupCard({ group, authUser }) {
             }
           }
         }
+      }else{
+        setGroupName(group.name || 'Group')
+        setGroupImg('')
       }
     }
     run()

@@ -41,7 +41,6 @@ export default function ChatList() {
     return 0
   })
 
-  console.log('sort:', sortedChatGroups)
   return (
     <div className='pb-20 overflow-hidden'>
       <HeaderChatList
