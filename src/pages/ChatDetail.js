@@ -5,6 +5,7 @@ import Spinner from 'components/Spinner'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import api from 'lib/api'
+import utils from 'lib/utils'
 import { useTranslation } from 'react-i18next'
 const makeGroupName = async (group, authUser) => {
   if (group) {
@@ -18,7 +19,7 @@ const makeGroupName = async (group, authUser) => {
           }
         }
       }
-    }else{
+    } else {
       return group.name || 'Group'
     }
   }
@@ -37,6 +38,7 @@ export default function ChatDetail({ id }) {
     authUser: s.authUser,
   }))
 
+  const isModerator = utils.checkModerators(state.authUser?.uid, state.group?.moderators)
   React.useEffect(() => {
     //@Todo scroll to last unread
     ref.current?.scrollIntoView()
@@ -68,7 +70,7 @@ export default function ChatDetail({ id }) {
   }, [dispatch, id])
 
   React.useEffect(() => {
-    if(!state.group) return
+    if (!state.group) return
     const run = async () => {
       makeGroupName(state.group, state.authUser).then(n => setGroupName(n))
     }
@@ -77,7 +79,16 @@ export default function ChatDetail({ id }) {
 
   return (
     <div className='h-screen flex flex-col bg-white max-w-2xl md:mx-auto'>
-      <Header title={groupName} />
+      <Header
+        title={groupName}
+        subText={() =>
+          isModerator && (
+            <span className='border border-indigo-400 bg-indigo-50 text-indigo-600 rounded-full px-1 text-xs font-medium'>
+              {t('Moderator')}
+            </span>
+          )
+        }
+      />
       {state.chatMessagesLoading ? (
         <Spinner className='pt-2 h-full' />
       ) : (

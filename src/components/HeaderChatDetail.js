@@ -50,20 +50,23 @@ const BackHeader = React.forwardRef((props, ref) => {
         >
           <ChevronLeftIcon className='h-6 w-6 mr-1' />
         </button>
-        <h4 className='flex-1 text-center mr-10 text-sm font-bold'>
-          {props.title}
-        </h4>
+        <div className='flex-1 mr-10 flex flex-col items-center'>
+          <h4 className='flex-1 text-center text-sm font-bold'>
+            {props.title}
+          </h4>
+          {props.subText && props.subText()}
+        </div>
       </div>
     </header>
   )
 })
 
-export default function HeaderBack({ title }) {
+export default function HeaderBack({ title, subText }) {
   const [ref, inView] = useInView({ threshold: 0 })
   return (
     <>
       {!inView && <FloatingBackHeader />}
-      <BackHeader ref={ref} title={title} />
+      <BackHeader ref={ref} title={title} subText={subText} />
     </>
   )
 }

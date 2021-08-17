@@ -31,7 +31,7 @@ export default function MessageRowItem({ message, group, authUser }) {
             {utils.snipText(message?.sender?.name, 20)}
           </span>
         )}
-        {isModerator && (
+        {isModerator && !isSenderCurrent && (
           <span className='border bg-indigo-50 border-indigo-400 text-indigo-700 font-medium text-xs px-1 rounded-full inline-block'>
             {t('Moderator')}
           </span>
