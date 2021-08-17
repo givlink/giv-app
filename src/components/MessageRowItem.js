@@ -28,7 +28,7 @@ export default function MessageRowItem({ message, group, authUser }) {
       <div className='-mb-2 pl-2.5 pt-2'>
         {showName && (
           <span className='block font-bold text-xs underline'>
-            {utils.snipText(message?.senderName, 20)}
+            {utils.snipText(message?.sender?.name, 20)}
           </span>
         )}
         {isModerator && (

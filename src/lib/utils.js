@@ -19,7 +19,7 @@ const utils = {
     Object.keys(allModerators).forEach(m => {
       if (id === m) result = true
     })
-    return false
+    return result
   },
 
   //@Todo better date parse. This func is finicky.
