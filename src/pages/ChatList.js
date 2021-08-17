@@ -38,6 +38,7 @@ export default function ChatList() {
     try {
       return a.lastMessage?.timestamp > b.lastMessage?.timestamp ? -1 : 1
     } catch (err) {}
+    return 0
   })
 
   console.log('sort:', sortedChatGroups)
