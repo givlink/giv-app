@@ -1,16 +1,19 @@
 import { Link } from '@reach/router'
 import utils from 'lib/utils'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import SafeImage from 'components/SafeImage'
 import api from 'lib/api'
 
 export default function ChatGroupCard({ group, authUser }) {
+  const { t } = useTranslation()
   const [groupName, setGroupName] = React.useState('Group')
   const [groupImg, setGroupImg] = React.useState()
 
   //@Todo this a poor man's implementation of unread count
   //once we have correct data in backend replace it.
   const lastRead = localStorage.getItem(`lastRead-${group.id}`)
+  const isModerator = utils.checkModerators(authUser?.uid, group?.moderators)
 
   React.useEffect(() => {
     const run = async () => {
@@ -30,7 +33,8 @@ export default function ChatGroupCard({ group, authUser }) {
     run()
   }, [group, authUser])
 
-  const hasUnread = (!!lastRead && !!group.lastMessage) && lastRead !== group?.lastMessage?.id
+  const hasUnread =
+    !!lastRead && !!group.lastMessage && lastRead !== group?.lastMessage?.id
 
   return (
     <Link to={`/chats/${group?.id}`}>
@@ -53,6 +57,13 @@ export default function ChatGroupCard({ group, authUser }) {
               )}
             </div>
           </div>
+          {isModerator && (
+            <div className=''>
+              <span className='border border-indigo-400 bg-indigo-50 text-indigo-600 rounded-full px-1 text-xs font-medium'>
+                {t('Moderator')}
+              </span>
+            </div>
+          )}
           <div
             className='flex-1 flex flex-col items-between'
             style={{ height: '60px' }}

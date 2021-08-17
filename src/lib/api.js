@@ -431,9 +431,15 @@ export const watchChatMessages = (groupId, cb) => {
   //@Todo err handling
   const ref = firebase.database().ref(`chat_messages/${groupId}`)
 
-  ref.on('child_added', s => {
+  ref.on('child_added', async s => {
     if (s) {
       const result = { id: s.key, ...s.val() }
+      try{
+      result.sender = await getUserProfile(result.senderId)
+      }catch(err){
+        //@Todo sentry
+        result.sender = null
+      }
       cb(result)
     }
   })

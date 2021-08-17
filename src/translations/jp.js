@@ -160,6 +160,7 @@ const translations = {
   'Delete': '削除',
   'Update available. Click to update': 'クリックしてアプリを更新',
   'Terms': '利用規約',
+  'Moderator': 'モデレーター',
 }
 
 export default translations

@@ -159,6 +159,7 @@ const translations = {
   'Delete': 'Delete',
   'Update available. Click to update': 'Update available. Click to update',
   'Terms': 'Terms',
+  'Moderator': 'Moderator',
 }
 
 export default translations

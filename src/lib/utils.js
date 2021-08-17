@@ -14,6 +14,14 @@ function isIsoDate(str) {
 }
 
 const utils = {
+  checkModerators: (id, allModerators = {}) => {
+    let result = false
+    Object.keys(allModerators).forEach(m => {
+      if (id === m) result = true
+    })
+    return false
+  },
+
   //@Todo better date parse. This func is finicky.
   //find a better universal date timestamp parser
   hideImageOnError: e => {
@@ -22,7 +30,7 @@ const utils = {
     e.target.style.width = '120px'
   },
   parseAgo: date => {
-    if(!date) return ""
+    if (!date) return ''
     let d = date
     try {
       if (typeof d === 'string') {
@@ -69,7 +77,7 @@ const utils = {
       return `${CDN_URL}/${path}`
     }
   },
-  snipText: (text, maxLength = 130) => {
+  snipText: (text = '', maxLength = 130) => {
     let subText = text
     if (text.length > maxLength) {
       subText = text.substring(0, maxLength)
