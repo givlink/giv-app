@@ -78,6 +78,7 @@ const utils = {
     }
   },
   snipText: (text = '', maxLength = 130) => {
+    if(!text) return text
     let subText = text
     if (text.length > maxLength) {
       subText = text.substring(0, maxLength)
