@@ -43,20 +43,21 @@ export default function MessageRowItem({ message, group, authUser }) {
       </div>
       <div className='pt-3 pb-2 px-2.5 mx-1'>
         <p className='whitespace-pre-wrap text-sm font-medium'>
-            <Linkify
-              componentDecorator={(decoratedHref, decoratedText, key) => (
-                <a
-                  target='_blank'
-                  href={decoratedHref}
-                  key={key}
-                  className='text-giv-blue-dark underline'
-                >
-                  {decoratedText}
-                </a>
-              )}
-            >
-              {message?.content}
-            </Linkify>
+          <Linkify
+            componentDecorator={(decoratedHref, decoratedText, key) => (
+              <a
+                target='_blank'
+                rel='noreferrer'
+                href={decoratedHref}
+                key={key}
+                className='text-giv-blue-dark underline'
+              >
+                {decoratedText}
+              </a>
+            )}
+          >
+            {message?.content}
+          </Linkify>
         </p>
         <span
           className={`-mt-1 block text-right text-xs ${
