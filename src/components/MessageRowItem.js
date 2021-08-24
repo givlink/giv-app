@@ -6,7 +6,10 @@ export default function MessageRowItem({ message, group, authUser }) {
   //@Todo show name instead of id
 
   const isSenderCurrent = message?.senderId === authUser.uid
-  const isModerator = utils.checkModerators(message?.senderId, group?.moderators)
+  const isModerator = utils.checkModerators(
+    message?.senderId,
+    group?.moderators,
+  )
 
   let showName = false
   if (group) {
@@ -46,7 +49,7 @@ export default function MessageRowItem({ message, group, authUser }) {
             isSenderCurrent ? 'text-gray-200' : 'text-gray-400'
           } leading-none'`}
         >
-          12:13
+          {utils.parseSmartDate(message?.timestamp)}
         </span>
       </div>
     </div>

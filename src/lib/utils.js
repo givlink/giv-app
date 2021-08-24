@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { formatDistance } from 'date-fns'
+import { format, formatDistance } from 'date-fns'
 
 const CDN_URL = 'https://storage.googleapis.com/givlink.appspot.com'
 
@@ -43,6 +43,36 @@ const utils = {
       return 'N/A'
     }
   },
+  //Gives duration if date too old else
+  //gives just time
+  parseSmartDate: date => {
+    if (!date) return ''
+    let d = date
+    try {
+      if (typeof d === 'string') {
+        d = new Date(d)
+      }
+
+      const now = new Date()
+      const diffDays = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24))
+      if(diffDays > 365){
+        return format(d, 'yy/MM')
+      }
+      if(diffDays > 30){
+        return format(d, 'MM/dd')
+      }
+      if (diffDays > 1) {
+        // return formatDistance(d, new Date(), { addSuffix: true })
+        return format(d, 'MMM dd haaa')
+      } else {
+        return format(d, 'HH:mm')
+      }
+    } catch (err) {
+      //@Todo sentry err
+      console.log('err:', err)
+      return 'N/A'
+    }
+  },
   parseDate: date => {
     let d
     if (typeof date.toDate !== 'undefined') {
@@ -78,7 +108,7 @@ const utils = {
     }
   },
   snipText: (text = '', maxLength = 130) => {
-    if(!text) return text
+    if (!text) return text
     let subText = text
     if (text.length > maxLength) {
       subText = text.substring(0, maxLength)
