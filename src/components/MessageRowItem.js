@@ -46,8 +46,6 @@ export default function MessageRowItem({ message, group, authUser }) {
           <Linkify
             componentDecorator={(decoratedHref, decoratedText, key) => (
               <a
-                target='_blank'
-                rel='noreferrer'
                 href={decoratedHref}
                 key={key}
                 className='text-giv-blue-dark underline'
