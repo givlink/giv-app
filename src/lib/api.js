@@ -411,11 +411,13 @@ export const sendMessage = async (groupId, msg) => {
     console.log('Invalid groupId or msg')
     return
   }
+  const currUser = await getUserProfile(getCurrentUser().uid)
   const result = await firebase
     .database()
     .ref(`chat_messages/${groupId}`)
     .push({
-      senderId: getCurrentUser().uid,
+      senderId: currUser.id,
+      senderName: currUser.name,
       content: msg,
       timestamp: new Date().toISOString(), //@Todo validate this server side
     })
@@ -434,9 +436,9 @@ export const watchChatMessages = (groupId, cb) => {
   ref.on('child_added', async s => {
     if (s) {
       const result = { id: s.key, ...s.val() }
-      try{
-      result.sender = await getUserProfile(result.senderId)
-      }catch(err){
+      try {
+        result.sender = await getUserProfile(result.senderId)
+      } catch (err) {
         //@Todo sentry
         result.sender = null
       }

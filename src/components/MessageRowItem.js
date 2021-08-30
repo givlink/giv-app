@@ -1,12 +1,16 @@
 import utils from 'lib/utils'
 import { useTranslation } from 'react-i18next'
+import Linkify from 'react-linkify'
 
 export default function MessageRowItem({ message, group, authUser }) {
   const { t } = useTranslation()
   //@Todo show name instead of id
 
   const isSenderCurrent = message?.senderId === authUser.uid
-  const isModerator = utils.checkModerators(message?.senderId, group?.moderators)
+  const isModerator = utils.checkModerators(
+    message?.senderId,
+    group?.moderators,
+  )
 
   let showName = false
   if (group) {
@@ -39,14 +43,28 @@ export default function MessageRowItem({ message, group, authUser }) {
       </div>
       <div className='pt-3 pb-2 px-2.5 mx-1'>
         <p className='whitespace-pre-wrap text-sm font-medium'>
-          {message?.content}
+          <Linkify
+            componentDecorator={(decoratedHref, decoratedText, key) => (
+              <a
+                target='_blank'
+                rel='noreferrer'
+                href={decoratedHref}
+                key={key}
+                className='text-giv-blue-dark underline'
+              >
+                {decoratedText}
+              </a>
+            )}
+          >
+            {message?.content}
+          </Linkify>
         </p>
         <span
           className={`-mt-1 block text-right text-xs ${
             isSenderCurrent ? 'text-gray-200' : 'text-gray-400'
           } leading-none'`}
         >
-          12:13
+          {utils.parseSmartDate(message?.timestamp)}
         </span>
       </div>
     </div>
