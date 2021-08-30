@@ -56,12 +56,18 @@ const GivList = ({ userId, type = 'receive' }) => {
   React.useEffect(() => {
     const run = async () => {
       //@Todo err handling
+      //@Todo pagination??
       let givs
       if (type === 'receive') {
         givs = await api.getUserReceivedPosts(userId)
       } else {
         givs = await api.getUserPosts(userId)
       }
+      try {
+        givs.sort((a, b) => {
+          return a.createdAt > b.createdAt ? 1 : -1
+        })
+      } catch (err) {}
       setGivs(givs)
       setLoading(false)
     }
