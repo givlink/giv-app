@@ -12,14 +12,17 @@ export default function MessageRowItem({ message, group, authUser }) {
     group?.moderators,
   )
 
-  let showName = false
-  if (group) {
-    if (Object.keys(group?.members).length > 2 || isModerator) {
-      if (!isSenderCurrent) {
-        showName = true
-      }
-    }
-  }
+  let showName = !isSenderCurrent
+  //We decided to always show the name and there will 
+  //always be at least 3 people in chat (2 members + 1 mod) so show it to
+  //be less confusing.
+  // if (group) {
+  //   if (Object.keys(group?.members).length > 2 || isModerator) {
+  //     if (!isSenderCurrent) {
+  //       showName = true
+  //     }
+  //   }
+  // }
 
   return (
     <div
