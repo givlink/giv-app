@@ -160,6 +160,8 @@ const translations = {
   'Update available. Click to update': 'Update available. Click to update',
   'Terms': 'Terms',
   'Moderator': 'Moderator',
+
+  'You are offline': 'You are offline',
 }
 
 export default translations

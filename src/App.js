@@ -25,6 +25,7 @@ import useGlobalFuncs from 'hooks/useGlobalFuncs'
 import InitProvider from 'components/InitProvider'
 import NavigationProvider from 'components/NavigationProvider'
 import useSavePushToken from 'hooks/savePushToken'
+import OfflineBanner from 'components/Offline'
 import { Toaster } from 'react-hot-toast'
 
 const App = () => {
@@ -36,6 +37,8 @@ const App = () => {
         <AppUpdateProvider>
           <NavigationProvider>
             <Toaster />
+    <OfflineBanner/>
+
             <Router className='h-screen w-screen' primary={false}>
               {/* Setup */}
               <Login path='login' />

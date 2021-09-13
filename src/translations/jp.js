@@ -161,6 +161,8 @@ const translations = {
   'Update available. Click to update': 'クリックしてアプリを更新',
   'Terms': '利用規約',
   'Moderator': 'モデレーター',
+
+  'You are offline': 'インターネット接続ではありません',
 }
 
 export default translations
