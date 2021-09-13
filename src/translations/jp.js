@@ -162,7 +162,7 @@ const translations = {
   'Terms': '利用規約',
   'Moderator': 'モデレーター',
 
-  'You are offline': 'インターネット接続ではありません',
+  'You are offline': 'インターネットに繋がっていません',
 }
 
 export default translations
