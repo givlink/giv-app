@@ -1,5 +1,6 @@
 import firebase from './firebase'
 import utils from 'lib/utils'
+import Err from 'lib/err'
 import shortId from 'short-uuid'
 
 const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
@@ -182,6 +183,7 @@ export const getUserProfile = async (uid, preferCache = true) => {
 
   const doc = await firebase.firestore().doc(`/users/${uid}`).get()
   if (!doc.exists) {
+    Err.warn(`User profile not found for user: ${uid}`)
     return null
   }
   const result = { ...doc.data(), id: uid }
@@ -193,7 +195,10 @@ export const getUserProfile = async (uid, preferCache = true) => {
 }
 export const getCurrentUserProfile = async () => {
   const user = getCurrentUser()
-  if (!user) return null
+  if (!user) {
+    Err.warn(`No current user found`)
+    return null
+  }
   return getUserProfile(user.uid)
 }
 export const getUserReceivedPosts = async (uid, limit = 20, offset = null) => {
@@ -671,8 +676,6 @@ export const updatePost = ({
   message = null,
   images = null,
 }) => {
-  //@Todo error handling
-
   const payload = {
     updatedAt: new Date().toISOString(),
   }
