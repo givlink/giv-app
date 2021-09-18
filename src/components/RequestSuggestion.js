@@ -3,13 +3,10 @@ import api from 'lib/api'
 import { Dialog, Transition } from '@headlessui/react'
 import { Trans, useTranslation } from 'react-i18next'
 import Error from 'components/Error'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Spinner from 'components/Spinner'
 import {
-  UploadIcon,
-  CheckCircleIcon,
   ChevronRightIcon,
-  ChevronDownIcon,
   ArrowNarrowRightIcon,
 } from '@heroicons/react/outline'
 import utils from 'lib/utils'

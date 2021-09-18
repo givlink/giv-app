@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next'
 import {
   ExclamationIcon,
   CalendarIcon,
-  CheckCircleIcon,
   ChevronRightIcon,
   ArrowCircleRightIcon,
   HeartIcon as HeartIconOutline,

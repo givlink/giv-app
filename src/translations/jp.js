@@ -168,7 +168,7 @@ const translations = {
 
   'Send Giv': '{{name}}さんにgivを贈る',
   'Skills Match Giv Request': `Your skills match {{name}}'s interests. Send a Giv?`,
-  'Accept': '承認',
+  'Confirm': '承認',
 }
 
 export default translations
