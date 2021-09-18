@@ -163,6 +163,12 @@ const translations = {
   'Moderator': 'モデレーター',
 
   'You are offline': 'インターネットに繋がっていません',
+
+  'Giv Suggestion': 'Givおすすめ',
+
+  'Send Giv': '{{name}}さんにgivを贈る',
+  'Skills Match Giv Request': `Your skills match {{name}}'s interests. Send a Giv?`,
+  'Accept': '承認',
 }
 
 export default translations

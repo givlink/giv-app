@@ -7,11 +7,13 @@ import Spinner from 'components/Spinner'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
 import utils from 'lib/utils'
 import SafeImage from 'components/SafeImage'
+import RequestSuggestion from 'components/RequestSuggestion'
 import { Dialog, Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
 import {
   ExclamationIcon,
   CalendarIcon,
+  CheckCircleIcon,
   ChevronRightIcon,
   ArrowCircleRightIcon,
   HeartIcon as HeartIconOutline,
@@ -22,6 +24,8 @@ import { Link } from '@reach/router'
 import api from 'lib/api'
 import usePreserveScroll from 'hooks/scroll'
 import actions from 'state/actions'
+
+
 
 const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
   const { t } = useTranslation()
@@ -443,6 +447,9 @@ export default function PostDetail(props) {
               </div>
             </Link>
 
+            <div className='px-3 py-4'>
+              <RequestSuggestion fromUser={state.user} toUser={post.giver} />
+            </div>
             <CommentList postId={props.id} />
           </>
         ) : (

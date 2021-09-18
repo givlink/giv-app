@@ -162,6 +162,10 @@ const translations = {
   'Moderator': 'Moderator',
 
   'You are offline': 'You are offline',
+
+  'Giv Suggestion': 'Giv Suggestion',
+  'Send Giv': 'Send Giv to {{name}}',
+  "Skills Match Giv Request": `Your skills match {{name}}'s interests. Send a Giv?`
 }
 
 export default translations
