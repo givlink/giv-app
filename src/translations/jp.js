@@ -167,7 +167,7 @@ const translations = {
   'Giv Suggestion': 'Givおすすめ',
 
   'Send Giv': '{{name}}さんにgivを贈る',
-  'Skills Match Giv Request': `Your skills match {{name}}'s interests. Send a Giv?`,
+  'Skills Match Giv Request': `あなたのギブが{{name}}さんの興味とマッチするようです。ギブを贈ってみませんか？`,
   'Confirm': '承認',
 }
 
