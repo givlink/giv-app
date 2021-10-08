@@ -1,5 +1,7 @@
 import utils from 'lib/utils'
 import { useTranslation } from 'react-i18next'
+import SafeImage from 'components/SafeImage'
+import { Link } from '@reach/router'
 import Linkify from 'react-linkify'
 
 export default function MessageRowItem({ message, group, authUser }) {
@@ -13,7 +15,7 @@ export default function MessageRowItem({ message, group, authUser }) {
   )
 
   let showName = !isSenderCurrent
-  //We decided to always show the name and there will 
+  //We decided to always show the name and there will
   //always be at least 3 people in chat (2 members + 1 mod) so show it to
   //be less confusing.
   // if (group) {
@@ -34,9 +36,23 @@ export default function MessageRowItem({ message, group, authUser }) {
     >
       <div className='-mb-2 pl-2.5 pt-2'>
         {showName && (
-          <span className='block font-bold text-xs underline'>
-            {utils.snipText(message?.sender?.name, 20)}
-          </span>
+          <Link
+            to={`/users/${message?.senderId}`}
+            className='flex items-center space-x-1'
+          >
+          {
+            message?.sender && message.sender.photoURL && (
+
+            <SafeImage
+              className='h-4 w-4 rounded-full'
+              src={utils.parseUrl(message?.sender?.photoURL)}
+            />
+            )
+          }
+            <span className='block font-bold text-xs underline'>
+              {utils.snipText(message?.sender?.name, 20)}
+            </span>
+          </Link>
         )}
         {isModerator && !isSenderCurrent && (
           <span className='border bg-indigo-50 border-indigo-400 text-indigo-700 font-medium text-xs px-1 rounded-full inline-block'>
