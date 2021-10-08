@@ -40,15 +40,11 @@ export default function MessageRowItem({ message, group, authUser }) {
             to={`/users/${message?.senderId}`}
             className='flex items-center space-x-1'
           >
-          {
-            message?.sender && message.sender.photoURL && (
-
-            <SafeImage
-              className='h-4 w-4 rounded-full'
-              src={utils.parseUrl(message?.sender?.photoURL)}
-            />
-            )
-          }
+              <SafeImage
+                className='h-4 w-4 rounded-full'
+                classNameFallback='hidden'
+                src={utils.parseUrl(message?.sender?.photoURL)}
+              />
             <span className='block font-bold text-xs underline'>
               {utils.snipText(message?.sender?.name, 20)}
             </span>
