@@ -264,6 +264,8 @@ export const updateNotification = ({ userId, id, status = null }) => {
 export const mock = async payload => {
   const p = { ms: 2000, fail: false, ...payload }
   await utils.sleep(p.ms)
+  console.log('Payload for mock:')
+  console.log(payload)
   if (p.fail) throw Error('Err: error in mock api')
 }
 export const acceptGivRequest = async givRequestId => {

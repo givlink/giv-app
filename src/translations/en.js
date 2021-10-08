@@ -164,7 +164,10 @@ const translations = {
   'You are offline': 'You are offline',
 
   'Giv Suggestion': 'Giv Suggestion',
-  'Send Giv': 'Send Giv to {{name}}',
+  'Send Giv To User': 'Send Giv to {{name}}',
+  'Receive Giv From User': '{{name}}さんからgivを受け取る',
+  'Send Giv': 'Send Giv',
+  'Receive Giv': 'Receive Giv',
   "Skills Match Giv Request": `Your skills match {{name}}'s interests. Send a Giv?`
 }
 

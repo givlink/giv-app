@@ -24,7 +24,13 @@ const doesSkillMatch = (skills = [], interests = []) => {
   return matched
 }
 
-const RequestModal = ({ fromUser, toUser, open, setOpen }) => {
+const RequestModal = ({
+  fromUser,
+  toUser,
+  open,
+  setOpen,
+  requestType = 'send',
+}) => {
   const [error, setError] = React.useState(null)
   const [loading, setLoading] = React.useState(false)
   const [sent, setSent] = React.useState(false)
@@ -43,8 +49,8 @@ const RequestModal = ({ fromUser, toUser, open, setOpen }) => {
     setLoading(true)
 
     try {
-      await api.createGivRequest(fromUser.id, toUser.id, 'send')
-      // await api.mock({ fail: false })
+      await api.createGivRequest(fromUser.id, toUser.id, requestType)
+      // await api.mock({ fail: false , fromUserId: fromUser.id, toUserId: toUser.id, requestType})
       setSent(true)
     } catch (err) {
       setError(err.message)
@@ -91,8 +97,8 @@ const RequestModal = ({ fromUser, toUser, open, setOpen }) => {
             leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
           >
             <div className='inline-block align-bottom bg-white rounded-lg px-4 text-left overflow-hidden shadow-xl transform transition-all my-8 align-middle max-w-lg w-full py-6'>
-              <div className='sm:flex sm:items-start'>
-                <div className='mt-3 text-center sm:mt-0 flex'>
+              <div className='sm:flex sm:items-start justify-center'>
+                <div className='mt-3 text-center sm:mt-0 flex justify-center'>
                   {sent ? (
                     <div className='w-full flex items-center justify-center'>
                       <img
@@ -112,7 +118,11 @@ const RequestModal = ({ fromUser, toUser, open, setOpen }) => {
                   ) : (
                     <>
                       <SafeImage
-                        src={utils.parseUrl(toUser?.photoURL)}
+                        src={utils.parseUrl(
+                          requestType === 'send'
+                            ? toUser?.photoURL
+                            : fromUser?.photoURL,
+                        )}
                         className='flex-shrink-0 object-cover h-20 w-20 text-white rounded shadow-xl'
                         classNameFallback='w-20 opacity-50'
                       />
@@ -121,10 +131,12 @@ const RequestModal = ({ fromUser, toUser, open, setOpen }) => {
                           as='h3'
                           className='text-lg leading-6 font-medium text-gray-900'
                         >
-                          {toUser.name}
+                          {requestType === 'send' ? toUser.name : fromUser.name}
                         </Dialog.Title>
                         <p className='text-sm text-left text-gray-500 mt-1'>
-                          {t('Send Giv', { name: toUser.name })}?
+                          {requestType === 'send'
+                            ? t('Send Giv To User', { name: toUser.name })
+                            : t('Receive Giv From User', { name: fromUser.name })}
                         </p>
                       </div>
                     </>
@@ -181,16 +193,25 @@ const RequestModal = ({ fromUser, toUser, open, setOpen }) => {
 
 export default function RequestSugestion({ fromUser, toUser }) {
   const { t, i18n } = useTranslation()
-  const skillMap = useSelector(s => s.skills)
+  const state = useSelector(s => {
+    return {
+      skillMap: s.skills,
+      authUser: s.authUser,
+    }
+  })
   const [loading, setLoading] = React.useState(true)
   const [fromSkills, setFromSkills] = React.useState([])
   const [requestOpen, setRequestOpen] = React.useState(false)
   const [toInterests, setToInterests] = React.useState([])
 
+  const isFromUserCurrentUser = state.authUser.uid === fromUser.id
+  const isToUserCurrentUser = state.authUser.uid === toUser.id
+  const requestType = isToUserCurrentUser ? 'receive' : 'send'
+
   const tagField = i18n.language === 'en' ? 'tagEn' : 'tag'
   //@Todo copy paste, refactor
   const renderTag = s => {
-    const skill = skillMap[s]
+    const skill = state.skillMap[s]
     if (!skill) return s
     return skill[tagField]
   }
@@ -214,59 +235,67 @@ export default function RequestSugestion({ fromUser, toUser }) {
 
   const matched = doesSkillMatch(fromSkills, toInterests)
 
-  if (!matched) return null
+  // if (!matched) return null
 
   return (
     <>
       <RequestModal
+        requestType={requestType}
         fromUser={fromUser}
         toUser={toUser}
         open={requestOpen}
         setOpen={setRequestOpen}
       />
-      <div className=''>
-        <h4 className='font-semibold text-sm text-giv-blue-dark'>
-          {t('Giv Suggestion')}
-        </h4>
-        <div className='shadow rounded text-sm border border-gray-100 px-2 py-3'>
-          <div className='flex flex-col items-center justify-center'>
-            <span
-              className={`rounded-full leading-none text-white border text-gray-900 py-1 px-2 text-xs border-gray-300 text-center`}
-            >
-              {renderTag(matched)}
-            </span>
-          </div>
+      <div className='h-full'>
+        <div className='h-full shadow-md rounded text-sm border border-giv-blue-dark py-1 flex flex-col justify-between'>
+          {matched && (
+            <div className='flex flex-col items-center justify-center'>
+              <span
+                className={`rounded-full leading-none text-white border text-gray-900 py-1 px-2 text-xs border-gray-300 text-center`}
+              >
+                {renderTag(matched)}
+              </span>
+            </div>
+          )}
           <div className='flex items-center justify-between py-2 px-4'>
-            <div className='flex flex-col items-center'>
+            <div className='flex-shrink-0 flex flex-col items-start'>
               <SafeImage
                 src={utils.parseUrl(fromUser.photoURL)}
                 alt=''
                 className='h-10 w-10 object-cover rounded-full shadow-xl mb-2'
               />
-              <span className='text-xs'>
-                {utils.snipText(fromUser.name, 20)}
-              </span>
+              {!isFromUserCurrentUser && (
+                <span className='text-xs'>
+                  {utils.snipText(fromUser.name, 20)}
+                </span>
+              )}
             </div>
-            <ArrowNarrowRightIcon className='w-9 text-gray-300' />
-            <div className='flex flex-col items-center'>
+            <ArrowNarrowRightIcon className='flex-shrink-0 w-5 text-gray-300' />
+            <div className='flex-shrink-0 flex flex-col items-end'>
               <SafeImage
                 src={utils.parseUrl(toUser.photoURL)}
                 alt=''
                 className='h-10 w-10 object-cover rounded-full shadow-xl mb-2'
               />
-              <span className='text-xs'>{utils.snipText(toUser.name, 20)}</span>
+              {!isToUserCurrentUser && (
+                <span className='text-xs'>
+                  {utils.snipText(toUser.name, 20)}
+                </span>
+              )}
             </div>
           </div>
 
-          <p className='text-xs text-center font-medium mt-3 mb-2'>
+          <p className='hidden text-xs text-center font-medium mt-3 mb-2'>
             {t('Skills Match Giv Request', { name: toUser.name })}
           </p>
-          <div className='pt-2 flex justify-center items-center'>
+          <div className='py-2 px-2 flex justify-center items-center'>
             <button
               onClick={() => setRequestOpen(true)}
-              className='hover:bg-giv-blue hover:text-white border border-giv-blue-dark font-medium text-xs rounded text-giv-blue-dark flex items-center justify-end py-1 px-6 leading-5'
+              className='w-full border border-giv-blue text-giv-blue-dark rounded-full font-medium text-xs rounded flex items-center justify-center px-3 py-1 leading-5'
             >
-              {t('Send Giv', { name: toUser.name })}
+              {requestType === 'send'
+                ? t('Send Giv', { name: toUser.name })
+                : t('Receive Giv', { name: fromUser.name })}
               <ChevronRightIcon className='h-4 w-4' />
             </button>
           </div>

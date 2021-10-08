@@ -24,8 +24,6 @@ import api from 'lib/api'
 import usePreserveScroll from 'hooks/scroll'
 import actions from 'state/actions'
 
-
-
 const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
   const { t } = useTranslation()
   const cancelButtonRef = React.useRef(null)
@@ -447,7 +445,16 @@ export default function PostDetail(props) {
             </Link>
 
             <div className='px-3 py-4'>
-              <RequestSuggestion fromUser={state.user} toUser={post.giver} />
+              <h4 className='font-semibold text-sm text-giv-blue-dark'>
+                {t('Giv Suggestion')}
+              </h4>
+
+              <div className=' grid grid-cols-2 gap-4'>
+                <RequestSuggestion fromUser={state.user} toUser={post.giver} />
+                <RequestSuggestion fromUser={post.giver} toUser={state.user} />
+                <RequestSuggestion fromUser={state.user} toUser={post.author} />
+              <RequestSuggestion fromUser={post.author} toUser={state.user} />
+              </div>
             </div>
             <CommentList postId={props.id} />
           </>
