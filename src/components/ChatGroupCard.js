@@ -28,7 +28,7 @@ export default function ChatGroupCard({ group, authUser }) {
             }
           }
         }
-      }else{
+      } else {
         setGroupName(group.name || 'Group')
         setGroupImg('')
       }
@@ -45,8 +45,11 @@ export default function ChatGroupCard({ group, authUser }) {
         <div className='py-2 mx-auto col-span-2'>
           <SafeImage
             src={groupImg}
+            fallbackSrc={
+              groupImg ? '/icons/tama_def_sleepy.png' : '/icons/tama_def.png'
+            }
             className='mx-auto h-16 w-16 rounded-full border-2 border-gray-300 object-cover overflow-hidden'
-            classNameFallback='h-12 object-cover opacity-50 animate-wobble-slow'
+            classNameFallback='h-12 object-cover opacity-75'
           />
         </div>
         <div className='pt-2 pb-1 pr-2 pl-1 col-span-8'>
