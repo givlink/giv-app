@@ -31,14 +31,31 @@ export default function ChatDetail({ id }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const ref = React.useRef(null)
-  const state = useSelector(s => ({
-    chatMessagesLoading: s.chatMessagesLoading,
-    messages: s.chatMessages[id] || [],
-    group: s.chatGroups[id] || null,
-    authUser: s.authUser,
-  }))
+  const state = useSelector(s => {
+    //sort messages just in case
+    let messages = s.chatMessages[id] || []
+    messages.sort((a, b) => {
+      try {
+        return a.timestamp < b.timestamp
+          ? -1
+          : a.timestamp > b.timestamp
+          ? 1
+          : 0
+      } catch (err) {}
+      return 0
+    })
+    return {
+      chatMessagesLoading: s.chatMessagesLoading,
+      messages,
+      group: s.chatGroups[id] || null,
+      authUser: s.authUser,
+    }
+  })
 
-  const isModerator = utils.checkModerators(state.authUser?.uid, state.group?.moderators)
+  const isModerator = utils.checkModerators(
+    state.authUser?.uid,
+    state.group?.moderators,
+  )
   React.useEffect(() => {
     //@Todo scroll to last unread
     ref.current?.scrollIntoView()

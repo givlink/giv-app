@@ -41,7 +41,7 @@ export default function MessageRowItem({ message, group, authUser }) {
             className='flex items-center space-x-1'
           >
               <SafeImage
-                className='h-4 w-4 rounded-full'
+                className='h-5 w-5 rounded-full'
                 classNameFallback='hidden'
                 src={utils.parseUrl(message?.sender?.photoURL)}
               />

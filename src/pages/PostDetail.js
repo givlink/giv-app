@@ -453,7 +453,7 @@ export default function PostDetail(props) {
                 <RequestSuggestion fromUser={state.user} toUser={post.giver} />
                 <RequestSuggestion fromUser={post.giver} toUser={state.user} />
                 <RequestSuggestion fromUser={state.user} toUser={post.author} />
-              <RequestSuggestion fromUser={post.author} toUser={state.user} />
+                <RequestSuggestion fromUser={post.author} toUser={state.user} />
               </div>
             </div>
             <CommentList postId={props.id} />
