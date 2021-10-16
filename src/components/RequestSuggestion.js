@@ -232,6 +232,7 @@ export default function RequestSugestion({ fromUser, toUser }) {
   }, [fromUser, toUser])
 
   if (loading) return null
+  if(fromUser.id === toUser.id) return null //ignore same user
 
   const matched = doesSkillMatch(fromSkills, toInterests)
 
