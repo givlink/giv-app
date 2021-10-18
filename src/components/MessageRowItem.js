@@ -40,11 +40,11 @@ export default function MessageRowItem({ message, group, authUser }) {
             to={`/users/${message?.senderId}`}
             className='flex items-center space-x-1'
           >
-              <SafeImage
-                className='h-5 w-5 rounded-full'
-                classNameFallback='hidden'
-                src={utils.parseUrl(message?.sender?.photoURL)}
-              />
+            <SafeImage
+              className='h-5 w-5 rounded-full'
+              classNameFallback='hidden'
+              src={utils.parseUrl(message?.sender?.photoURL)}
+            />
             <span className='block font-bold text-xs underline'>
               {utils.snipText(message?.sender?.name, 20)}
             </span>
@@ -65,7 +65,9 @@ export default function MessageRowItem({ message, group, authUser }) {
                 rel='noreferrer'
                 href={decoratedHref}
                 key={key}
-                className='text-giv-blue-dark underline'
+                className={`${
+                  isSenderCurrent ? 'text-white' : 'text-giv-blue-dark'
+                } underline`}
               >
                 {decoratedText}
               </a>
