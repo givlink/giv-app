@@ -21,7 +21,8 @@ export default function Header() {
     user: s.user,
   }))
 
-  const shouldShowFilter = Object.keys(state.user?.groups || {}).length > 1
+  const shouldShowFilter = !!state.user && Object.keys(state.user.groups || {}).length > 1
+  console.log(state.user, shouldShowFilter)
 
   return (
     <div className='mb-16'>
@@ -39,7 +40,7 @@ export default function Header() {
             alt='Giv'
             className='object-cover'
           />
-          {!state.userLoading && shouldShowFilter && (
+          {shouldShowFilter && (
             <div className='flex items-end mt-2'>
               <button
                 className='flex items-center justify-center'

@@ -16,10 +16,10 @@ const DEFAULT_EDIT_BEFORE = {
 
 const initialState = {
   activeGroup: localStorage.getItem('lastActiveGroup') || 'all',
-  debugLogs:[],
+  debugLogs: [],
   appListeners: [],
   gotoLink: 'home',
-  token:'', //device token, unused @Todo
+  token: '', //device token, unused @Todo
 
   authLoading: true,
   authUser: null,
@@ -253,8 +253,9 @@ const reducer = (state = initialState, action) => {
       newReqs.sort((a, b) => {
         return a.createdAt < b.createdAt ? 1 : -1
       })
-      const requestsPendingCount = newReqs.filter(i => i.status !== 'match')
-        .length
+      const requestsPendingCount = newReqs.filter(
+        i => i.status !== 'match',
+      ).length
       return {
         ...state,
         requestsPendingCount,
