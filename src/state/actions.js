@@ -90,7 +90,6 @@ const actions = {
   },
   switchActiveGroup: activeGroup => {
     return async (dispatch, getState) => {
-      const state = getState()
       dispatch({
         type: 'app/switch_active_group',
         activeGroup,

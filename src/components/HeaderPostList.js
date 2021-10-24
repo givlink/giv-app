@@ -1,9 +1,8 @@
 import React from 'react'
-import { Switch } from '@headlessui/react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
-import { ExclamationIcon, CogIcon } from '@heroicons/react/outline'
+import { CogIcon } from '@heroicons/react/outline'
 import actions from 'state/actions'
 
 const groupMap = {
@@ -13,7 +12,6 @@ const groupMap = {
 
 export default function Header() {
   const [open, setOpen] = React.useState(false)
-  const dispatch = useDispatch()
   const { t } = useTranslation()
   const state = useSelector(s => ({
     activeGroup: s.activeGroup,
@@ -21,8 +19,7 @@ export default function Header() {
     user: s.user,
   }))
 
-  const shouldShowFilter = !!state.user && Object.keys(state.user.groups || {}).length > 1
-  console.log(state.user, shouldShowFilter)
+  const shouldShowFilter = Object.keys(state.user?.groups || {}).length > 1
 
   return (
     <div className='mb-16'>
@@ -40,7 +37,7 @@ export default function Header() {
             alt='Giv'
             className='object-cover'
           />
-          {shouldShowFilter && (
+          {!state.userLoading && shouldShowFilter && (
             <div className='flex items-end mt-2'>
               <button
                 className='flex items-center justify-center'
