@@ -15,6 +15,7 @@ const DEFAULT_EDIT_BEFORE = {
 }
 
 const initialState = {
+  activeGroup: localStorage.getItem('lastActiveGroup') || 'all',
   debugLogs:[],
   appListeners: [],
   gotoLink: 'home',
@@ -26,7 +27,6 @@ const initialState = {
   userLoading: true,
   user: null,
 
-  postAreaFilter: null,
   postsLoading: true,
   postsOffset: null,
   postsLoadingMore: false,
@@ -189,6 +189,9 @@ const reducer = (state = initialState, action) => {
         console.log('err cleaning up:', err.message)
       }
       return { ...state, appListeners: [] }
+    case 'app/switch_active_group':
+      localStorage.setItem('lastActiveGroup', action.activeGroup)
+      return { ...state, activeGroup: action.activeGroup }
     case 'auth/init':
       return { ...state, authLoading: true, authUser: null }
     case 'auth/loading':
@@ -264,8 +267,6 @@ const reducer = (state = initialState, action) => {
     case 'auth/user_profile_data':
       return { ...state, user: action.user, userLoading: false }
 
-    case 'posts/switch_area_filter':
-      return { ...state, postAreaFilter: action.postAreaFilter }
     case 'posts/reset':
       return {
         ...state,

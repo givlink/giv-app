@@ -64,7 +64,7 @@ const actions = {
   },
   loadUserProfile: () => {
     return async (dispatch, getState) => {
-      const { authUser } = getState()
+      const { authUser, activeGroup } = getState()
       if (!authUser) {
         console.warn('trying to load user profile but not authUser found')
         return
@@ -72,21 +72,32 @@ const actions = {
       dispatch({ type: 'auth/user_profile_loading' })
       const user = await api.getUserProfile(authUser.uid, false)
       dispatch({ type: 'auth/user_profile_data', user })
-      dispatch({
-        type: 'posts/switch_area_filter',
-        postAreaFilter: user?.area === 'senboku' ? 'senboku' : null,
-      })
+
+      const lastActiveGroup = localStorage.getItem('lastActiveGroup')
+      console.log('here:', lastActiveGroup, activeGroup)
+      if (user?.groups) {
+        if (
+          !user?.groups[lastActiveGroup] &&
+          Object.keys(user?.groups).length >= 1
+        ) {
+          dispatch({
+            type: 'app/switch_active_group',
+            activeGroup: Object.keys(user?.groups)[0],
+          })
+        }
+      }
     }
   },
-  switchAreaFilter: newAreaFilter => {
+  switchActiveGroup: activeGroup => {
     return async (dispatch, getState) => {
+      const state = getState()
       dispatch({
-        type: 'posts/switch_area_filter',
-        postAreaFilter: newAreaFilter,
+        type: 'app/switch_active_group',
+        activeGroup,
       })
       //Reset all posts and offsets
       dispatch({ type: 'posts/reset' })
-      const [posts, offset] = await api.listPosts({ area: newAreaFilter })
+      const [posts, offset] = await api.listPosts({ activeGroup })
       dispatch({ type: 'posts/data', posts, offset })
 
       //Reset scroll pos
@@ -114,19 +125,20 @@ const actions = {
   },
   loadUserProfileAndInitialPost: () => {
     return async (dispatch, getState) => {
-      const { authUser } = getState()
+      const { authUser, activeGroup } = getState()
       dispatch({ type: 'auth/user_profile_loading' })
       const user = await api.getUserProfile(authUser.uid, false)
       dispatch({ type: 'auth/user_profile_data', user })
 
-      const postAreaFilter = user?.area === 'senboku' ? 'senboku' : null
-      dispatch({
-        type: 'posts/switch_area_filter',
-        postAreaFilter,
-      })
+      let ag = activeGroup
+      if (user?.groups && !user?.groups[activeGroup]) {
+        ag = user?.groups[0]
+      }
+
+      dispatch({ type: 'app/switch_active_group', activeGroup: ag })
 
       dispatch({ type: 'posts/loading' })
-      const [posts, offset] = await api.listPosts({ area: postAreaFilter })
+      const [posts, offset] = await api.listPosts({ activeGroup })
       dispatch({ type: 'posts/data', posts, offset })
     }
   },
@@ -144,21 +156,21 @@ const actions = {
     return async (dispatch, getState) => {
       const { authUser } = getState()
       // dispatch({ type: 'chat_groups/loading' })
-      const listener = await api.watchChatGroups(authUser?.uid, (groups) => {
+      const listener = await api.watchChatGroups(authUser?.uid, groups => {
         dispatch({ type: 'chat_groups/data', groups })
       })
       dispatch({ type: 'chat_groups/loading_done' })
-      dispatch({ type: 'app/update_listeners', listeners:[listener] })
+      dispatch({ type: 'app/update_listeners', listeners: [listener] })
     }
   },
   loadInitialPosts: (setLoading = true) => {
     return async (dispatch, getState) => {
-      const { postAreaFilter } = getState()
+      const { activeGroup } = getState()
 
       if (setLoading) {
         dispatch({ type: 'posts/loading' })
       }
-      const [posts, offset] = await api.listPosts({ area: postAreaFilter })
+      const [posts, offset] = await api.listPosts({ activeGroup })
       dispatch({ type: 'posts/data', posts, offset })
     }
   },
@@ -168,18 +180,21 @@ const actions = {
       dispatch({ type: 'posts/loading_more' })
       const [posts, offset] = await api.listPosts({
         offset: state.postsOffset,
-        area: state.postAreaFilter,
+        activeGroup: state.activeGroup,
       })
       dispatch({ type: 'posts/data_more', posts, offset })
     }
   },
 
   loadInitialUsers: (setLoading = true) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+      const state = getState()
       if (setLoading) {
         dispatch({ type: 'users/loading' })
       }
-      const [users, offset] = await api.listUsers()
+      const [users, offset] = await api.listUsers({
+        activeGroup: state.activeGroup,
+      })
       dispatch({ type: 'users/data', users, offset, hasMore: true })
     }
   },
@@ -195,6 +210,7 @@ const actions = {
         limit,
         filter,
         offset: state.usersOffset,
+        activeGroup: state.activeGroup,
       })
       dispatch({
         type: 'users/data_more',
@@ -206,7 +222,7 @@ const actions = {
   },
   updateSearchFilter: (filter = { type: null, value: null }) => {
     return async (dispatch, getState) => {
-      // const state = getState();
+      const state = getState()
       dispatch({ type: 'users/loading' })
       dispatch({ type: 'users/update_search', filter })
 
@@ -215,6 +231,7 @@ const actions = {
       const [users, offset] = await api.listUsers({
         limit,
         filter: filter.type ? filter : null,
+        activeGroup: state.activeGroup,
       })
       dispatch({
         type: 'users/data',

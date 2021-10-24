@@ -37,7 +37,7 @@ const App = () => {
         <AppUpdateProvider>
           <NavigationProvider>
             <Toaster />
-    <OfflineBanner/>
+            <OfflineBanner />
 
             <Router className='h-screen w-screen' primary={false}>
               {/* Setup */}

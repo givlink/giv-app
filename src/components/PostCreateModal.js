@@ -10,7 +10,10 @@ import { useTranslation } from 'react-i18next'
 
 const Modal = ({ open, setOpen, giv, giver, markRead }) => {
   const { t } = useTranslation()
-  const state = useSelector(s => ({ authUser: s.authUser }))
+  const state = useSelector(s => ({
+    authUser: s.authUser,
+    activeGroup: s.activeGroup,
+  }))
   const ref = React.useRef()
   const [step, setStep] = React.useState(0)
   const [post, setPost] = React.useState(null)
@@ -64,6 +67,7 @@ const Modal = ({ open, setOpen, giv, giver, markRead }) => {
         authorId: state.authUser.uid,
         giv,
         giver,
+        activeGroup: state.activeGroup,
       }
       //@todo err handling
       const p = await api.createPost(data)

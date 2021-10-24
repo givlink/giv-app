@@ -172,6 +172,10 @@ const translations = {
   'Receive Giv': 'Givを受け取る',
   'Skills Match Giv Request': `あなたのギブが{{name}}さんの興味とマッチするようです。ギブを贈ってみませんか？`,
   'Confirm': '承認',
+
+  'Switch Group': 'グループチェンジ',
+  'all': '全体',
+  'senboku': '泉北ニュータウン',
 }
 
 export default translations

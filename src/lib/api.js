@@ -30,11 +30,12 @@ const cache = {
 //@Todo better caching library
 
 const DEFAULT_QUERY_LIST_USERS = {
+  activeGroup:null,
   offset: null,
   limit: 20,
 }
 const DEFAULT_QUERY_LIST_POSTS = {
-  area: null,
+  activeGroup: null,
   offset: null,
   limit: 20,
 }
@@ -48,6 +49,7 @@ export const listUsers = async query => {
   const q = { ...DEFAULT_QUERY_LIST_USERS, ...query }
 
   let snap = firebase.firestore().collection('users')
+  snap = snap.where(`groups.${q.activeGroup}`, '==', true)
 
   if (q.filter && q.filter.value) {
     if (q.filter.type === 'skills') {
@@ -695,6 +697,7 @@ export const createPost = async ({
   message = '',
   giv,
   giver,
+  activeGroup = 'all',
 }) => {
   //@Todo error handling
   const author = await getUserProfile(authorId)
@@ -716,6 +719,7 @@ export const createPost = async ({
     message,
     images: [],
     createdAt: new Date().toISOString(),
+    group: activeGroup,
   }
   if (giver && giver.area) {
     payload.area = giver.area
@@ -803,10 +807,7 @@ const listPosts = async (query = {}) => {
 
   let snap = firebase.firestore().collection('posts')
 
-  if (q.area && q.area !== 'all') {
-    snap = snap.where('area', '==', q.area)
-  }
-
+  snap = snap.where('group', '==', q.activeGroup || 'all')
   snap = snap.orderBy('createdAt', 'desc')
 
   if (q.offset) {
