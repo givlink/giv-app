@@ -8,6 +8,7 @@ import actions from 'state/actions'
 const groupMap = {
   all: '全体',
   senboku: '泉北ニュータウン',
+  'wellbeing-daigaku': 'Well-Being大学',
 }
 
 export default function Header() {
@@ -104,7 +105,7 @@ const SwitchGroupModal = ({ open, setOpen, user, activeGroup }) => {
             leaveFrom='opacity-100 translate-y-0 sm:scale-100'
             leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
           >
-            <div className='w-full block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6'>
+            <div className='w-full block sm:inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6'>
               <div className='sm:flex sm:items-start'>
                 <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
                   <Dialog.Title

@@ -174,6 +174,7 @@ const translations = {
   'Switch Group': 'Switch Group',
   'all': 'All Group',
   'senboku': 'Senboku New Town',
+  'wellbeing-daigaku':'Well-Being Daigaku'
 }
 
 export default translations

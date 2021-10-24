@@ -189,7 +189,7 @@ const actions = {
     return async (dispatch, getState) => {
       const state = getState()
       if (setLoading) {
-        dispatch({ type: 'users/loading' })
+        dispatch({ type: 'users/loading', reset:true })
       }
       const [users, offset] = await api.listUsers({
         activeGroup: state.activeGroup,
