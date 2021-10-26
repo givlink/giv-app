@@ -168,13 +168,13 @@ const translations = {
   'Receive Giv From User': '{{name}}さんからgivを受け取る',
   'Send Giv': 'Send Giv',
   'Receive Giv': 'Receive Giv',
-  "Skills Match Giv Request": `Your skills match {{name}}'s interests. Send a Giv?`,
+  'Skills Match Giv Request': `Your skills match {{name}}'s interests. Send a Giv?`,
   'Confirm': 'Confirm',
 
   'Switch Group': 'Switch Group',
   'all': 'All Group',
   'senboku': 'Senboku New Town',
-  'wellbeing-daigaku':'Well-Being Daigaku'
+  'wellbeing-daigaku': 'Well-Being Daigaku',
 }
 
 export default translations

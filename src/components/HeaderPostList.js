@@ -6,8 +6,8 @@ import { CogIcon } from '@heroicons/react/outline'
 import actions from 'state/actions'
 
 const groupMap = {
-  all: '全体',
-  senboku: '泉北ニュータウン',
+  'all': '全体',
+  'senboku': '泉北ニュータウン',
   'wellbeing-daigaku': 'Well-Being大学',
 }
 

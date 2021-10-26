@@ -332,16 +332,14 @@ const reducer = (state = initialState, action) => {
       }
 
     //Users
-    case 'users/loading':
-      {
-
+    case 'users/loading': {
       const newState = { ...state, usersLoading: true }
       if (action.reset) {
         newState.users = []
         newState.usersOffset = null
       }
       return newState
-      }
+    }
     case 'users/loading_done':
       return { ...state, usersLoading: false }
     case 'users/loading_more':

@@ -185,7 +185,7 @@ export const getUserProfile = async (uid, preferCache = true) => {
 
   const doc = await firebase.firestore().doc(`/users/${uid}`).get()
   if (!doc.exists) {
-    Err.warn(`User profile not found for user: ${uid}`)
+    // Err.warn(`User profile not found for user: ${uid}`)
     return null
   }
   const result = { ...doc.data(), id: uid }
