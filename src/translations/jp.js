@@ -94,6 +94,7 @@ const translations = {
   'Accept Request': '承認リクエスト',
 
   'Chats Coming Soon': 'チャットのスレッドがもうすぐ用意されます',
+  'No Posts Found': 'ポストはありません。',
 
   //post detail
   'Giv sender': 'givを贈った人',

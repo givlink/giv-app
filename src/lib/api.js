@@ -807,7 +807,7 @@ const listPosts = async (query = {}) => {
 
   let snap = firebase.firestore().collection('posts')
 
-  snap = snap.where('group', '==', q.activeGroup || 'all')
+  snap = snap.where('group', '==', q.activeGroup)
   snap = snap.orderBy('createdAt', 'desc')
 
   if (q.offset) {

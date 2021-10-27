@@ -1,4 +1,5 @@
 import api from 'lib/api'
+import utils from 'lib/utils'
 
 const actions = {
   login: provider => {
@@ -131,13 +132,13 @@ const actions = {
 
       let ag = activeGroup
       if (user?.groups && !user?.groups[activeGroup]) {
-        ag = user?.groups[0]
+        ag = Object.keys(user?.groups)[0]
       }
 
       dispatch({ type: 'app/switch_active_group', activeGroup: ag })
 
       dispatch({ type: 'posts/loading' })
-      const [posts, offset] = await api.listPosts({ activeGroup })
+      const [posts, offset] = await api.listPosts({ activeGroup:ag })
       dispatch({ type: 'posts/data', posts, offset })
     }
   },
@@ -187,10 +188,13 @@ const actions = {
 
   loadInitialUsers: (setLoading = true) => {
     return async (dispatch, getState) => {
-      const state = getState()
       if (setLoading) {
-        dispatch({ type: 'users/loading', reset:true })
+        dispatch({ type: 'users/loading', reset: true })
       }
+
+      await utils.sleep(3000) //Hack to wait until we have activeGroup
+
+      const state = getState()
       const [users, offset] = await api.listUsers({
         activeGroup: state.activeGroup,
       })

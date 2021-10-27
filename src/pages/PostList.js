@@ -18,6 +18,19 @@ const PullDownHandle = () => {
     </div>
   )
 }
+const EmptyPost = () => {
+  const { t } = useTranslation()
+  return (
+    <div className='flex flex-col h-96 items-center justify-center py-20'>
+      <img
+        className='w-24 h-24 animate-wobble-slow opacity-50'
+        src='/icons/tama_def_sleepy.png'
+        alt=''
+      />
+      <span className='text-sm text-gray-500 pt-2'>{t('No Posts Found')}</span>
+    </div>
+  )
+}
 
 export default function PostList() {
   const { t } = useTranslation()
@@ -54,6 +67,7 @@ export default function PostList() {
             )
           })}
         </ul>
+        {posts.length === 0 && <EmptyPost />}
       </PullToRefresh>
       {hasMore && !loading && (
         <div className='max-w-2xl md:mx-auto flex items-center justify-end mx-2'>
