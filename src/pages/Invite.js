@@ -39,6 +39,7 @@ export default function Invite() {
   }, [code])
 
   const setInviteCode = code => {
+    setCode(code)
     setData({ ...data, code })
   }
   const handleNext = newData => {

@@ -67,7 +67,7 @@ export default function PostList() {
             )
           })}
         </ul>
-        {posts.length === 0 && <EmptyPost />}
+        {posts.length === 0 && !loading && <EmptyPost />}
       </PullToRefresh>
       {hasMore && !loading && (
         <div className='max-w-2xl md:mx-auto flex items-center justify-end mx-2'>
