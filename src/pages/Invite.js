@@ -55,21 +55,11 @@ export default function Invite() {
 
   return (
     <div className='h-full flex flex-col items-center justify-center mx-auto max-w-2xl'>
-      <div className='w-full flex items-center px-2 mt-6 mb-6'>
-        {activeStepIndex === 0 && (
-          <button
-            onClick={() => window.history.go(-1)}
-            className='block'
-          >
-            <ChevronLeftIcon className='h-5 w-5' />
-          </button>
-        )}
         {activeStepIndex !== steps.length && (
-          <div className='-ml-4 flex-1 flex justify-center'>
+          <div className='my-6'>
             <Steps steps={steps} activeStepIndex={activeStepIndex} />
           </div>
         )}
-      </div>
       {activeStepIndex === 0 && (
         <Page1
           code={code}
