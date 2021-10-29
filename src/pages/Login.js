@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { navigate } from '@reach/router'
+import { Link, navigate } from '@reach/router'
 import { useAuth } from 'hooks/auth'
 import { useTranslation } from 'react-i18next'
 import actions from 'state/actions'
@@ -30,6 +30,12 @@ export default function Login() {
       >
         {t('Login')}
       </button>
+      <Link
+        to='/invite'
+        className='w-64 px-3 underline leading-6 text-xs text-gray-600 text-center'
+      >
+        {t('Got Code?')}
+      </Link>
       <div className='flex-1'></div>
       <button
         onClick={() => handleLogin('apple')}

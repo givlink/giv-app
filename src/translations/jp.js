@@ -8,6 +8,7 @@ const translations = {
   'Enter your invite code': '招待コードを入力',
   'Invite Code': '招待コード',
   'No Code?': '招待コードを取得するにはこちらからご登録ください。',
+  'Got Code?': '招待コードをお持ちの方はこちらからご登録ください。',
   'Next': '次へ',
 
   //Invite: page2
