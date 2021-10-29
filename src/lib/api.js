@@ -30,7 +30,7 @@ const cache = {
 //@Todo better caching library
 
 const DEFAULT_QUERY_LIST_USERS = {
-  activeGroup:null,
+  activeGroup: null,
   offset: null,
   limit: 20,
 }
@@ -174,6 +174,21 @@ export const getGiv = async givId => {
   giv.post = await getPostByGivId(giv.id)
   return giv
 }
+export const isActivatedUser = async uid => {
+  const doc = await firebase.firestore().doc(`/users/${uid}`).get()
+  if (!doc.exists) {
+    return false
+  }
+  const user = { ...doc.data(), id: uid }
+
+  const result = user.status === 'Activated'
+  if (!result) {
+    Err.warn(`Found authenticated user that's not registered: ${uid}`)
+  }
+
+  return result
+}
+
 //@Todo add caching
 export const getUserProfile = async (uid, preferCache = true) => {
   if (preferCache) {
@@ -1145,6 +1160,7 @@ const api = {
   getInviteCode,
   createUserProfile,
   listUserGivs,
+  isActivatedUser,
 
   setupNotifications,
   checkLiked,
