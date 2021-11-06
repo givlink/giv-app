@@ -8,7 +8,6 @@ import Page5 from 'components/InvitePage5'
 import Page6 from 'components/InvitePage6'
 import { useLocation } from '@reach/router'
 import { parse } from 'query-string'
-import { ChevronLeftIcon } from '@heroicons/react/outline'
 
 const steps = [
   { id: 'step1' },
