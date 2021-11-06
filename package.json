@@ -36,7 +36,8 @@
     "start": "craco start",
     "start-mac": "HTTPS=true craco start",
     "build": "craco build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint"
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +59,8 @@
   },
   "devDependencies": {
     "autoprefixer": "^9",
+    "eslint": "^8.2.0",
+    "eslint-plugin-react": "^7.26.1",
     "postcss": "^7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }

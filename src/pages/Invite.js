@@ -54,8 +54,6 @@ export default function Invite() {
     setActiveStepIndex(nextIndex)
   }
 
-  console.log('rerendering:', activeStepIndex)
-
   return (
     <div className='h-full flex flex-col items-center justify-center mx-auto max-w-2xl'>
       {activeStepIndex !== steps.length && (
