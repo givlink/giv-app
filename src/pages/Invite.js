@@ -30,11 +30,13 @@ export default function Invite() {
       let c = loc.hash.slice(1)
       c = c.split('?')[0] //remove params
       setCode(c)
-      if (searchParams.step) {
+      //Only update when on first step
+      if (activeStepIndex ===0 && searchParams.step) {
         setActiveStepIndex(parseInt(searchParams.step))
       }
     }
-  }, [loc, setCode, searchParams, setActiveStepIndex])
+  }, [loc, setCode, searchParams, activeStepIndex])
+
   React.useEffect(() => {
     setData(d => ({ ...d, code }))
   }, [code])
@@ -45,7 +47,7 @@ export default function Invite() {
   }
   const handleNext = newData => {
     if (newData) {
-      setData({ ...data, ...newData })
+      setData(d=>({ ...d, ...newData }))
     }
 
     let nextIndex = activeStepIndex + 1
@@ -53,13 +55,15 @@ export default function Invite() {
     setActiveStepIndex(nextIndex)
   }
 
+  console.log('rerendering:', activeStepIndex)
+
   return (
     <div className='h-full flex flex-col items-center justify-center mx-auto max-w-2xl'>
-        {activeStepIndex !== steps.length && (
-          <div className='my-6'>
-            <Steps steps={steps} activeStepIndex={activeStepIndex} />
-          </div>
-        )}
+      {activeStepIndex !== steps.length && (
+        <div className='my-6'>
+          <Steps steps={steps} activeStepIndex={activeStepIndex} />
+        </div>
+      )}
       {activeStepIndex === 0 && (
         <Page1
           code={code}

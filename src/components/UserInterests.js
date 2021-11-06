@@ -7,7 +7,8 @@ const UserInterests = ({ user, editable = false }) => {
   const { t } = useTranslation()
   const [editing, setEditing] = React.useState(false)
   let skillMap = {}
-  user.interests.forEach(s => (skillMap[s] = true))
+  const interests = user.interests || []
+  interests.forEach(s => (skillMap[s] = true))
   return (
     <div className='mt-4'>
       <UserInterestsEditModal

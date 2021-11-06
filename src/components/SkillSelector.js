@@ -29,12 +29,18 @@ const SkillSelector = ({
 
   const byCat = groupByCategory(allSkills)
   return Object.entries(byCat).map(([catId, skills]) => {
+    let title = 'Skill'
+    const category = categoryMap[catId]
+    if(category){
+      title = category[tagField]
+    }
+
     return (
       <div
         key={catId}
         className='text-left pl-3 font-medium text-gray-600 mb-6'
       >
-        <h4 className='mb-2'>{categoryMap[catId][tagField]}</h4>
+        <h4 className='mb-2'>{title}</h4>
         <ul className='inline-flex flex-wrap -m-0.5'>
           {Object.values(skills).map(s => {
             const selected = isSelected(s.id)
