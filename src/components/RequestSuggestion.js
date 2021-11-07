@@ -136,7 +136,9 @@ const RequestModal = ({
                         <p className='text-sm text-left text-gray-500 mt-1'>
                           {requestType === 'send'
                             ? t('Send Giv To User', { name: toUser.name })
-                            : t('Receive Giv From User', { name: fromUser.name })}
+                            : t('Receive Giv From User', {
+                                name: fromUser.name,
+                              })}
                         </p>
                       </div>
                     </>
@@ -195,7 +197,7 @@ export default function RequestSugestion({ fromUser, toUser }) {
   const { t, i18n } = useTranslation()
   const state = useSelector(s => {
     return {
-      skillMap: s.skills,
+      skillMap: s.skills || {},
       authUser: s.authUser,
     }
   })
@@ -204,8 +206,9 @@ export default function RequestSugestion({ fromUser, toUser }) {
   const [requestOpen, setRequestOpen] = React.useState(false)
   const [toInterests, setToInterests] = React.useState([])
 
-  const isFromUserCurrentUser = state.authUser?.uid === fromUser.id
-  const isToUserCurrentUser = state.authUser?.uid === toUser.id
+
+  const isFromUserCurrentUser = state.authUser?.uid === fromUser?.id
+  const isToUserCurrentUser = state.authUser?.uid === toUser?.id
   const requestType = isToUserCurrentUser ? 'receive' : 'send'
 
   const tagField = i18n.language === 'en' ? 'tagEn' : 'tag'
@@ -232,7 +235,8 @@ export default function RequestSugestion({ fromUser, toUser }) {
   }, [fromUser, toUser])
 
   if (loading) return null
-  if(fromUser.id === toUser.id) return null //ignore same user
+  if (!fromUser || !toUser) return null
+  if (fromUser.id === toUser.id) return null //ignore same user
 
   const matched = doesSkillMatch(fromSkills, toInterests)
 
