@@ -1,6 +1,6 @@
 import React from 'react'
 import HeaderNotificationList from 'components/HeaderNotificationList'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Recommendations from 'components/Recommendations'
 import { useTranslation } from 'react-i18next'
 import usePreserveScroll from 'hooks/scroll'

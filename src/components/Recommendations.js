@@ -19,8 +19,9 @@ export default function Recommendations({ type, label, label2 }) {
         return '贈ってみませんか？'
       case 'similarInterests':
         return 'あなたと同じ興味/関心を持つメンバー'
+      default:
+        return ''
     }
-    return ''
   }
 
   const getLabel2 = () => {
@@ -30,8 +31,9 @@ export default function Recommendations({ type, label, label2 }) {
         return 'あなたが興味/関心あるギブを提供できるメンバー'
       case 'matchingYourSkills':
         return 'あなたのギブに興味/関心があるメンバー'
+      default:
+        return ''
     }
-    return null
   }
 
   if (state.loading) return null

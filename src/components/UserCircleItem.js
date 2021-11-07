@@ -7,7 +7,7 @@ export default function UserCircleItem({ user }) {
   return (
     <Link to={`/users/${user?.id}`} >
       <div className='h-36 w-full flex flex-col'>
-        <img
+        <SafeImage
           src={utils.parseUrl(user?.photoURL)}
           className='mx-auto h-full w-full object-cover object-top rounded-md shadow overflow-hidden'
         />
