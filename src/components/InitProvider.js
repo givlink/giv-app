@@ -29,6 +29,7 @@ const InitProvider = props => {
       dispatch(actions.loadInitialAreas())
       dispatch(actions.loadInitialSkillCategories())
       dispatch(actions.loadInitialAreaCategories())
+      dispatch(actions.loadRecommendations())
       dispatch(actions.watchChatGroups())
 
       //setup push notifications

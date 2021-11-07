@@ -2,6 +2,7 @@ import './index.css'
 
 import { Router } from '@reach/router'
 
+import RecomendationList from 'pages/RecommendationList.js'
 import UserList from 'pages/UserList'
 import UserDetail from 'pages/UserDetail'
 
@@ -44,6 +45,7 @@ const App = () => {
               <Login path='login' />
               <Invite path='invite' />
 
+              <RecomendationList path='recommendations' />
               {/* Users */}
               <UserList path='users' />
               <UserDetail path='users/:id' />

@@ -8,6 +8,7 @@ import {
   ChatIcon as ChatIconSolid,
   UserIcon as UserIconSolid,
   BellIcon as BellIconSolid,
+  SparklesIcon as SparklesIconSolid,
 } from '@heroicons/react/solid'
 import {
   SearchIcon,
@@ -15,6 +16,7 @@ import {
   ChatIcon,
   UserIcon,
   BellIcon,
+  SparklesIcon,
 } from '@heroicons/react/outline'
 
 export default function Footer() {
@@ -31,6 +33,7 @@ export default function Footer() {
   const isChatList = !!useMatch('/chats')
   const isRequestList = !!useMatch('/chats/requests')
   const isNotsList = !!useMatch('/notifications')
+  const isReccomendationList = !!useMatch('/recommendations')
 
   const isMyPage = loc.pathname === `/users/${user?.uid}`
 
@@ -40,6 +43,7 @@ export default function Footer() {
     isChatList ||
     isRequestList ||
     isNotsList ||
+    isReccomendationList ||
     isMyPage
 
   return (
@@ -88,7 +92,22 @@ export default function Footer() {
             <label className='hidden md:block'>Search</label>
           </Link>
           <Link
-            to='/chats' 
+            to='/recommendations'
+            className={`${
+              isReccomendationList
+                ? 'text-giv-blue-dark border-giv-blue'
+                : 'border-transparent'
+            } flex flex-1 flex-col py-2 items-center border-b-4 relative`}
+          >
+            {isReccomendationList ? (
+              <SparklesIconSolid className='h-7 w-7' />
+            ) : (
+              <SparklesIcon className='h-7 w-7' />
+            )}
+            <label className='hidden md:block'>Discover</label>
+          </Link>
+          <Link
+            to='/chats'
             className={`${
               isChatList || isRequestList
                 ? 'text-giv-blue-dark border-giv-blue'

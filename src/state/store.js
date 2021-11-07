@@ -27,6 +27,9 @@ const initialState = {
   userLoading: true,
   user: null,
 
+  recommendations: {},
+  recommendationsLoading: false,
+
   postsLoading: true,
   postsOffset: null,
   postsLoadingMore: false,
@@ -403,6 +406,15 @@ const reducer = (state = initialState, action) => {
         ...state,
         skillCategories: action.skillCategories,
         skillCategoriesLoading: false,
+      }
+    //Recommendations
+    case 'recommendations/loading':
+      return { ...state, recommendationsLoading: true }
+    case 'recommendations/data':
+      return {
+        ...state,
+        recommendations: action.recommendations,
+        recommendationsLoading: false,
       }
     //Areas
     case 'areas/loading':

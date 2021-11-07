@@ -50,6 +50,17 @@ const actions = {
       dispatch({ type: 'skills/data', skills })
     }
   },
+  loadRecommendations: () => {
+    return async dispatch => {
+      dispatch({ type: 'recommendations/loading' })
+      const recommendations = {
+        matchingYourInterests: await api.listRecommendations(),
+        matchingYourSkills: await api.listUsersWhoLikeYourSkills(),
+        similarInterests: await api.listSimilarUsers(),
+      }
+      dispatch({ type: 'recommendations/data', recommendations })
+    }
+  },
   setLiked: (postId, liked) => {
     return async (dispatch, getState) => {
       const { user } = getState()
@@ -138,7 +149,7 @@ const actions = {
       dispatch({ type: 'app/switch_active_group', activeGroup: ag })
 
       dispatch({ type: 'posts/loading' })
-      const [posts, offset] = await api.listPosts({ activeGroup:ag })
+      const [posts, offset] = await api.listPosts({ activeGroup: ag })
       dispatch({ type: 'posts/data', posts, offset })
     }
   },

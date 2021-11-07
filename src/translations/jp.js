@@ -119,6 +119,7 @@ const translations = {
 
   //userlist
   'No Users Found': 'メンバーが見つかりません',
+  'No Recommendations Found': 'おすすめが見つかりません',
   'Reset': 'リセット',
 
   //request accept
