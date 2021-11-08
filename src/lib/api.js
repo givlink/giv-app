@@ -79,34 +79,46 @@ export const listUsers = async query => {
   return [users, snap.docs[snap.docs.length - 1]]
 }
 
-export const listUsersWhoLikeYourSkills = async user => {
+export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
   const items = []
   const filters = getRandomItemsInArray(user.skills)
-  const snap = await firebase
+  let snap = firebase
     .firestore()
     .collection('users')
     .where('interests', 'array-contains-any', filters)
-    .limit(10)
-    .get()
-  snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }))
+
+  if (activeGroup) {
+    snap = snap.where(`groups.${activeGroup}`, '==', true)
+  }
+  snap = await snap.limit(10).get()
+  snap.forEach(doc => {
+    if (doc.id === user.id) return //ignore yourself
+    items.push({ id: doc.id, ...doc.data() })
+  })
   return items
 }
-export const listSimilarUsers = async user => {
+export const listSimilarUsers = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
   const items = []
   const filters = getRandomItemsInArray(user.interests)
-  const snap = await firebase
+  let snap = firebase
     .firestore()
     .collection('users')
     .where('interests', 'array-contains-any', filters)
-    .limit(10)
-    .get()
-  snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }))
+
+  if (activeGroup) {
+    snap = snap.where(`groups.${activeGroup}`, '==', true)
+  }
+  snap = await snap.limit(10).get()
+  snap.forEach(doc => {
+    if (doc.id === user.id) return //ignore yourself
+    items.push({ id: doc.id, ...doc.data() })
+  })
   return items
 }
 
@@ -119,20 +131,25 @@ const getRandomItemsInArray = (array, maxItems = 10) => {
   return result
 }
 
-export const listRecommendations = async user => {
+export const listRecommendations = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
 
   const items = []
   const filters = getRandomItemsInArray(user.interests)
-  const snap = await firebase
+  let snap = firebase
     .firestore()
     .collection('users')
     .where('skills', 'array-contains-any', filters)
-    .limit(10)
-    .get()
-  snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }))
+  if (activeGroup) {
+    snap = snap.where(`groups.${activeGroup}`, '==', true)
+  }
+  snap = await snap.limit(10).get()
+  snap.forEach(doc => {
+    if (doc.id === user.id) return //ignore yourself
+    items.push({ id: doc.id, ...doc.data() })
+  })
   return items
 }
 export const listPlaceCategories = async () => {

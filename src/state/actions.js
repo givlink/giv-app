@@ -51,12 +51,13 @@ const actions = {
     }
   },
   loadRecommendations: () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+      const { activeGroup } = getState()
       dispatch({ type: 'recommendations/loading' })
       const recommendations = {
-        matchingYourInterests: await api.listRecommendations(),
-        matchingYourSkills: await api.listUsersWhoLikeYourSkills(),
-        similarInterests: await api.listSimilarUsers(),
+        matchingYourInterests: await api.listRecommendations(null, activeGroup),
+        matchingYourSkills: await api.listUsersWhoLikeYourSkills(null, activeGroup),
+        similarInterests: await api.listSimilarUsers(null, activeGroup),
       }
       dispatch({ type: 'recommendations/data', recommendations })
     }
