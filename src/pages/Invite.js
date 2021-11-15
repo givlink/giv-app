@@ -7,6 +7,8 @@ import Page4 from 'components/InvitePage4'
 import Page5 from 'components/InvitePage5'
 import Page6 from 'components/InvitePage6'
 import { useLocation } from '@reach/router'
+import { useDispatch } from 'react-redux'
+import actions from 'state/actions'
 import { parse } from 'query-string'
 
 const steps = [
@@ -19,10 +21,19 @@ const steps = [
 
 export default function Invite() {
   const loc = useLocation()
+  const dispatch = useDispatch()
   const searchParams = parse(loc.search)
   const [activeStepIndex, setActiveStepIndex] = React.useState(0)
   const [data, setData] = React.useState({})
   const [code, setCode] = React.useState('')
+
+  React.useEffect(() => {
+    //Preload all necessary items for registration
+    dispatch(actions.loadInitialSkills())
+    dispatch(actions.loadInitialAreas())
+    dispatch(actions.loadInitialSkillCategories())
+    dispatch(actions.loadInitialAreaCategories())
+  }, [dispatch])
 
   React.useEffect(() => {
     if (loc.hash !== '') {
@@ -30,7 +41,7 @@ export default function Invite() {
       c = c.split('?')[0] //remove params
       setCode(c)
       //Only update when on first step
-      if (activeStepIndex ===0 && searchParams.step) {
+      if (activeStepIndex === 0 && searchParams.step) {
         setActiveStepIndex(parseInt(searchParams.step))
       }
     }
@@ -46,7 +57,7 @@ export default function Invite() {
   }
   const handleNext = newData => {
     if (newData) {
-      setData(d=>({ ...d, ...newData }))
+      setData(d => ({ ...d, ...newData }))
     }
 
     let nextIndex = activeStepIndex + 1
