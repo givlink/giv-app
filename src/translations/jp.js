@@ -179,7 +179,8 @@ const translations = {
   'Switch Group': 'グループチェンジ',
   'all': '全体',
   'senboku': '泉北ニュータウン',
-  'wellbeing-daigaku':'Well-Being大学'
+  'wellbeing-daigaku':'Well-Being大学',
+  'hiroshima': '東広島市',
 }
 
 export default translations

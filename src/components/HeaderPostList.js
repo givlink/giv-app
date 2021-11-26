@@ -9,6 +9,7 @@ const groupMap = {
   'all': '全体',
   'senboku': '泉北ニュータウン',
   'wellbeing-daigaku': 'Well-Being大学',
+  'hiroshima': '東広島市',
 }
 
 export default function Header() {

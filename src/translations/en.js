@@ -175,6 +175,7 @@ const translations = {
   'all': 'All Group',
   'senboku': 'Senboku New Town',
   'wellbeing-daigaku': 'Well-Being Daigaku',
+  'hiroshima': 'Higashi Hiroshima City',
 }
 
 export default translations

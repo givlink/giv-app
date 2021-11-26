@@ -199,9 +199,9 @@ export const isActivatedUser = async uid => {
   const user = { ...doc.data(), id: uid }
 
   const result = user.status === 'Activated'
-  if (!result) {
-    Err.warn(`Found authenticated user that's not registered: ${uid}`)
-  }
+  // if (!result) {
+  //   Err.warn(`Found authenticated user that's not registered: ${uid}`)
+  // }
 
   return result
 }
