@@ -10,6 +10,7 @@ import SafeImage from 'components/SafeImage'
 import RequestSuggestion from 'components/RequestSuggestion'
 import { Dialog, Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
+import Linkify from 'react-linkify'
 import {
   ExclamationIcon,
   CalendarIcon,
@@ -388,6 +389,22 @@ export default function PostDetail(props) {
               </h3>
               <p className='px-1 font-light text-sm sm:text-base whitespace-pre-wrap'>
                 {post.message}
+
+                <Linkify
+                  componentDecorator={(decoratedHref, decoratedText, key) => (
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={decoratedHref}
+                      key={key}
+                      className='underline text-giv-blue-dark'
+                    >
+                      {decoratedText}
+                    </a>
+                  )}
+                >
+                  {post.message}
+                </Linkify>
               </p>
             </div>
             <div className='px-4 py-2 pb-8 flex items-center justify-between'>
