@@ -138,7 +138,7 @@ const translations = {
   'TitlePlaceholder': '例：○○さんから〇〇のgivを頂きました！',
 
   'Skip Images': '画像をスキップする',
-  'Create': '新しいThanks Cardを用意',
+  'Create': 'Thanks Cardを投稿する',
   'Create Post Modal Title': '{{name}}さんへのThanks Card',
 
   //Notifications
