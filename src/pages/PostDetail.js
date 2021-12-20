@@ -388,8 +388,6 @@ export default function PostDetail(props) {
                 {post.title}
               </h3>
               <p className='px-1 font-light text-sm sm:text-base whitespace-pre-wrap'>
-                {post.message}
-
                 <Linkify
                   componentDecorator={(decoratedHref, decoratedText, key) => (
                     <a
