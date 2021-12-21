@@ -1,6 +1,7 @@
 import React from 'react'
 import firebase from 'lib/firebase'
 import * as Sentry from '@sentry/browser'
+import LogRocket from 'logrocket'
 import { useSelector, useDispatch } from 'react-redux'
 
 export const useInitAuth = () => {
@@ -14,6 +15,8 @@ export const useInitAuth = () => {
           id: user.uid,
           name: user.displayName,
         })
+        LogRocket.identify(user.uid)
+        LogRocket.identify(user.email)
       } else {
         Sentry.configureScope(scope => scope.setUser(null))
       }
