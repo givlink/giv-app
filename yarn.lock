@@ -7675,6 +7675,11 @@ loglevel@^1.6.8:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.7.1.tgz#005fde2f5e6e47068f935ff28573e125ef72f197"
   integrity sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw==
 
+logrocket@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/logrocket/-/logrocket-2.1.2.tgz#5f6360c81c01797d67905de4851d54534deb9d0a"
+  integrity sha512-voHZcZYtXIh0oIT6I/9szdDSauKR98uGlVxovD6oIggm7nqdic5d1/dqRUhokXiXXtLkF7pr6QUrtwIwTETjIw==
+
 long@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
