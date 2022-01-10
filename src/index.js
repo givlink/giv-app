@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './sentry'
+import './logrocket'
 import './index.css'
 import './i18n'
 import store from 'state/store'

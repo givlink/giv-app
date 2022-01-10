@@ -56,7 +56,7 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
       <label className='flex flex-col'>
         <span className='font-medium'>{t('Name')}</span>
         <input
-          readOnly
+          readOnly={!!state.authUser?.displayName}
           defaultValue={state.authUser?.displayName}
           className='mt-1 text-lg border bg-gray-200 opacity-75 border-gray-300 py-2 px-3 rounded'
         />
