@@ -85,6 +85,9 @@ export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
   }
   const items = []
   const filters = getRandomItemsInArray(user.skills)
+  if (!filters.length) {
+    return items
+  }
   let snap = firebase
     .firestore()
     .collection('users')
@@ -106,6 +109,9 @@ export const listSimilarUsers = async (user, activeGroup) => {
   }
   const items = []
   const filters = getRandomItemsInArray(user.interests)
+  if (!filters.length) {
+    return items
+  }
   let snap = firebase
     .firestore()
     .collection('users')
