@@ -182,8 +182,9 @@ const translations = {
   'wellbeing-daigaku': 'Well-Being大学',
   'hiroshima': '東広島市',
   'Report': '問題を報告',
-  'Report Content': '内容,
+  'Report Content': '内容',
   'reportContentSubmitted':
-    '事務局に報告しました。調査をした上で、必要に応じてご連絡させて頂きます。ありがとうございました。'
+    '事務局に報告しました。調査をした上で、必要に応じてご連絡させて頂きます。ありがとうございました。',
+}
 
 export default translations
