@@ -1,4 +1,5 @@
 import HeaderBack from 'components/HeaderBack'
+import ComplaintModal from 'components/ComplaintModal'
 import EditPost from 'components/EditPost'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -18,6 +19,7 @@ import {
   ArrowCircleRightIcon,
   HeartIcon as HeartIconOutline,
   XIcon,
+  BanIcon,
 } from '@heroicons/react/outline'
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid'
 import { Link } from '@reach/router'
@@ -118,6 +120,7 @@ const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
 
 const CommentCard = ({ comment, user, onDelete }) => {
   const [deleteOpen, setDeleteOpen] = React.useState(false)
+  const [complaintOpen, setComplaintOpen] = React.useState(false)
 
   const handleDelete = () => {
     //@Todo err handling
@@ -134,6 +137,11 @@ const CommentCard = ({ comment, user, onDelete }) => {
         setOpen={setDeleteOpen}
         onDelete={handleDelete}
       />
+      <ComplaintModal
+        open={complaintOpen}
+        setOpen={setComplaintOpen}
+        contentPathOverride={`/comments/${comment.id}`}
+      />
       <div className='w-16 mr-2'>
         <img
           src={utils.parseUrl(comment.author.photoURL)}
@@ -146,12 +154,19 @@ const CommentCard = ({ comment, user, onDelete }) => {
           <span className='font-medium text-base sm:text-lg'>
             {comment.author.name}
           </span>
-          {user && user.id === comment.author.id && (
+          {user && user.id === comment.author.id ? (
             <button
               onClick={() => setDeleteOpen(true)}
               className='p-2 rounded hover:bg-gray-100'
             >
               <XIcon className='h-4 w-4' />
+            </button>
+          ) : (
+            <button
+              onClick={() => setComplaintOpen(true)}
+              className='p-2 rounded text-red-500 hover:bg-red-500 hover:text-white'
+            >
+              <BanIcon className='h-4 w-4' />
             </button>
           )}
         </div>
@@ -346,7 +361,7 @@ export default function PostDetail(props) {
 
   return (
     <div>
-      <HeaderBack />
+      <HeaderBack showComplaintButton={true} />
       <div className='pb-20 bg-white max-w-2xl mx-auto'>
         {!post && state.postSingleLoading ? (
           <div className='pt-24'>

@@ -179,8 +179,12 @@ const translations = {
   'Switch Group': 'グループチェンジ',
   'all': '全体',
   'senboku': '泉北ニュータウン',
-  'wellbeing-daigaku':'Well-Being大学',
+  'wellbeing-daigaku': 'Well-Being大学',
   'hiroshima': '東広島市',
+  'Report': 'Report',
+  'Report Content': 'Report Content',
+  'reportContentSubmitted':
+    'Your report has been submitted successfully. We will investigate the issue and get back to you if necessary. Thank you.',
 }
 
 export default translations

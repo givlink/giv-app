@@ -1,6 +1,8 @@
-import { ChevronLeftIcon } from '@heroicons/react/outline'
+import { ChevronLeftIcon, BanIcon } from '@heroicons/react/outline'
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { useInView } from 'react-intersection-observer'
+import ComplaintModal from 'components/ComplaintModal'
 import { Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
 
@@ -38,14 +40,33 @@ const FloatingBackHeader = () => {
   )
 }
 
+const ComplaintButton = props => {
+  const { t } = useTranslation()
+  const [open, setOpen] = React.useState(false)
+  const state = useSelector(s => ({ user: s.user }))
+  return (
+    <div>
+      <ComplaintModal open={open} setOpen={setOpen} user={state.user} />
+      <button
+        onClick={() => setOpen(true)}
+        className='text-gray-600 flex items-center text-xs pl-3 pr-1 py-2 font-medium hover:bg-gray-100 rounded'
+      >
+        {t('Report')}
+        <BanIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
+      </button>
+    </div>
+  )
+}
+
 const BackHeader = React.forwardRef((props, ref) => {
+  const { showComplaintButton = false } = props
   const { t } = useTranslation()
   return (
     <header
       ref={ref}
       className='z-10 border-b border-gray-200 bg-white px-3 py-2 shadow'
     >
-      <div className='max-w-2xl mx-auto'>
+      <div className='flex items-center justify-between max-w-2xl mx-auto'>
         <button
           onClick={() => window.history.go(-1)}
           className='focus:translate-y-1 transform py-2 flex items-center justify-center bg-white'
@@ -53,17 +74,18 @@ const BackHeader = React.forwardRef((props, ref) => {
           <ChevronLeftIcon className='h-6 w-6 mr-1' />
           <span>{t('Back')}</span>
         </button>
+        {showComplaintButton && <ComplaintButton />}
       </div>
     </header>
   )
 })
 
-export default function HeaderBack() {
+export default function HeaderBack(props) {
   const [ref, inView] = useInView({ threshold: 0 })
   return (
     <>
       {!inView && <FloatingBackHeader />}
-      <BackHeader ref={ref} />
+      <BackHeader ref={ref} {...props} />
     </>
   )
 }

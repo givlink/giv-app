@@ -791,6 +791,20 @@ export const createPost = async ({
   return post
 }
 
+export const reportContent = async ({ description, category, contentPath }) => {
+  if (!description || !category || !contentPath) {
+    console.log(description, category)
+    throw Error('Invalid report Content payload')
+  }
+  const user = getCurrentUser()
+  if (!user) {
+    throw new Error('No user in reportContent:', description, category)
+  }
+  return firebase
+    .firestore()
+    .collection(`/users/${user.uid}/complaints`)
+    .add({ description, category, contentPath })
+}
 export const deleteComment = async (id = null) => {
   if (!id) {
     console.log('No id in delete comment')
@@ -1198,5 +1212,6 @@ const api = {
   logout,
   onRedirectResult,
   listComments,
+  reportContent,
 }
 export default api

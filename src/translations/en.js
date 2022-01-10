@@ -176,6 +176,10 @@ const translations = {
   'senboku': 'Senboku New Town',
   'wellbeing-daigaku': 'Well-Being Daigaku',
   'hiroshima': 'Higashi Hiroshima City',
+
+  "Report": "Report",
+  "Report Content": "Report Content",
+  "reportContentSubmitted": "Your report has been submitted successfully. We will investigate the issue and get back to you if necessary. Thank you."
 }
 
 export default translations

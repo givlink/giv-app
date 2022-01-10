@@ -138,7 +138,7 @@ export default function UserDetail(props) {
         <HeaderMyPage />
       ) : (
         <>
-          <HeaderBack />
+          <HeaderBack showComplaintButton={true}/>
           {user && (
             <FloatingRequestButton userId={props.id}>
               Send Giv
