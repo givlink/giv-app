@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from '@reach/router'
 import { HomeIcon } from '@heroicons/react/outline'
 import ErrorComponent from 'components/Error'
 import SpinnerFull from 'components/SpinnerFull'
