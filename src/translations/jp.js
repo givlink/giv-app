@@ -181,10 +181,9 @@ const translations = {
   'senboku': '泉北ニュータウン',
   'wellbeing-daigaku': 'Well-Being大学',
   'hiroshima': '東広島市',
-  'Report': 'Report',
-  'Report Content': 'Report Content',
+  'Report': '問題を報告',
+  'Report Content': '内容,
   'reportContentSubmitted':
-    'Your report has been submitted successfully. We will investigate the issue and get back to you if necessary. Thank you.',
-}
+    '事務局に報告しました。調査をした上で、必要に応じてご連絡させて頂きます。ありがとうございました。'
 
 export default translations
