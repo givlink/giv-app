@@ -10,6 +10,7 @@ import { useLocation } from '@reach/router'
 import { useDispatch } from 'react-redux'
 import actions from 'state/actions'
 import { parse } from 'query-string'
+import LogRocket from 'logrocket'
 
 const steps = [
   { id: 'step1' },
@@ -49,6 +50,7 @@ export default function Invite() {
 
   React.useEffect(() => {
     setData(d => ({ ...d, code }))
+    LogRocket.identify(code)
   }, [code])
 
   const setInviteCode = code => {
