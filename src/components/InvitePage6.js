@@ -56,14 +56,13 @@ const Page6 = ({ data }) => {
       </div>
       <div className='flex-1' />
       {!error && (
-        <Link
-          to='/'
-          replace={true}
+        <a
+          href='/'
           className='mb-6 w-4/5 text-white font-medium bg-giv-blue px-8 py-4 rounded flex items-center justify-center'
         >
           <HomeIcon className='mr-2 h-6 w-6' />
           {t('Go to Home')}
-        </Link>
+        </a>
       )}
     </div>
   )
