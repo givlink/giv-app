@@ -21,6 +21,7 @@ const makeOptions = (map, type, category) => {
 
 const Page3 = ({ activeStepIndex = 0, handleNext }) => {
   const { t, i18n } = useTranslation()
+  const [name, setName] = React.useState('')
   const [job, setJob] = React.useState('')
   const [intro, setIntro] = React.useState('')
   const [area, setArea] = React.useState('tokyo')
@@ -35,6 +36,7 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
   const tagField = i18n.language === 'en' ? 'tagEn' : 'tag'
 
   const handleChange = e => {
+    if (e.target.name === 'name') setName(e.target.value)
     if (e.target.name === 'job') setJob(e.target.value)
     if (e.target.name === 'intro') setIntro(e.target.value)
     if (e.target.name === 'area') setArea(e.target.value)
@@ -45,7 +47,7 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
   const onSubmit = async () => {
     handleNext({
       job,
-      name: state.authUser?.displayName,
+      name: name || state.authUser?.displayName,
       intro,
       area,
     })
@@ -56,9 +58,11 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
       <label className='flex flex-col'>
         <span className='font-medium'>{t('Name')}</span>
         <input
-          readOnly={!!state.authUser?.displayName}
-          defaultValue={state.authUser?.displayName}
-          className='mt-1 text-lg border bg-gray-200 opacity-75 border-gray-300 py-2 px-3 rounded'
+          name='name'
+          onChange={handleChange}
+          value={name || state.authUser?.displayName}
+          placeholder={t('Name')}
+          className={`mt-1 text-lg border border-gray-300 py-2 px-3 rounded`}
         />
       </label>
       <label className='mt-6 flex flex-col'>

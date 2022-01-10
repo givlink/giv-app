@@ -31,7 +31,7 @@ const Page4 = ({ activeStepIndex = 0, handleNext }) => {
 
   return (
     <div className='flex-1 flex flex-col w-full px-2 overflow-x-hidden'>
-      <h4 className='text-center font-medium text-gray-800 mb-6'>
+      <h4 className='text-center font-bold text-giv-blue-dark mb-6 animate-pulse'>
         {t('Select your Skills')}
       </h4>
       <div className='flex-1 h-full overflow-y-auto overflow-x-hidden'>
