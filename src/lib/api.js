@@ -2,8 +2,20 @@ import firebase from './firebase'
 import utils from 'lib/utils'
 import Err from 'lib/err'
 import shortId from 'short-uuid'
+import axios from 'axios'
 
 const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
+
+const API_URL = `https://api.giv.link/api`
+const _apiClient = async (path, opts = {}) => {
+  const token = await firebase.auth().currentUser?.getIdToken()
+  const payload = { url: `${API_URL}${path}`, ...opts }
+  if (!payload.headers) payload.headers = {}
+  payload.headers.authorization = `Bearer ${token}`
+  const { data } = await axios(payload)
+  console.log(data)
+  return data
+}
 
 const login = prov => {
   let provider = new firebase.auth.FacebookAuthProvider()
@@ -158,36 +170,9 @@ export const listRecommendations = async (user, activeGroup) => {
   })
   return items
 }
-export const listPlaceCategories = async () => {
-  const result = []
-  const snap = await firebase
-    .firestore()
-    .collection('place-categories')
-    .orderBy('order', 'asc')
-    .get()
-  snap.forEach(doc => result.push({ id: doc.id, ...doc.data() }))
-  return result
-}
-export const listSkillCategories = async () => {
-  const result = []
-  const snap = await firebase
-    .firestore()
-    .collection('skill-categories')
-    .orderBy('order', 'asc')
-    .get()
-  snap.forEach(doc => result.push({ id: doc.id, ...doc.data() }))
-  return result
-}
-export const listSkills = async () => {
-  const skills = {}
-  const snap = await firebase
-    .firestore()
-    .collection('skills')
-    .orderBy('order', 'asc')
-    .get()
-  snap.forEach(doc => (skills[doc.id] = { id: doc.id, ...doc.data() }))
-  return skills
-}
+export const listPlaceCategories = () => _apiClient('/area-categories')
+export const listSkillCategories = () => _apiClient('/skill-categories')
+export const listSkills = () => _apiClient('/skills')
 
 export const getGiv = async givId => {
   const doc = await firebase.firestore().doc(`/givs/${givId}`).get()
@@ -874,16 +859,8 @@ const listPosts = async (query = {}) => {
   return [posts, offset]
 }
 
-const listAreas = async () => {
-  const areas = {}
-  const snap = await firebase
-    .firestore()
-    .collection('areas')
-    .orderBy('order', 'asc')
-    .get()
-  snap.forEach(doc => (areas[doc.id] = { id: doc.id, ...doc.data() }))
-  return areas
-}
+const listAreas = () => _apiClient('/areas')
+
 const listUserGivs = async (userId, type = 'receive') => {
   let queryKey = 'receiverId'
   if (type === 'send') {

@@ -1,6 +1,7 @@
 import './index.css'
 
 import { Router } from '@reach/router'
+import React from 'react'
 
 import RecomendationList from 'pages/RecommendationList.js'
 import UserList from 'pages/UserList'

@@ -10,6 +10,7 @@
     "@sentry/react": "^6.10.0",
     "@sentry/tracing": "^6.10.0",
     "@tailwindcss/forms": "^0.3.3",
+    "axios": "^0.25.0",
     "date-fns": "^2.23.0",
     "firebase": "^8.7.1",
     "i18next": "^20.3.5",
