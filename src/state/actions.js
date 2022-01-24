@@ -47,7 +47,9 @@ const actions = {
         dispatch({ type: 'skills/loading' })
       }
       const skills = await api.listSkills()
-      dispatch({ type: 'skills/data', skills })
+      const skillMap = {}
+      skills.forEach(s => (skillMap[s.id] = s))
+      dispatch({ type: 'skills/data', skills: skillMap })
     }
   },
   loadRecommendations: () => {
@@ -56,7 +58,10 @@ const actions = {
       dispatch({ type: 'recommendations/loading' })
       const recommendations = {
         matchingYourInterests: await api.listRecommendations(null, activeGroup),
-        matchingYourSkills: await api.listUsersWhoLikeYourSkills(null, activeGroup),
+        matchingYourSkills: await api.listUsersWhoLikeYourSkills(
+          null,
+          activeGroup,
+        ),
         similarInterests: await api.listSimilarUsers(null, activeGroup),
       }
       dispatch({ type: 'recommendations/data', recommendations })
