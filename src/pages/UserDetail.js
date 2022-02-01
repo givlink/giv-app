@@ -16,6 +16,8 @@ import { LocationMarkerIcon } from '@heroicons/react/outline'
 import { useTranslation } from 'react-i18next'
 import EditUser from 'components/EditUser'
 import usePreserveScroll from 'hooks/scroll'
+import ReportActions from 'components/ReportActions'
+
 const safeJsonStringify = require('safe-json-stringify')
 
 const ADMIN_ID = '5ccf0b6a-770e-4753-8370-5f3318649938'
@@ -138,7 +140,7 @@ export default function UserDetail(props) {
         <HeaderMyPage />
       ) : (
         <>
-          <HeaderBack showComplaintButton={true}/>
+          <HeaderBack showComplaintButton={false} />
           {user && (
             <FloatingRequestButton userId={props.id}>
               Send Giv
@@ -193,6 +195,7 @@ export default function UserDetail(props) {
               <GivList userId={user.id} type='send' />
             </div>
 
+            {!isMyPage && <ReportActions targetUser={user} />}
             {isMyPage && isAdmin && <Debug />}
           </>
         ) : (

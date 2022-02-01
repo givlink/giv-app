@@ -174,7 +174,19 @@ const actions = {
       const { authUser } = getState()
       // dispatch({ type: 'chat_groups/loading' })
       const listener = await api.watchChatGroups(authUser?.uid, groups => {
-        dispatch({ type: 'chat_groups/data', groups })
+        const filtered = {}
+        Object.entries(groups).forEach(([key, group]) => {
+          let allow = true
+          Object.keys(group.members || {}).forEach(m => {
+            if (!api.allowContent(m)) {
+              allow = false
+            }
+          })
+          if (allow) {
+            filtered[key] = group
+          }
+        })
+        dispatch({ type: 'chat_groups/data', groups: filtered })
       })
       dispatch({ type: 'chat_groups/loading_done' })
       dispatch({ type: 'app/update_listeners', listeners: [listener] })

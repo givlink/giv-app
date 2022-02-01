@@ -208,7 +208,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, chatsLoading: true }
     case 'chat_groups/data':
       const { groups } = action
-
+      
       return {
         ...state,
         //@Todo unread count is wrong atm. Incomplete

@@ -179,6 +179,7 @@ const translations = {
 
   "Report": "Report",
   "Report Content": "Report Content",
+  'Block User': 'Block User',
   "reportContentSubmitted": "Your report has been submitted successfully. We will investigate the issue and get back to you if necessary. Thank you."
 }
 

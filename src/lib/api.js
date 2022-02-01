@@ -6,6 +6,12 @@ import axios from 'axios'
 
 const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
 
+export const allowContent = (contentId, contentType = 'user') => {
+  if (!contentId || !contentType) return true
+  const blocked = localStorage.getItem(`blocks:${contentType}:${contentId}`)
+  return !blocked
+}
+
 const API_URL = `https://api.giv.link/api`
 const _apiClient = async (path, opts = {}) => {
   const token = await firebase.auth().currentUser?.getIdToken()
@@ -13,7 +19,7 @@ const _apiClient = async (path, opts = {}) => {
   if (!payload.headers) payload.headers = {}
   payload.headers.authorization = `Bearer ${token}`
   const { data } = await axios(payload)
-  console.log(`${path}`, data)
+  // console.log(`${path}`, data)
   return data
 }
 
@@ -88,6 +94,8 @@ export const listUsers = async query => {
     users = users.filter(u => u.name && u.name.startsWith(q.filter.value))
   }
 
+  users = users.filter(u => allowContent(u.id, 'user'))
+
   return [users, snap.docs[snap.docs.length - 1]]
 }
 
@@ -95,7 +103,7 @@ export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
-  const items = []
+  let items = []
   const filters = getRandomItemsInArray(user.skills)
   if (!filters.length) {
     return items
@@ -113,13 +121,16 @@ export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
     if (doc.id === user.id) return //ignore yourself
     items.push({ id: doc.id, ...doc.data() })
   })
+
+  items = items.filter(u => allowContent(u.id, 'user'))
+
   return items
 }
 export const listSimilarUsers = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
-  const items = []
+  let items = []
   const filters = getRandomItemsInArray(user.interests)
   if (!filters.length) {
     return items
@@ -137,6 +148,7 @@ export const listSimilarUsers = async (user, activeGroup) => {
     if (doc.id === user.id) return //ignore yourself
     items.push({ id: doc.id, ...doc.data() })
   })
+  items = items.filter(u => allowContent(u.id, 'user'))
   return items
 }
 
@@ -154,7 +166,7 @@ export const listRecommendations = async (user, activeGroup) => {
     user = await getCurrentUserProfile()
   }
 
-  const items = []
+  let items = []
   const filters = getRandomItemsInArray(user.interests)
   let snap = firebase
     .firestore()
@@ -168,6 +180,7 @@ export const listRecommendations = async (user, activeGroup) => {
     if (doc.id === user.id) return //ignore yourself
     items.push({ id: doc.id, ...doc.data() })
   })
+  items = items.filter(u => allowContent(u.id, 'user'))
   return items
 }
 export const listAreas = () => _apiClient('/areas')
@@ -198,7 +211,12 @@ export const isActivatedUser = async uid => {
   return result
 }
 
-export const getUserProfile = uid => _apiClient(`/users/${uid}`)
+export const getUserProfile = uid => {
+  if (!allowContent(uid, 'user')) {
+    return null
+  }
+  return _apiClient(`/users/${uid}`)
+}
 
 export const getCurrentUserProfile = async () => {
   const user = getCurrentUser()
@@ -758,6 +776,15 @@ export const createPost = async ({
   return post
 }
 
+//Simple block system, we just put it in localStorage
+//This was only done to satify Google policies
+export const blockUser = async userId => {
+  if (firebase.auth().currentUser?.uid === userId) {
+    return
+  }
+  localStorage.setItem(`blocks:user:${userId}`, true)
+}
+
 export const reportContent = async ({ description, category, contentPath }) => {
   if (!description || !category || !contentPath) {
     console.log(description, category)
@@ -835,9 +862,14 @@ const listPosts = async (query = {}) => {
 
   snap = await snap.limit(q.limit).get()
 
-  const posts = []
+  let posts = []
   snap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }))
   const offset = snap.docs[snap.docs.length - 1]
+
+  posts = posts.filter(
+    p => allowContent(p.authorId, 'user') && allowContent(p.giverId, 'user'),
+  )
+
   return [posts, offset]
 }
 
@@ -1112,5 +1144,7 @@ const api = {
   onRedirectResult,
   listComments,
   reportContent,
+  blockUser,
+  allowContent,
 }
 export default api
