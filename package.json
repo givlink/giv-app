@@ -11,6 +11,7 @@
     "@sentry/tracing": "^6.10.0",
     "@tailwindcss/forms": "^0.3.3",
     "axios": "^0.25.0",
+    "cross-env": "^7.0.3",
     "date-fns": "^2.23.0",
     "firebase": "^8.7.1",
     "i18next": "^20.3.5",
@@ -34,9 +35,8 @@
     "short-uuid": "^4.2.0"
   },
   "scripts": {
-    "dev": "craco start",
-    "start": "craco start",
-    "start-mac": "HTTPS=true craco start",
+    "dev": "cross-env HTTPS=true craco start",
+    "start": "yarn dev",
     "build": "craco build",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/**"
@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^9",
+    "concurrently": "^7.0.0",
     "eslint-plugin-react": "^7.26.1",
     "postcss": "^7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat"

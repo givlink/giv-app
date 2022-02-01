@@ -13,7 +13,7 @@ const _apiClient = async (path, opts = {}) => {
   if (!payload.headers) payload.headers = {}
   payload.headers.authorization = `Bearer ${token}`
   const { data } = await axios(payload)
-  console.log(data)
+  console.log(`${path}`, data)
   return data
 }
 
@@ -170,6 +170,7 @@ export const listRecommendations = async (user, activeGroup) => {
   })
   return items
 }
+export const listAreas = () => _apiClient('/areas')
 export const listPlaceCategories = () => _apiClient('/area-categories')
 export const listSkillCategories = () => _apiClient('/skill-categories')
 export const listSkills = () => _apiClient('/skills')
@@ -197,27 +198,8 @@ export const isActivatedUser = async uid => {
   return result
 }
 
-//@Todo add caching
-export const getUserProfile = async (uid, preferCache = true) => {
-  if (preferCache) {
-    const fromCache = cache.users[uid]
-    if (fromCache) {
-      return fromCache
-    }
-  }
+export const getUserProfile = uid => _apiClient(`/users/${uid}`)
 
-  const doc = await firebase.firestore().doc(`/users/${uid}`).get()
-  if (!doc.exists) {
-    // Err.warn(`User profile not found for user: ${uid}`)
-    return null
-  }
-  const result = { ...doc.data(), id: uid }
-
-  //Update cache
-  cache.users[uid] = result
-
-  return result
-}
 export const getCurrentUserProfile = async () => {
   const user = getCurrentUser()
   if (!user) {
@@ -859,8 +841,6 @@ const listPosts = async (query = {}) => {
   return [posts, offset]
 }
 
-const listAreas = () => _apiClient('/areas')
-
 const listUserGivs = async (userId, type = 'receive') => {
   let queryKey = 'receiverId'
   if (type === 'send') {
@@ -908,32 +888,9 @@ const getFinishedGivs = async receiverId => {
   })
   return givs
 }
-//@Todo add caching
-const getGivById = async id => {
-  const doc = await firebase.firestore().doc(`givs/${id}`).get()
-  if (doc.exists) {
-    const result = { ...doc.data(), id: doc.id }
-    return result
-  } else {
-    return null
-  }
-}
+const getGivById = async id => _apiClient(`/givs/${id}`)
 
-const getPostById = async id => {
-  const doc = await firebase.firestore().doc(`posts/${id}`).get()
-  if (doc.exists) {
-    const post = { ...doc.data(), id: doc.id }
-    //@Todo hack because we don't update each post author photoURL
-    //if user change their photo then it wont show up
-    //for now just fetching the latest. Fix this by updating all post photo url
-    //when user updates their profile
-    const user = await getUserProfile(post.author.id)
-    post.author = user
-    return post
-  } else {
-    return null
-  }
-}
+const getPostById = async id => _apiClient(`/posts/${id}`)
 
 const getPostByGivId = async givId => {
   const snap = await firebase
@@ -949,19 +906,7 @@ const getPostByGivId = async givId => {
   }
 }
 
-const getPostsForMe = async userId => {
-  const snap = await firebase
-    .firestore()
-    .collection('posts')
-    .where('giver.id', '==', userId)
-    .get()
-
-  const posts = []
-  snap.forEach(doc => {
-    posts.push({ ...doc.data(), id: doc.id })
-  })
-  return posts
-}
+const getPostsForMe = async userId => _apiClient(`/posts?giverId=${userId}`)
 
 const getGivRequests = async userId => {
   const snap1 = await firebase
@@ -993,11 +938,8 @@ const getGivRequests = async userId => {
   })
   return requests
 }
-export const getInviteCode = async code => {
-  const resp = await firebase.firestore().doc(`/invites/${code}`).get()
-  if (resp.exists) return { ...resp.data() }
-  return null
-}
+
+export const getInviteCode = async code => _apiClient(`/invites/${code}`)
 
 //@Todo add cache to getUserProfile etc
 export const createUserProfile = async ({
@@ -1096,33 +1038,13 @@ export const updateCurrentUserPhoto = async file => {
   return newPhotoURL
 }
 
-export const updateCurrentUser = async data => {
+export const updateCurrentUser = data => {
   if (!data) return null
 
   const user = getCurrentUser()
   if (!user) return null
 
-  let payload = {}
-  if (data.interests && data.interests.length > 0) {
-    payload.interests = data.interests
-  }
-  if (data.intro) {
-    payload.intro = data.intro
-  }
-  if (data.name && data.name !== '') {
-    payload.name = data.name
-  }
-  if (data.job) {
-    payload.job = data.job
-  }
-
-  await firebase
-    .firestore()
-    .doc(`/users/${user.uid}`)
-    .set(payload, { merge: true })
-
-  //Reset cache
-  delete cache.users[user.uid]
+  return _apiClient(`/users`, { method: 'PUT', data })
 }
 
 const api = {
