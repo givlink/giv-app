@@ -19,7 +19,7 @@ const _apiClient = async (path, opts = {}) => {
   if (!payload.headers) payload.headers = {}
   payload.headers.authorization = `Bearer ${token}`
   const { data } = await axios(payload)
-  console.log(`${path}`, data)
+  // console.log(`${path}`, data)
   return data
 }
 
