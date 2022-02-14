@@ -19,7 +19,7 @@ const _apiClient = async (path, opts = {}) => {
   if (!payload.headers) payload.headers = {}
   payload.headers.authorization = `Bearer ${token}`
   const { data } = await axios(payload)
-  // console.log(`${path}`, data)
+  console.log(`${path}`, data)
   return data
 }
 
@@ -785,6 +785,7 @@ export const blockUser = async userId => {
   localStorage.setItem(`blocks:user:${userId}`, true)
 }
 
+//api ready
 export const reportContent = async ({ description, category, contentPath }) => {
   if (!description || !category || !contentPath) {
     console.log(description, category)
@@ -807,6 +808,7 @@ export const deleteComment = async (id = null) => {
   await firebase.firestore().doc(`/comments/${id}`).delete()
 }
 
+//api ready
 const getCommentById = async id => {
   const fromCache = cache.comments[id]
   if (fromCache) {
@@ -827,6 +829,7 @@ const getCommentById = async id => {
   }
 }
 
+//api ready
 const listComments = async (postId, query = {}) => {
   const q = { ...DEFAULT_QUERY_LIST_COMMENTS, ...query }
 
@@ -873,57 +876,11 @@ const listPosts = async (query = {}) => {
   return [posts, offset]
 }
 
-const listUserGivs = async (userId, type = 'receive') => {
-  let queryKey = 'receiverId'
-  if (type === 'send') {
-    queryKey = 'senderId'
-  }
-
-  const snap = await firebase
-    .firestore()
-    .collection('givs')
-    .where(queryKey, '==', userId)
-    .where('status', '==', 'Finished')
-    .get()
-  const givs = []
-  snap.forEach(doc => {
-    givs.push({ ...doc.data(), id: doc.id })
-  })
-  return givs
-}
-const getNewGivs = async receiverId => {
-  const snap = await firebase
-    .firestore()
-    .collection('givs')
-    .where('receiverId', '==', receiverId)
-    .where('status', '==', 'Pending')
-    .get()
-  const givs = []
-  snap.forEach(doc => {
-    givs.push({ ...doc.data(), id: doc.id })
-  })
-  return givs
-}
-
-const getFinishedGivs = async receiverId => {
-  const snap = await firebase
-    .firestore()
-    .collection('givs')
-    .where('receiverId', '==', receiverId)
-    .where('status', '==', 'Finished')
-    .get()
-  const givs = []
-  snap.forEach(async doc => {
-    const giv = { ...doc.data(), id: doc.id }
-    giv.giver = await getUserProfile(giv.giverId)
-    givs.push(giv)
-  })
-  return givs
-}
 const getGivById = async id => _apiClient(`/givs/${id}`)
 
 const getPostById = async id => _apiClient(`/posts/${id}`)
 
+//api ready /api/posts?givId=xxxx
 const getPostByGivId = async givId => {
   const snap = await firebase
     .firestore()
@@ -940,6 +897,7 @@ const getPostByGivId = async givId => {
 
 const getPostsForMe = async userId => _apiClient(`/posts?giverId=${userId}`)
 
+//api ready
 const getGivRequests = async userId => {
   const snap1 = await firebase
     .firestore()
@@ -1007,6 +965,8 @@ export const createUserProfile = async ({
   //	skills or interests are empty etc
   return 'OK'
 }
+
+//api ready
 export const saveDeviceToken = (token = null) => {
   const user = getCurrentUser()
   if (!user) {
@@ -1039,6 +999,8 @@ export const setupNotifications = async (token = null) => {
     }
   }
 }
+
+//APi ready PUT /api/users/:id
 export const updateCurrentUserPhoto = async file => {
   if (!file) return null
 
@@ -1076,7 +1038,7 @@ export const updateCurrentUser = data => {
   const user = getCurrentUser()
   if (!user) return null
 
-  return _apiClient(`/users`, { method: 'PUT', data })
+  return _apiClient(`/users/${user.uid}`, { method: 'PUT', data })
 }
 
 const api = {
@@ -1118,16 +1080,13 @@ const api = {
   updatePostImages,
   deletePost,
 
-  getFinishedGivs,
   getPostByGivId,
   getPostById,
   getGivById,
   getPostsForMe,
-  getNewGivs,
   getGivRequests,
   getInviteCode,
   createUserProfile,
-  listUserGivs,
   isActivatedUser,
 
   setupNotifications,
