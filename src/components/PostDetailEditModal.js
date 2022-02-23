@@ -51,7 +51,7 @@ const PostDetailEditModal = ({
         open={editing}
         onClose={closeModal}
       >
-        <div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+        <div className='flex items-center justify-center min-h-screen px-4 text-center sm:block sm:p-0'>
           <Transition.Child
             as={React.Fragment}
             enter='ease-out duration-150'
@@ -81,16 +81,16 @@ const PostDetailEditModal = ({
             leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
           >
             <div
-              style={{ height: '65vh', minWidth: '80vw' }}
+              style={{ height: '80vh', minWidth: '80vw' }}
               ref={ref}
-              className='bg-white rounded-lg w-full pt-3 pb-4 text-left shadow-xl transform transition-all'
+              className='bg-white rounded-lg h-full w-full pt-3 pb-4 text-left shadow-xl transform transition-all'
             >
               {sending ? (
                 <button className='flex items-center justify-center h-full w-full'>
                   <Spinner />
                 </button>
               ) : (
-                <div className='flex flex-col overflow-hidden h-full'>
+                <div className='overflow-hidden h-full'>
                   <div className='flex items-center mx-2'>
                     <button
                       type='button'
@@ -106,7 +106,7 @@ const PostDetailEditModal = ({
                       {t('Edit Your Post')}
                     </Dialog.Title>
                   </div>
-                  <div className='flex-1 flex flex-col mt-5 pb-12 pl-5 pr-3 text-center overflow-auto'>
+                  <div className='h-full flex-1 flex flex-col mt-5 pl-5 pr-3 text-center overflow-auto'>
                     <label className='mb-6 flex flex-col items-start'>
                       <span className='text-sm text-gray-800 font-medium'>
                         {t('Title')}
@@ -129,7 +129,7 @@ const PostDetailEditModal = ({
                         value={message}
                         onChange={onUpdate}
                         placeholder={t('Post Message')}
-                        className='h-full resize-none mt-1 w-full border border-gray-300 px-3 py-2 rounded'
+                        className='h-full resize-none mt-1 mb-20 w-full border border-gray-300 px-3 py-2 rounded'
                       />
                     </label>
                   </div>

@@ -35,6 +35,7 @@
     "short-uuid": "^4.2.0"
   },
   "scripts": {
+    "predev": "yarn",
     "dev": "cross-env HTTPS=true craco start",
     "start": "yarn dev",
     "build": "craco build",
