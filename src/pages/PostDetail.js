@@ -268,13 +268,13 @@ const CommentList = ({ postId }) => {
   React.useEffect(() => {
     if (!postId) return
     //@todo err handling
-    api.listComments(postId).then(([c]) => setComments(c))
+    api.listComments(postId).then(setComments)
   }, [postId])
 
   const onAddComment = comment => {
     setComments([comment, ...comments])
   }
-  const onDeletComment = id => {
+  const onDeleteComment = id => {
     const newComments = comments.filter(c => c.id !== id)
     setComments(newComments)
   }
@@ -291,7 +291,7 @@ const CommentList = ({ postId }) => {
             <CommentCard
               comment={c}
               user={state.user}
-              onDelete={onDeletComment}
+              onDelete={onDeleteComment}
             />
           </li>
         ))}

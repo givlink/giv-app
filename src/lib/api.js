@@ -23,6 +23,90 @@ const _apiClient = async (path, opts = {}) => {
   return data
 }
 
+export const listAreas = () => _apiClient('/areas')
+export const listPlaceCategories = () => _apiClient('/area-categories')
+export const listSkillCategories = () => _apiClient('/skill-categories')
+export const listSkills = () => _apiClient('/skills')
+
+export const getUserProfile = uid => {
+  if (!allowContent(uid, 'user')) {
+    return null
+  }
+  return _apiClient(`/users/${uid}`)
+}
+
+export const getGivById = id => _apiClient(`/givs/${id}`)
+export const getPostById = id => _apiClient(`/posts/${id}`)
+export const getPostByGivId = givId => _apiClient(`/posts?givId=${givId}`)
+export const getPostsForMe = userId => _apiClient(`/posts?giverId=${userId}`)
+export const getGivRequests = () => _apiClient(`/requests`)
+export const getInviteCode = code => _apiClient(`/invites/${code}`)
+
+export const reportContent = async ({ description, category, contentPath }) => {
+  return _apiClient(`/complaints`, {
+    method: 'POST',
+    data: { description, category, contentPath },
+  })
+}
+export const deleteComment = id => {
+  return _apiClient(`/comments/${id}`, { method: 'DELETE' })
+}
+
+const getCommentById = id => _apiClient(`/comments/${id}`)
+
+const listComments = async postId => {
+  const results = await _apiClient(`/comments?postId=${postId}`)
+  console.log(results)
+  return results
+}
+
+export const saveDeviceToken = (token = null) => {
+  if (!token || token === '') {
+    throw new Error('Save device token failed: Token invalid')
+  }
+  return _apiClient(`/device-tokens/${token}`, { method: 'PUT' })
+}
+
+export const updateCurrentUserPhoto = async file => {
+  if (!file) return null
+
+  const user = await getCurrentUserProfile()
+  if (!user) return null
+
+  const oldPhotoURL = user.photoURL
+  const newPhotoURL = `images/${user.id}/profile/${shortId.generate()}`
+
+  const ref = firebase.storage().ref().child(newPhotoURL)
+
+  //1. Upload the image
+  await ref.put(file)
+
+  //2. Update the user profile
+  await _apiClient(`/users/${user.id}`, {
+    method: 'PUT',
+    data: { photoURL: newPhotoURL },
+  })
+
+  //3. Delete old profile photo if its a local url
+  if (oldPhotoURL && !oldPhotoURL.startsWith('http')) {
+    await firebase.storage().ref().child(oldPhotoURL).delete()
+  }
+
+  //@Todo sentry on err, slack on err
+  //@Todo if any of these fail then we have a junk files in db
+  //setup a function to clear those
+  return newPhotoURL
+}
+
+export const updateCurrentUser = data => {
+  if (!data) return null
+
+  const user = getCurrentUser()
+  if (!user) return null
+
+  return _apiClient(`/users/${user.uid}`, { method: 'PUT', data })
+}
+
 const login = prov => {
   let provider = new firebase.auth.FacebookAuthProvider()
   if (prov && prov === 'apple') {
@@ -40,13 +124,6 @@ const onRedirectResult = () => {
   return firebase.auth().getRedirectResult()
 }
 
-const cache = {
-  users: {},
-  comments: {},
-}
-
-//@Todo better caching library
-
 const DEFAULT_QUERY_LIST_USERS = {
   activeGroup: null,
   offset: null,
@@ -56,10 +133,6 @@ const DEFAULT_QUERY_LIST_POSTS = {
   activeGroup: null,
   offset: null,
   limit: 20,
-}
-const DEFAULT_QUERY_LIST_COMMENTS = {
-  offset: null,
-  limit: 50,
 }
 
 export const listUsers = async query => {
@@ -183,10 +256,6 @@ export const listRecommendations = async (user, activeGroup) => {
   items = items.filter(u => allowContent(u.id, 'user'))
   return items
 }
-export const listAreas = () => _apiClient('/areas')
-export const listPlaceCategories = () => _apiClient('/area-categories')
-export const listSkillCategories = () => _apiClient('/skill-categories')
-export const listSkills = () => _apiClient('/skills')
 
 export const getGiv = async givId => {
   const doc = await firebase.firestore().doc(`/givs/${givId}`).get()
@@ -209,13 +278,6 @@ export const isActivatedUser = async uid => {
   // }
 
   return result
-}
-
-export const getUserProfile = uid => {
-  if (!allowContent(uid, 'user')) {
-    return null
-  }
-  return _apiClient(`/users/${uid}`)
 }
 
 export const getCurrentUserProfile = async () => {
@@ -785,72 +847,6 @@ export const blockUser = async userId => {
   localStorage.setItem(`blocks:user:${userId}`, true)
 }
 
-//api ready
-export const reportContent = async ({ description, category, contentPath }) => {
-  if (!description || !category || !contentPath) {
-    console.log(description, category)
-    throw Error('Invalid report Content payload')
-  }
-  const user = getCurrentUser()
-  if (!user) {
-    throw new Error('No user in reportContent:', description, category)
-  }
-  return firebase
-    .firestore()
-    .collection(`/users/${user.uid}/complaints`)
-    .add({ description, category, contentPath })
-}
-export const deleteComment = async (id = null) => {
-  if (!id) {
-    console.log('No id in delete comment')
-    return
-  }
-  await firebase.firestore().doc(`/comments/${id}`).delete()
-}
-
-//api ready
-const getCommentById = async id => {
-  const fromCache = cache.comments[id]
-  if (fromCache) {
-    return fromCache
-  }
-  const doc = await firebase.firestore().doc(`comments/${id}`).get()
-  if (doc.exists) {
-    const comment = { ...doc.data(), id: doc.id }
-    console.log('comment id:', comment)
-    // const user = await getUserProfile(comment.author.id);
-    // post.author = user;
-
-    //Update cache
-    cache.comments[id] = comment
-    return comment
-  } else {
-    return null
-  }
-}
-
-//api ready
-const listComments = async (postId, query = {}) => {
-  const q = { ...DEFAULT_QUERY_LIST_COMMENTS, ...query }
-
-  let snap = firebase
-    .firestore()
-    .collection('comments')
-    .where('postId', '==', postId)
-    .orderBy('createdAt', 'asc')
-
-  if (q.offset) {
-    snap = snap.startAfter(q.offset)
-  }
-
-  snap = await snap.limit(q.limit).get()
-
-  const comments = []
-  snap.forEach(doc => comments.push({ ...doc.data(), id: doc.id }))
-  const offset = snap.docs[snap.docs.length - 1]
-  return [comments, offset]
-}
-
 const listPosts = async (query = {}) => {
   const q = { ...DEFAULT_QUERY_LIST_POSTS, ...query }
 
@@ -875,61 +871,6 @@ const listPosts = async (query = {}) => {
 
   return [posts, offset]
 }
-
-const getGivById = async id => _apiClient(`/givs/${id}`)
-
-const getPostById = async id => _apiClient(`/posts/${id}`)
-
-//api ready /api/posts?givId=xxxx
-const getPostByGivId = async givId => {
-  const snap = await firebase
-    .firestore()
-    .collection('posts')
-    .where('givId', '==', givId)
-    .get()
-  if (!snap.empty) {
-    const doc = snap.docs[0] //@Todo assert only one
-    return { ...doc.data(), id: doc.id }
-  } else {
-    return null
-  }
-}
-
-const getPostsForMe = async userId => _apiClient(`/posts?giverId=${userId}`)
-
-//api ready
-const getGivRequests = async userId => {
-  const snap1 = await firebase
-    .firestore()
-    .collection('givRequests')
-    .where('giverId', '==', userId)
-    .where('type', '==', 'receive')
-    .get()
-  const snap2 = await firebase
-    .firestore()
-    .collection('givRequests')
-    .where('receiverId', '==', userId)
-    .where('type', '==', 'send')
-    .get()
-
-  const requests = []
-  snap1.forEach(async doc => {
-    const payload = { ...doc.data(), id: doc.id }
-    const receiver = await getUserProfile(payload.receiverId)
-    payload.receiver = receiver
-    requests.push(payload)
-  })
-  //@Todo need to tighten the rules for givRequest, current open for all
-  snap2.forEach(async doc => {
-    const payload = { ...doc.data(), id: doc.id }
-    const sender = await getUserProfile(payload.senderId)
-    payload.sender = sender
-    requests.push(payload)
-  })
-  return requests
-}
-
-export const getInviteCode = async code => _apiClient(`/invites/${code}`)
 
 //@Todo add cache to getUserProfile etc
 export const createUserProfile = async ({
@@ -966,21 +907,6 @@ export const createUserProfile = async ({
   return 'OK'
 }
 
-//api ready
-export const saveDeviceToken = (token = null) => {
-  const user = getCurrentUser()
-  if (!user) {
-    throw new Error('Save device token failed: Unauthorized')
-  }
-  if (!token || token === '') {
-    throw new Error('Save device token failed: Token invalid')
-  }
-  return firebase
-    .firestore()
-    .doc(`/users/${user.uid}/deviceTokens/${token}`)
-    .set({ lastUpdatedAt: new Date().toISOString() })
-}
-
 export const setupNotifications = async (token = null) => {
   if (token) {
     //ios and android
@@ -998,47 +924,6 @@ export const setupNotifications = async (token = null) => {
       throw err
     }
   }
-}
-
-//APi ready PUT /api/users/:id
-export const updateCurrentUserPhoto = async file => {
-  if (!file) return null
-
-  const user = await getCurrentUserProfile()
-  if (!user) return null
-
-  const oldPhotoURL = user.photoURL
-  const newPhotoURL = `images/${user.id}/profile/${shortId.generate()}`
-
-  const ref = firebase.storage().ref().child(newPhotoURL)
-
-  //1. Upload the image
-  await ref.put(file)
-
-  //2. Update the user profile
-  await firebase
-    .firestore()
-    .doc(`/users/${user.id}`)
-    .update({ photoURL: newPhotoURL })
-
-  //3. Delete old profile photo if its a local url
-  if (oldPhotoURL && !oldPhotoURL.startsWith('http')) {
-    await firebase.storage().ref().child(oldPhotoURL).delete()
-  }
-
-  //@Todo sentry on err, slack on err
-  //@Todo if any of these fail then we have a junk files in db
-  //setup a function to clear those
-  return newPhotoURL
-}
-
-export const updateCurrentUser = data => {
-  if (!data) return null
-
-  const user = getCurrentUser()
-  if (!user) return null
-
-  return _apiClient(`/users/${user.uid}`, { method: 'PUT', data })
 }
 
 const api = {
