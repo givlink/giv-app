@@ -3,6 +3,7 @@ import utils from 'lib/utils'
 import Err from 'lib/err'
 import shortId from 'short-uuid'
 import axios from 'axios'
+import qs from 'query-string'
 
 const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
 
@@ -132,92 +133,66 @@ const DEFAULT_QUERY_LIST_POSTS = {
 }
 
 export const listUsers = async query => {
-  // offset = null, limit = 20, filter = null
   const q = { ...DEFAULT_QUERY_LIST_USERS, ...query }
 
-  let snap = firebase.firestore().collection('users')
-  snap = snap.where(`groups.${q.activeGroup}`, '==', true)
-
+  const qq = {
+    activeGroup: q.activeGroup,
+    offset: q.offset,
+  }
   if (q.filter && q.filter.value) {
-    if (q.filter.type === 'skills') {
-      snap = snap.where('skills', 'array-contains', q.filter.value)
-    }
-    if (q.filter.type === 'area') {
-      snap = snap.where('area', '==', q.filter.value)
-    }
-    if (q.filter.type === 'name') {
-      snap = snap.where('name', '>', q.filter.value)
-    }
-  } else {
-    snap = snap.orderBy('createdAt', 'desc')
+    qq.filterType = q.filter.type
+    qq.filterValue = q.filter.value
   }
 
-  if (q.offset) snap = snap.startAfter(q.offset)
-  snap = await snap.limit(q.limit).get() //@Todo sec rules
-
-  let users = []
-  snap.forEach(doc => users.push({ ...doc.data(), id: doc.id }))
-
-  //@Hack : User search hack to show exact matches only
-  if (q.filter && q.filter.type === 'name') {
-    users = users.filter(u => u.name && u.name.startsWith(q.filter.value))
-  }
-
+  const result = await _apiClient(`/users?${qs.stringify(qq)}`)
+  let users = result
   users = users.filter(u => allowContent(u.id, 'user'))
 
-  return [users, snap.docs[snap.docs.length - 1]]
+  const offsetItem = result[result.length - 1]
+
+  return [users, offsetItem.id]
 }
 
 export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
-  let items = []
   const filters = getRandomItemsInArray(user.skills)
   if (!filters.length) {
-    return items
+    return []
   }
-  let snap = firebase
-    .firestore()
-    .collection('users')
-    .where('interests', 'array-contains-any', filters)
 
-  if (activeGroup) {
-    snap = snap.where(`groups.${activeGroup}`, '==', true)
+  const qq = {
+    activeGroup,
+    filterType: 'interests',
+    filterValue: filters.join(','),
+    limit: 10,
   }
-  snap = await snap.limit(10).get()
-  snap.forEach(doc => {
-    if (doc.id === user.id) return //ignore yourself
-    items.push({ id: doc.id, ...doc.data() })
-  })
-
+  let items = await _apiClient(`/users?${qs.stringify(qq)}`)
   items = items.filter(u => allowContent(u.id, 'user'))
 
   return items
 }
+
 export const listSimilarUsers = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
-  let items = []
   const filters = getRandomItemsInArray(user.interests)
   if (!filters.length) {
-    return items
+    return []
   }
-  let snap = firebase
-    .firestore()
-    .collection('users')
-    .where('interests', 'array-contains-any', filters)
 
-  if (activeGroup) {
-    snap = snap.where(`groups.${activeGroup}`, '==', true)
+  const qq = {
+    activeGroup,
+    filterType: 'interests',
+    filterValue: filters.join(','),
+    limit: 10,
   }
-  snap = await snap.limit(10).get()
-  snap.forEach(doc => {
-    if (doc.id === user.id) return //ignore yourself
-    items.push({ id: doc.id, ...doc.data() })
-  })
+
+  let items = await _apiClient(`/users?${qs.stringify(qq)}`)
   items = items.filter(u => allowContent(u.id, 'user'))
+
   return items
 }
 
@@ -235,21 +210,18 @@ export const listRecommendations = async (user, activeGroup) => {
     user = await getCurrentUserProfile()
   }
 
-  let items = []
   const filters = getRandomItemsInArray(user.interests)
-  let snap = firebase
-    .firestore()
-    .collection('users')
-    .where('skills', 'array-contains-any', filters)
-  if (activeGroup) {
-    snap = snap.where(`groups.${activeGroup}`, '==', true)
+
+  const qq = {
+    activeGroup,
+    filterType: 'skills',
+    filterValue: filters.join(','),
+    limit: 10,
   }
-  snap = await snap.limit(10).get()
-  snap.forEach(doc => {
-    if (doc.id === user.id) return //ignore yourself
-    items.push({ id: doc.id, ...doc.data() })
-  })
+
+  let items = await _apiClient(`/users?${qs.stringify(qq)}`)
   items = items.filter(u => allowContent(u.id, 'user'))
+
   return items
 }
 
@@ -268,22 +240,8 @@ export const getCurrentUserProfile = async () => {
   }
   return getUserProfile(user.uid)
 }
-export const getUserReceivedPosts = async (uid, limit = 20, offset = null) => {
-  if (!getCurrentUser()) {
-    return []
-  }
 
-  let postSnap = firebase
-    .firestore()
-    .collection('posts')
-    .where('giver.id', '==', uid)
-
-  if (offset) postSnap = postSnap.startAfter(offset)
-  postSnap = await postSnap.limit(limit).get()
-  const posts = []
-  postSnap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }))
-  return posts
-}
+export const getUserReceivedPosts = uid => _apiClient(`/posts?giverId=${uid}`)
 
 export const getUserPosts = async (uid, limit = 20, offset = null) => {
   if (!getCurrentUser()) {
@@ -304,10 +262,10 @@ export const getUserPosts = async (uid, limit = 20, offset = null) => {
 
 export const getCurrentUser = () => firebase.auth().currentUser
 
-export const updateNotification = ({ userId, id, status = null }) => {
-  if (!userId || !id || !status) {
+export const updateNotification = ({ id, status = null }) => {
+  if (!id || !status) {
     //@Todo log err
-    console.log('Invalid payload:', userId, id, status)
+    console.log('Invalid payload:', id, status)
     return null
   }
 
@@ -318,12 +276,7 @@ export const updateNotification = ({ userId, id, status = null }) => {
     return null
   }
 
-  const payload = { status }
-
-  return firebase
-    .firestore()
-    .doc(`/users/${userId}/notifications/${id}`)
-    .update(payload)
+  return _apiClient(`/notifications/${id}`, { method: 'PUT', data: { status } })
 }
 
 export const mock = async payload => {
