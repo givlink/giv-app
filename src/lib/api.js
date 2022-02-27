@@ -54,11 +54,7 @@ export const deleteComment = id => {
 
 const getCommentById = id => _apiClient(`/comments/${id}`)
 
-const listComments = async postId => {
-  const results = await _apiClient(`/comments?postId=${postId}`)
-  console.log(results)
-  return results
-}
+const listComments = async postId => _apiClient(`/comments?postId=${postId}`)
 
 export const saveDeviceToken = (token = null) => {
   if (!token || token === '') {
@@ -257,27 +253,11 @@ export const listRecommendations = async (user, activeGroup) => {
   return items
 }
 
-export const getGiv = async givId => {
-  const doc = await firebase.firestore().doc(`/givs/${givId}`).get()
-  const giv = { ...doc.data(), id: givId }
-  giv.giver = await getUserProfile(giv.giverId)
-  giv.receiver = await getUserProfile(giv.receiverId)
-  giv.post = await getPostByGivId(giv.id)
-  return giv
-}
 export const isActivatedUser = async uid => {
-  const doc = await firebase.firestore().doc(`/users/${uid}`).get()
-  if (!doc.exists) {
-    return false
-  }
-  const user = { ...doc.data(), id: uid }
+  const user = await _apiClient(`/users/${uid}`)
+  if (!user) return false
 
-  const result = user.status === 'Activated'
-  // if (!result) {
-  //   Err.warn(`Found authenticated user that's not registered: ${uid}`)
-  // }
-
-  return result
+  return user.status === 'Activated'
 }
 
 export const getCurrentUserProfile = async () => {
@@ -293,7 +273,7 @@ export const getUserReceivedPosts = async (uid, limit = 20, offset = null) => {
     return []
   }
 
-  let postSnap = await firebase
+  let postSnap = firebase
     .firestore()
     .collection('posts')
     .where('giver.id', '==', uid)
@@ -310,7 +290,7 @@ export const getUserPosts = async (uid, limit = 20, offset = null) => {
     return []
   }
 
-  let postSnap = await firebase
+  let postSnap = firebase
     .firestore()
     .collection('posts')
     .where('authorId', '==', uid)
@@ -322,9 +302,7 @@ export const getUserPosts = async (uid, limit = 20, offset = null) => {
   return posts
 }
 
-export const getCurrentUser = () => {
-  return firebase.auth().currentUser
-}
+export const getCurrentUser = () => firebase.auth().currentUser
 
 export const updateNotification = ({ userId, id, status = null }) => {
   if (!userId || !id || !status) {
@@ -956,8 +934,6 @@ const api = {
 
   uploadImage,
   deleteImage,
-
-  getGiv,
 
   createGivRequest,
   createPost,
