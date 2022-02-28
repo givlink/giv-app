@@ -534,8 +534,8 @@ export const watchNotifications = (userId, cb, debug = false) => {
           not.giv = await getGivById(not.givId)
           if (!not.giv) throw new Error('giv not found: ' + not.givId)
 
-          const post = await getPostByGivId(not.givId)
-          if (post) {
+          const posts = await getPostByGivId(not.givId)
+          if (posts && posts.length) {
             throw new Error('already have a post for this giv:', not.givId)
           }
 
