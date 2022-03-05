@@ -55,10 +55,10 @@ const utils = {
 
       const now = new Date()
       const diffDays = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24))
-      if(diffDays > 365){
+      if (diffDays > 365) {
         return format(d, 'yy/MM')
       }
-      if(diffDays > 30){
+      if (diffDays > 30) {
         return format(d, 'MM/dd')
       }
       if (diffDays > 1) {
@@ -79,6 +79,9 @@ const utils = {
       d = date.toDate()
     } else if (isIsoDate(date)) {
       d = new Date(date)
+    } else if (typeof date === 'object' && '_seconds' in date) {
+      d = new Date(1970, 0, 1)
+      d.setSeconds(date._seconds)
     } else if (isTimestamp(date)) {
       d = new Date(parseFloat(date))
     }

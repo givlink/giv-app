@@ -248,15 +248,7 @@ export const getUserPosts = async (uid, limit = 20, offset = null) => {
     return []
   }
 
-  let postSnap = firebase
-    .firestore()
-    .collection('posts')
-    .where('authorId', '==', uid)
-
-  if (offset) postSnap = postSnap.startAfter(offset)
-  postSnap = await postSnap.limit(limit).get()
-  const posts = []
-  postSnap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }))
+  const posts = await _apiClient(`/posts?authorId=${uid}`)
   return posts
 }
 
@@ -351,104 +343,22 @@ export const watchGivRequests = (userId, cb1, cb2) => {
 
   return listeners
 }
-export const likePost = async (postId, userId) => {
-  if (!postId) {
-    console.log('No postId in like')
-    return
-  }
-  if (!userId) {
-    console.log('No userId in like')
-    return
-  }
-  //@Todo need a function to aggregate likes on a post
-  //When this happens
-  await firebase
-    .firestore()
-    .doc(`/users/${userId}/likes/${postId}`)
-    .set({ liked: true })
-}
-export const unlikePost = async (postId, userId) => {
-  if (!postId) {
-    console.log('No postId in unlike')
-    return
-  }
-  if (!userId) {
-    console.log('No userId in unlike')
-    return
-  }
-  //@Todo need a function to aggregate likes on a post
-  //When this happens
-  await firebase.firestore().doc(`/users/${userId}/likes/${postId}`).delete()
-}
-export const postComment = async ({
-  message = '',
-  author = null,
-  postId = null,
-}) => {
-  if (!author) {
-    console.log('No author')
-    return null
-  }
-  if (!postId) {
-    console.log('No postid')
-    return null
-  }
-  const payload = {
-    author: {
-      id: author.id,
-      name: author.name,
-      photoURL: author.photoURL,
-    },
-    authorId: author.id,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    message,
-    parentCommentId: null,
-    postId,
-  }
-  const response = await firebase
-    .firestore()
-    .collection(`/comments`)
-    .add(payload)
-  payload.id = response.id
-  return payload
-}
 
-export const checkLiked = async (postId, userId) => {
-  if (!postId) {
-    console.log('No postId in checklike')
-    return false
-  }
-  if (!userId) {
-    console.log('No userId in checklike')
-    return false
-  }
-  const resp = await firebase
-    .firestore()
-    .doc(`/users/${userId}/likes/${postId}`)
-    .get()
-  return resp.exists
+export const likePost = postId =>
+  _apiClient(`/posts/${postId}/like`, { method: 'PUT' })
+export const unlikePost = postId =>
+  _apiClient(`/posts/${postId}/like`, { method: 'DELETE' })
+export const checkLiked = async postId => {
+  const resp = await _apiClient(`/posts/${postId}/like`)
+  return resp.liked
 }
+export const postComment = ({ message, postId }) =>
+  _apiClient(`/comments`, { method: 'POST', data: { message, postId } })
+export const sendMessage = (groupId, message) =>
+  _apiClient(`/chat-messages`, { method: 'POST', data: { message, groupId } })
 
 const SHOW_ALL = false && process.env.NODE_ENV === 'development'
-export const sendMessage = async (groupId, msg) => {
-  if (!groupId || !msg || msg === '') {
-    console.log('Invalid groupId or msg')
-    return
-  }
-  const currUser = await getUserProfile(getCurrentUser().uid)
-  const result = await firebase
-    .database()
-    .ref(`chat_messages/${groupId}`)
-    .push({
-      senderId: currUser.id,
-      senderName: currUser.name,
-      content: msg,
-      timestamp: new Date().toISOString(), //@Todo validate this server side
-    })
-  //@Todo err handling
-  return result.key
-}
+
 export const watchChatMessages = (groupId, cb) => {
   if (!groupId) {
     console.log('No group id in watchChatMessages')
@@ -564,89 +474,21 @@ export const watchNotifications = (userId, cb, debug = false) => {
   })
 }
 
-export const getUnreadNotificationCount = async userId => {
-  if (!userId) {
-    console.log('No user id in listNotifications')
-    return 0
-  }
+export const logout = () => firebase.auth().signOut()
 
-  const snap = await firebase
-    .firestore()
-    .collection(`/users/${userId}/notifications`)
-    .where('status', '==', 'unread')
-    .get()
-
-  return snap.docs.length
-}
-
-export const listNotifications = async (userId, limit = 50, offset = 0) => {
-  if (!userId) {
-    console.log('No user id in listNotifications')
-    return null
-  }
-
-  const snap = await firebase
-    .firestore()
-    .collection(`/users/${userId}/notifications`)
-    .where('status', '==', 'unread')
-    .limit(limit)
-    .get()
-  const notifications = []
-  for (let doc of snap.docs) {
-    const not = { ...doc.data(), id: doc.id }
-    try {
-      if (not.type === 'givFinished' && not.giverId) {
-        not.giver = await getUserProfile(not.giverId)
-      }
-      if (not.type === 'givRequest' && not.requestType === 'send') {
-        not.sender = await getUserProfile(not.senderId)
-      }
-      if (not.type === 'givRequest' && not.requestType === 'receive') {
-        not.receiver = await getUserProfile(not.receiverId)
-      }
-    } catch (err) {
-      //@Todo notify err
-      console.log(err)
-    }
-    notifications.push(not)
-  }
-
-  return notifications
-}
-
-export const logout = () => {
-  return firebase.auth().signOut()
-}
-
-export const createGivRequest = async (senderId, receiverId, type) => {
-  const payload = {
-    senderId,
-    receiverId,
-    type,
-    createdAt: new Date().toISOString(),
-  }
-
-  //@Todo sec rule to prevent duplicate requests
-  //@Todo sec rule to prevent read access for other than these two users
-
-  return firebase.firestore().collection(`/givRequests`).add(payload)
-}
+export const createGivRequest = (senderId, receiverId, type) =>
+  _apiClient(`/requests`, {
+    method: 'POST',
+    data: { senderId, receiverId, type },
+  })
 
 export const deleteImage = path => {
-  console.log('deleting image:', path)
   return firebase.storage().ref().child(path).delete()
 }
 export const uploadImage = (img, path) => {
-  console.log('uploading', img, path)
   return firebase.storage().ref().child(path).put(img)
 }
-export const deletePost = id => {
-  //@Todo error handling
-
-  if (!id) return
-
-  return firebase.firestore().doc(`/posts/${id}`).delete()
-}
+export const deletePost = id => _apiClient(`/posts/${id}`, { method: 'DELETE' })
 
 export const updatePostImages = async (postId, newImages, oldImages) => {
   //new images contains old image urls and new File objects
@@ -690,69 +532,35 @@ export const updatePostImages = async (postId, newImages, oldImages) => {
   return updatePost({ id: postId, images: newImageUrls })
 }
 
-export const updatePost = ({
-  id,
-  title = null,
-  message = null,
-  images = null,
-}) => {
-  const payload = {
-    updatedAt: new Date().toISOString(),
-  }
-  if (title && title !== '') payload.title = title
-  if (message && message !== '') payload.message = message
-  if (images && images !== '') payload.images = images
-
-  return firebase.firestore().doc(`/posts/${id}`).update(payload)
-}
+export const updatePost = ({ id, title, message, images }) =>
+  _apiClient(`/posts/${id}`, {
+    method: 'PUT',
+    data: { title, message, images },
+  })
 
 export const createPost = async ({
-  authorId,
   images = [],
   title = '',
   message = '',
   giv,
-  giver,
   activeGroup = 'all',
 }) => {
-  //@Todo error handling
-  const author = await getUserProfile(authorId)
-
   const payload = {
-    author: {
-      id: author.id,
-      name: author.name,
-      photoURL: author.photoURL,
-    },
-    authorId,
     givId: giv.id,
-    giver: {
-      id: giver.id,
-      name: giver.name,
-      photoURL: giver.photoURL,
-    },
     title,
     message,
     images: [],
-    createdAt: new Date().toISOString(),
     group: activeGroup,
   }
-  if (giver && giver.area) {
-    payload.area = giver.area
-  }
 
-  const doc = await firebase.firestore().collection('posts').add(payload)
-  const post = { ...payload, id: doc.id }
+  const post = await _apiClient(`/posts`, { method: 'POST', data: payload })
 
   const imagePaths = images.map(img => {
-    const path = `images/${authorId}/posts/${
+    const path = `images/${post.authorId}/posts/${
       post.id
     }/images/${shortId.generate()}`
     return path
   })
-
-  //@Todo sec rule to prevent duplicate posts for same giv
-  //@Todo sec rule to validate input data
 
   const promises = imagePaths.map((path, index) => {
     const img = images[index]
@@ -761,10 +569,8 @@ export const createPost = async ({
   //@Todo if upload fails write to sentry
   //and also try uploading via functions
   await Promise.all(promises)
-  await firebase
-    .firestore()
-    .doc(`/posts/${post.id}`)
-    .set({ images: imagePaths }, { merge: true })
+
+  await updatePost({ id: post.id, images: imagePaths })
 
   return post
 }
@@ -781,20 +587,13 @@ export const blockUser = async userId => {
 const listPosts = async (query = {}) => {
   const q = { ...DEFAULT_QUERY_LIST_POSTS, ...query }
 
-  let snap = firebase.firestore().collection('posts')
-
-  snap = snap.where('group', '==', q.activeGroup)
-  snap = snap.orderBy('createdAt', 'desc')
-
-  if (q.offset) {
-    snap = snap.startAfter(q.offset)
+  const qq = {
+    groupId: q.activeGroup,
+    offset: q.offset,
   }
 
-  snap = await snap.limit(q.limit).get()
-
-  let posts = []
-  snap.forEach(doc => posts.push({ ...doc.data(), id: doc.id }))
-  const offset = snap.docs[snap.docs.length - 1]
+  let posts = await _apiClient(`/posts?${qs.stringify(qq)}`)
+  const offset = posts[posts.length - 1].id
 
   posts = posts.filter(
     p => allowContent(p.authorId, 'user') && allowContent(p.giverId, 'user'),
@@ -864,8 +663,6 @@ const api = {
   listUsers,
   listAreas,
   listPosts,
-  listNotifications,
-  getUnreadNotificationCount,
   watchNotifications,
   watchChatGroups,
   watchChatMessages,
