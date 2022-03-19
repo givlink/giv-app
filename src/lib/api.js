@@ -148,9 +148,12 @@ export const listUsers = async query => {
   let users = result
   users = users.filter(u => allowContent(u.id, 'user'))
 
-  const offsetItem = result[result.length - 1]
+  let offset = null
+  if (result.length) {
+    offset = result[result.length - 1].id
+  }
 
-  return [users, offsetItem.id]
+  return [users, offset]
 }
 
 export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
@@ -593,7 +596,10 @@ const listPosts = async (query = {}) => {
   }
 
   let posts = await _apiClient(`/posts?${qs.stringify(qq)}`)
-  const offset = posts[posts.length - 1].id
+  let offset = null
+  if (posts.length) {
+    offset = posts[posts.length - 1].id
+  }
 
   posts = posts.filter(
     p => allowContent(p.authorId, 'user') && allowContent(p.giverId, 'user'),
