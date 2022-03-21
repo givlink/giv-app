@@ -124,7 +124,7 @@ const translations = {
 
   //request accept
   'Request Accepted': 'リクエストを承認しました！',
-  'acceptDetail': '{{name}}さんからのGivリクエストを承認する？',
+  'acceptDetail': '{{name}}さんからのgivリクエストを承認する？',
   'Close': '閉じる',
   'Accept': '受け入れる',
   'Cancel': 'キャンセル',
@@ -142,12 +142,12 @@ const translations = {
   'Create Post Modal Title': '{{name}}さんへのThanks Card',
 
   //Notifications
-  'New Giv Request': `{{name}}さんから新しいGivリクエストがあります。`,
+  'New Giv Request': `{{name}}さんから新しいgivリクエストがあります。`,
   'You Got Giv':
-    '{{name}}さんからのGivが完了しました。サンクスカードを書きましょう。',
+    '{{name}}さんとのgivをセットしました。終わりましたらサンクスカードを書きましょう。',
   'You Got Comment': '{{name}}さんから新しいコメントがあります。',
-  'wantSendRequest': '{{name}}さんがGivを贈りたい',
-  'wantReceiveRequest': '{{name}}さんがGivを受け取りたい',
+  'wantSendRequest': '{{name}}さんがgivを贈りたい',
+  'wantReceiveRequest': '{{name}}さんがgivを受け取りたい',
 
   'Filter by Skills': '興味・関心フィルター',
   'Filter by Area': '場所フィルター',
@@ -167,12 +167,12 @@ const translations = {
 
   'You are offline': 'インターネットに繋がっていません',
 
-  'Giv Suggestion': 'Givおすすめ',
+  'Giv Suggestion': 'givおすすめ',
 
   'Send Giv To User': '{{name}}さんにgivを贈る',
   'Receive Giv From User': '{{name}}さんからgivを受け取る',
-  'Send Giv': 'Givを贈る',
-  'Receive Giv': 'Givを受け取る',
+  'Send Giv': 'givを贈る',
+  'Receive Giv': 'givを受け取る',
   'Skills Match Giv Request': `あなたのギブが{{name}}さんの興味とマッチするようです。ギブを贈ってみませんか？`,
   'Confirm': '承認',
 
