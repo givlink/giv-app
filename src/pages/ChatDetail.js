@@ -72,18 +72,12 @@ export default function ChatDetail({ id }) {
   React.useEffect(() => {
     if (!id) return
 
-    let listener
-    //Setup listener
-    const run = async () => {
-      //@Todo err handling
-      // dispatch({ type: 'chat_messages/loading', chatGroupId: id })
-      dispatch({ type: 'chat_messages/reset', chatGroupId: id })
-      listener = api.watchChatMessages(id, message => {
-        dispatch({ type: 'chat_messages/data', chatGroupId: id, message })
-      })
-    }
-    run()
-    return () => listener && listener()
+    //@Todo err handling
+    dispatch({ type: 'chat_messages/reset', chatGroupId: id })
+    const listener = api.watchChatMessages(id, message => {
+      dispatch({ type: 'chat_messages/data', chatGroupId: id, message })
+    })
+    return listener
   }, [dispatch, id])
 
   React.useEffect(() => {
