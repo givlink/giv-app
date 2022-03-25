@@ -28,7 +28,7 @@ const GivRequest = ({ notification, markRead }) => {
       className='w-full flex space-x-3 pt-2 pb-3 px-3'
     >
       <SafeImage
-        src={utils.parseUrl(requester.photoURL)}
+        src={utils.parseUrl(requester?.photoURL)}
         alt='Sender'
         className='h-12 w-12 object-cover border-2 border-gray-500 rounded-full'
         classNameFallback='w-12 object-cover rounded-full'
