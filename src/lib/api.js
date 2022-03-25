@@ -14,7 +14,7 @@ export const allowContent = (contentId, contentType = 'user') => {
 }
 
 const API_URL = `https://api.giv.link/api`
-const _apiClient = async (path, opts = {}) => {
+export const _apiClient = async (path, opts = {}) => {
   const token = await firebase.auth().currentUser?.getIdToken()
   const payload = { url: `${API_URL}${path}`, ...opts }
   if (!payload.headers) payload.headers = {}
@@ -281,70 +281,15 @@ export const mock = async payload => {
   console.log(payload)
   if (p.fail) throw Error('Err: error in mock api')
 }
-export const acceptGivRequest = async givRequestId => {
-  return firebase.functions().httpsCallable('acceptGivRequest')({
-    givRequestId,
-  })
-}
-export const watchGivRequests = (userId, cb1, cb2) => {
-  if (!userId) {
-    console.log('No user id in request')
-    return null
-  }
+export const acceptGivRequest = id =>
+  _apiClient(`/requests/${id}`, { method: 'PUT' })
 
-  let snapReceive = firebase
-    .firestore()
-    .collection(`/givRequests`)
-    .where('type', '==', 'receive')
-    .where('senderId', '==', userId)
-    .orderBy('createdAt', 'desc')
-  let snapSend = firebase
-    .firestore()
-    .collection(`/givRequests`)
-    .where('type', '==', 'send')
-    .where('receiverId', '==', userId)
-    .orderBy('createdAt', 'desc')
+export const watchGivRequests = cb => {
+  const listener = setInterval(() => {
+    _apiClient(`/requests`, { timeout: 4000 }).then(r => cb(r))
+  }, 10000)
 
-  const listeners = [
-    snapReceive.onSnapshot(async qs => {
-      const requests = []
-      for (let doc of qs.docs) {
-        const req = { ...doc.data(), id: doc.id }
-
-        try {
-          req.receiver = await getUserProfile(req.receiverId)
-          if (!req.receiver)
-            throw new Error('Receiver not found: ' + req.receiverId)
-
-          requests.push(req)
-        } catch (err) {
-          console.log('err while parsing requests:', err.message)
-          //@Todo notify err
-        }
-      }
-
-      cb1(requests)
-    }),
-    snapSend.onSnapshot(async qs => {
-      const requests = []
-      for (let doc of qs.docs) {
-        const req = { ...doc.data(), id: doc.id }
-
-        try {
-          req.sender = await getUserProfile(req.senderId)
-          if (!req.sender) throw new Error('sender not found: ' + req.senderId)
-          requests.push(req)
-        } catch (err) {
-          console.log('err while parsing requests:', err.message)
-          //@Todo notify err
-        }
-      }
-
-      cb2(requests)
-    }),
-  ]
-
-  return listeners
+  return () => clearInterval(listener)
 }
 
 export const likePost = postId =>
@@ -360,121 +305,48 @@ export const postComment = ({ message, postId }) =>
 export const sendMessage = (groupId, message) =>
   _apiClient(`/chat-messages`, { method: 'POST', data: { message, groupId } })
 
-const SHOW_ALL = false && process.env.NODE_ENV === 'development'
+const userCache = {}
+const getCachedProfile = async id => {
+  if (userCache[id]) return userCache[id]
+
+  try {
+    const item = await getUserProfile(id)
+    userCache[id] = item
+    return item
+  } catch (err) {
+    return null
+  }
+}
 
 export const watchChatMessages = (groupId, cb) => {
   if (!groupId) {
     console.log('No group id in watchChatMessages')
     return null
   }
-  //@Todo optimize limit getting only latest messages
-  //@Todo err handling
-  const ref = firebase.database().ref(`chat_messages/${groupId}`)
-
-  ref.on('child_added', async s => {
-    if (s) {
-      const result = { id: s.key, ...s.val() }
-      try {
-        result.sender = await getUserProfile(result.senderId)
-      } catch (err) {
-        //@Todo sentry
-        result.sender = null
+  const listener = setInterval(() => {
+    _apiClient(`/chat-messages/${groupId}`, { timeout: 5000 }).then(async r => {
+      for (const item of r) {
+        item.sender = await getCachedProfile(item.senderId)
+        cb(item)
       }
-      cb(result)
-    }
-  })
+    })
+  }, 5000)
 
-  return () => ref.off('child_added')
+  return () => clearInterval(listener)
 }
-export const watchChatGroups = async (userId, cb) => {
-  if (!userId) {
-    console.log('No user id in listNotifications')
-    return []
-  }
-  const ref = firebase.database().ref(`user_chat_groups/${userId}`)
-  ref.on('value', s => {
-    let groups = {}
-    if (s.exists()) {
-      Object.entries(s.val()).forEach(([key, doc]) => {
-        groups[key] = { ...doc, id: key }
-      })
-    }
-    cb(groups)
-  })
+export const watchChatGroups = cb => {
+  const listener = setInterval(() => {
+    _apiClient(`/chat-groups`, { timeout: 4000 }).then(groups => cb(groups))
+  }, 10000)
 
-  return () => ref.off('value')
+  return () => clearInterval(listener)
 }
 
-export const watchNotifications = (userId, cb, debug = false) => {
-  if (!userId) {
-    console.log('No user id in listNotifications')
-    return 0
-  }
-
-  let snap = firebase.firestore().collection(`/users/${userId}/notifications`)
-
-  if (!SHOW_ALL) snap = snap.where('status', '==', 'unread')
-
-  return snap.orderBy('createdAt', 'desc').onSnapshot(async qs => {
-    const nots = []
-    for (let doc of qs.docs) {
-      const not = { ...doc.data(), id: doc.id }
-
-      try {
-        if (not.type === 'messageReceived') {
-          //Ignore these as chat handles them
-          //Note: Make sure these nots are marked as read by default (in backend)
-          //otherwise we will have 100s of unread messageReceived nots
-          continue
-        }
-
-        // @Todo If we discover an unread notification
-        // which doesn't have correct data delete it
-
-        //@Todo ideally we should delete the notification as well when
-        //deleting the comment or post
-        if (not.type === 'commentCreated' && not.commentId && not.postId) {
-          //Check if post or comment is 404 and ignore this
-          not.post = await getPostById(not.postId)
-          not.comment = await getCommentById(not.commentId)
-          if (!not.post || !not.comment)
-            throw new Error('post or comment not found: ' + not.commentId)
-        }
-
-        //@Todo ideally we should delete the notification as well when
-        //deleting the giv finished value
-        if (not.type === 'givFinished' && not.giverId) {
-          not.giv = await getGivById(not.givId)
-          if (!not.giv) throw new Error('giv not found: ' + not.givId)
-
-          const posts = await getPostByGivId(not.givId)
-          if (posts && posts.length) {
-            throw new Error('already have a post for this giv:', not.givId)
-          }
-
-          not.giver = await getUserProfile(not.giverId)
-          if (!not.giver) throw new Error('giver not found: ' + not.giverId)
-        }
-        if (not.type === 'givRequest' && not.requestType === 'send') {
-          not.sender = await getUserProfile(not.senderId)
-          if (!not.sender) throw new Error('sender not found: ' + not.senderId)
-        }
-        if (not.type === 'givRequest' && not.requestType === 'receive') {
-          not.receiver = await getUserProfile(not.receiverId)
-          if (!not.receiver)
-            throw new Error('Receiver not found: ' + not.receiverId)
-        }
-
-        //Only show notification if its clear of any error
-        nots.push(not)
-      } catch (err) {
-        //@Todo notify err
-        console.warn('Ignoring erred notification:', err.message)
-      }
-    }
-
-    cb(nots)
-  })
+export const watchNotifications = cb => {
+  const listener = setInterval(() => {
+    _apiClient(`/notifications`, { timeout: 4000 }).then(r => cb(r))
+  }, 10000)
+  return () => clearInterval(listener)
 }
 
 export const logout = () => firebase.auth().signOut()
@@ -608,40 +480,8 @@ const listPosts = async (query = {}) => {
   return [posts, offset]
 }
 
-//@Todo add cache to getUserProfile etc
-export const createUserProfile = async ({
-  uid,
-  code,
-  area,
-  skills = [],
-  interests = [],
-  job = '',
-  intro = '',
-  name = '',
-}) => {
-  const payload = {
-    uid,
-    code,
-    skills,
-    area,
-    interests,
-    job,
-    intro,
-    name,
-  }
-
-  //@Todo validate payload
-  const resp = await firebase.functions().httpsCallable('createUserProfile')(
-    payload,
-  )
-  console.log(resp)
-  //@Todo handle errors like
-  //	profile already exists,
-  //	code already used,
-  //	code not found,
-  //	skills or interests are empty etc
-  return 'OK'
-}
+export const createUserProfile = data =>
+  _apiClient(`/users`, { method: 'POST', data })
 
 export const setupNotifications = async (token = null) => {
   if (token) {
@@ -722,5 +562,6 @@ const api = {
   reportContent,
   blockUser,
   allowContent,
+  _apiClient,
 }
 export default api

@@ -129,15 +129,12 @@ const actions = {
     }
   },
   watchRequests: () => {
-    return async (dispatch, getState) => {
-      const { authUser } = getState()
+    return async dispatch => {
       dispatch({ type: 'requests/loading' })
-      const listeners = api.watchGivRequests(
-        authUser.uid,
-        requests => dispatch({ type: 'requests/data', requests }),
-        requests => dispatch({ type: 'requests/data', requests }),
+      const listener = api.watchGivRequests(requests =>
+        dispatch({ type: 'requests/data', requests }),
       )
-      dispatch({ type: 'app/update_listeners', listeners })
+      dispatch({ type: 'app/update_listeners', listeners: [listener] })
     }
   },
   loadUserProfileAndInitialPost: () => {
@@ -160,20 +157,17 @@ const actions = {
     }
   },
   watchNotifications: () => {
-    return async (dispatch, getState) => {
-      const { authUser } = getState()
+    return async dispatch => {
       dispatch({ type: 'notifications/loading' })
-      const listener = api.watchNotifications(authUser?.uid, notifications => {
+      const listener = api.watchNotifications(notifications => {
         dispatch({ type: 'notifications/data', notifications })
       })
       dispatch({ type: 'app/update_listeners', listeners: [listener] })
     }
   },
   watchChatGroups: () => {
-    return async (dispatch, getState) => {
-      const { authUser } = getState()
-      // dispatch({ type: 'chat_groups/loading' })
-      const listener = await api.watchChatGroups(authUser?.uid, groups => {
+    return async dispatch => {
+      const listener = api.watchChatGroups(groups => {
         const filtered = {}
         Object.entries(groups).forEach(([key, group]) => {
           let allow = true
