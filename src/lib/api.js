@@ -325,10 +325,12 @@ export const watchChatMessages = (groupId, cb) => {
   }
   const listener = setInterval(() => {
     _apiClient(`/chat-messages/${groupId}`, { timeout: 5000 }).then(async r => {
+      let msgs = []
       for (const item of r) {
         item.sender = await getCachedProfile(item.senderId)
-        cb(item)
+        msgs.push(item)
       }
+      cb(msgs)
     })
   }, 5000)
 

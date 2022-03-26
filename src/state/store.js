@@ -230,9 +230,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, chatMessagesLoading: false }
     case 'chat_messages/data':
       const chatMessages = { ...state.chatMessages }
-      const msgs = chatMessages[action.chatGroupId] || []
-      msgs.push(action.message)
-      chatMessages[action.chatGroupId] = msgs
+      chatMessages[action.chatGroupId] = action.messages
       return {
         ...state,
         chatMessages,

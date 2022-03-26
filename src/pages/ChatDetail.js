@@ -74,8 +74,8 @@ export default function ChatDetail({ id }) {
 
     //@Todo err handling
     dispatch({ type: 'chat_messages/reset', chatGroupId: id })
-    const listener = api.watchChatMessages(id, message => {
-      dispatch({ type: 'chat_messages/data', chatGroupId: id, message })
+    const listener = api.watchChatMessages(id, messages => {
+      dispatch({ type: 'chat_messages/data', chatGroupId: id, messages })
     })
     return listener
   }, [dispatch, id])
