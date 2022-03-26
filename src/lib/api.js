@@ -347,7 +347,19 @@ export const watchChatGroups = cb => {
 
 export const watchNotifications = cb => {
   const listener = setInterval(() => {
-    _apiClient(`/notifications`, { timeout: 4000 }).then(r => cb(r))
+    _apiClient(`/notifications`, { timeout: 4000 }).then(async (r = []) => {
+      for (const item of r) {
+        if (item.type === 'givFinished') {
+          const [giver, giv] = await Promise.all([
+            getCachedProfile(item.giverId),
+            getGivById(item.givId),
+          ])
+          item.giver = giver
+          item.giv = giv
+        }
+      }
+      cb(r)
+    })
   }, 10000)
   return () => clearInterval(listener)
 }
