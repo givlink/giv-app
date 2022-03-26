@@ -6,6 +6,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import api from 'lib/api'
 import utils from 'lib/utils'
+// import { db } from '../lib/db'
 import { useTranslation } from 'react-i18next'
 const makeGroupName = async (group, authUser) => {
   if (group) {
@@ -31,7 +32,7 @@ export default function ChatDetail({ id }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const ref = React.useRef(null)
-  const state = useSelector(s => {
+  const state = useSelector( s => {
     //sort messages just in case
     let messages = s.chatMessages[id] || []
     messages.sort((a, b) => {
@@ -59,7 +60,7 @@ export default function ChatDetail({ id }) {
   React.useEffect(() => {
     //@Todo scroll to last unread
     ref.current?.scrollIntoView()
-  }, [state.messages.length, id])
+  }, [state.messages?.length, id])
 
   React.useEffect(() => {
     //Update last read item
@@ -73,8 +74,9 @@ export default function ChatDetail({ id }) {
     if (!id) return
 
     //@Todo err handling
-    dispatch({ type: 'chat_messages/reset', chatGroupId: id })
-    const listener = api.watchChatMessages(id, messages => {
+    // dispatch({ type: 'chat_messages/reset', chatGroupId: id })
+    const listener = api.watchChatMessages(id, async messages => {
+      // await db.messages.bulkPut(messages)
       dispatch({ type: 'chat_messages/data', chatGroupId: id, messages })
     })
     return listener

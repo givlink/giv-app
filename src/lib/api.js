@@ -328,6 +328,7 @@ export const watchChatMessages = (groupId, cb) => {
       let msgs = []
       for (const item of r) {
         item.sender = await getCachedProfile(item.senderId)
+        item.groupId = groupId
         msgs.push(item)
       }
       cb(msgs)

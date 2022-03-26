@@ -167,6 +167,7 @@ const actions = {
   },
   watchChatGroups: () => {
     return async dispatch => {
+      dispatch({ type: 'chat_groups/loading' })
       const listener = api.watchChatGroups(groups => {
         const filtered = {}
         Object.entries(groups).forEach(([key, group]) => {
@@ -181,8 +182,8 @@ const actions = {
           }
         })
         dispatch({ type: 'chat_groups/data', groups: filtered })
+        dispatch({ type: 'chat_groups/loading_done' })
       })
-      dispatch({ type: 'chat_groups/loading_done' })
       dispatch({ type: 'app/update_listeners', listeners: [listener] })
     }
   },

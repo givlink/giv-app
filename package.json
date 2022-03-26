@@ -13,6 +13,8 @@
     "axios": "^0.25.0",
     "cross-env": "^7.0.3",
     "date-fns": "^2.23.0",
+    "dexie": "^3.2.1",
+    "dexie-react-hooks": "^1.1.1",
     "firebase": "^8.7.1",
     "i18next": "^20.3.5",
     "logrocket": "^2.1.2",

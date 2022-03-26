@@ -1,8 +1,10 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import api from 'lib/api'
+import { useDispatch } from 'react-redux'
 export default function FooterChatDetail({ groupId }) {
-  const ref=React.useRef()
+  const dispatch = useDispatch()
+  const ref = React.useRef()
   const { t } = useTranslation()
   const [msg, setMsg] = React.useState('')
   const [sending, setSending] = React.useState(false)
@@ -13,6 +15,10 @@ export default function FooterChatDetail({ groupId }) {
       const lastMsgId = await api.sendMessage(groupId, msg)
       localStorage.setItem(`lastRead-${groupId}`, lastMsgId)
       setMsg('')
+      dispatch({
+        type: 'chat_messages/data',
+        message: { ...msg, id: lastMsgId },
+      })
       setSending(false)
       ref.current.focus()
     } catch (err) {
@@ -30,7 +36,7 @@ export default function FooterChatDetail({ groupId }) {
   const checkSend = e => {
     if (e.ctrlKey && e.key === 'Enter') {
       sendMessage()
-      setTimeout(()=>adjustHeight(e), 300)
+      setTimeout(() => adjustHeight(e), 300)
     }
   }
   const handleChange = e => {
@@ -40,7 +46,7 @@ export default function FooterChatDetail({ groupId }) {
   return (
     <footer className='bg-white z-10 pl-1.5 py-1.5 flex items-center border-t border-gray-100'>
       <textarea
-    ref={ref}
+        ref={ref}
         disabled={sending}
         placeholder={t('Message')}
         rows='1'
