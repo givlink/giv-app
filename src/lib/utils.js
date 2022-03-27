@@ -2,6 +2,7 @@ import moment from 'moment'
 import { format, formatDistance } from 'date-fns'
 
 const CDN_URL = 'https://storage.googleapis.com/givlink.appspot.com'
+// const CDN_URL = 'http://localhost:4566/giv-media'
 
 function isTimestamp(str) {
   return /^\d+$/.test(str)

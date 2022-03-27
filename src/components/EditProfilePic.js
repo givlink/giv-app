@@ -7,12 +7,11 @@ import { Dialog, Transition } from '@headlessui/react'
 import Spinner from 'components/Spinner'
 import api from 'lib/api'
 
-const EditModal = ({ id, editing, setEditing }) => {
+const EditModal = ({ user, editing, setEditing }) => {
   const { t } = useTranslation()
   const [newImage, setNewImage] = React.useState(null)
   const [sending, setSending] = React.useState(false)
   const dispatch = useDispatch()
-  const user = useSelector(s => s.userById[id])
 
   const closeModal = () => {
     if (sending) return
@@ -41,7 +40,7 @@ const EditModal = ({ id, editing, setEditing }) => {
     await api.updateCurrentUserPhoto(newImage)
     //@todo err handling
     //update store with new user data , a bit hacky
-    const user = await api.getUserProfile(id, false)
+    const user = await api.getUserProfile(user.id, false)
     dispatch({ type: 'edit_user/new_data', user })
     setSending(false)
     closeModal()
@@ -152,9 +151,11 @@ const EditModal = ({ id, editing, setEditing }) => {
   )
 }
 
-export default function EditUser({ id }) {
+export default function EditUser({ user }) {
   const [editing, setEditing] = React.useState(false)
   const { t } = useTranslation()
+
+  if (!user) return null
 
   return (
     <div>
@@ -164,7 +165,7 @@ export default function EditUser({ id }) {
       >
         {t('Change Image')}
       </button>
-      <EditModal editing={editing} setEditing={setEditing} id={id} />
+      <EditModal editing={editing} setEditing={setEditing} user={user} />
     </div>
   )
 }

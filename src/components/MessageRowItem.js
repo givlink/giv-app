@@ -4,11 +4,11 @@ import SafeImage from 'components/SafeImage'
 import { Link } from '@reach/router'
 import Linkify from 'react-linkify'
 
-export default function MessageRowItem({ message, group, authUser }) {
+export default function MessageRowItem({ message, group, user }) {
   const { t } = useTranslation()
   //@Todo show name instead of id
 
-  const isSenderCurrent = message?.senderId === authUser.uid
+  const isSenderCurrent = message?.senderId === user.id
   const isModerator = utils.checkModerators(
     message?.senderId,
     group?.moderators,

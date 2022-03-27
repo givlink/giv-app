@@ -10,7 +10,6 @@ import api from 'lib/api'
 const EditModal = ({
   initialName = '',
   initialJob = '',
-  id,
   editing,
   setEditing,
 }) => {
@@ -35,7 +34,7 @@ const EditModal = ({
     setSending(true)
     await api.updateCurrentUser({ name, job })
     //@todo err handling
-    const user = await api.getUserProfile(id, false)
+    const user = await api.getMyProfile()
     dispatch({ type: 'edit_user/new_data', user })
     setSending(false)
     closeModal()
@@ -155,9 +154,12 @@ const EditModal = ({
   )
 }
 
-export default function EditUser({ id, user }) {
+export default function EditUser({ user }) {
   const [editing, setEditing] = React.useState(false)
   const { t } = useTranslation()
+
+  if (!user) return null
+  console.log('here:', user)
 
   return (
     <div className='flex justify-end'>
@@ -174,7 +176,7 @@ export default function EditUser({ id, user }) {
         initialJob={user.job}
         editing={editing}
         setEditing={setEditing}
-        id={id}
+        user={user}
       />
     </div>
   )

@@ -98,15 +98,13 @@ const EmptyUser = () => {
 
 export default function UserDetail(props) {
   const { t, i18n } = useTranslation()
-  const dispatch = useDispatch()
   const loc = useLocation()
+  const [user, setUser] = React.useState(null)
+  const [loading, setLoading] = React.useState(true)
   const state = useSelector(s => ({
-    user: s.userById[props.id],
-    authUser: s.authUser,
-    userSingleLoading: s.userSingleLoading,
+    currUser: s.currUser,
     areaMap: s.areas,
   }))
-  const { user, authUser } = state
 
   const tagField = i18n.language === 'en' ? 'tagEn' : 'tag'
 
@@ -119,19 +117,17 @@ export default function UserDetail(props) {
   usePreserveScroll('userDetail', true)
 
   React.useEffect(() => {
-    if (user || !authUser) return
-
-    //Else call api and update user list
+    //call api and update user list
     const run = async () => {
-      //@Todo err handling
-      dispatch({ type: 'users/data_single_loading' })
-      const user = await api.getUserProfile(props.id)
-      dispatch({ type: 'users/data_single', user })
+      setLoading(true)
+      const resp = await api.getUserProfile(props.id)
+      setUser(resp)
+      setLoading(false)
     }
     run()
-  }, [dispatch, user, props.id, authUser])
+  }, [props.id])
 
-  const isMyPage = loc.pathname === `/users/${state.authUser?.uid}`
+  const isMyPage = loc.pathname === `/users/${state.currUser?.id}`
   const isAdmin = props.id === ADMIN_ID
 
   return (
@@ -155,7 +151,7 @@ export default function UserDetail(props) {
           </div>
         ) : user ? (
           <>
-            {isMyPage && <EditUser user={user} id={user.id} />}
+            {isMyPage && <EditUser user={user} />}
             <div className='grid grid-cols-12 py-5 pl-4 pr-1'>
               <div className='col-span-5 mr-3'>
                 <ProfilePic src={utils.parseUrl(user.photoURL)} />
@@ -199,7 +195,7 @@ export default function UserDetail(props) {
             {isMyPage && isAdmin && <Debug />}
           </>
         ) : (
-          !state.userSingleLoading && <EmptyUser />
+          !loading && <EmptyUser />
         )}
       </div>
     </div>

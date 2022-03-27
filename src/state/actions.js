@@ -141,7 +141,12 @@ const actions = {
     return async (dispatch, getState) => {
       const { authUser, activeGroup } = getState()
       dispatch({ type: 'auth/user_profile_loading' })
-      const user = await api.getUserProfile(authUser.uid, false)
+      let user = await api.getMyProfile()
+      if (!user) {
+        user = await api.getUserProfile(authUser.uid, false)
+      }
+      if (!user.id) user.id = user.uid //todo hack cleanup after migration
+
       dispatch({ type: 'auth/user_profile_data', user })
 
       let ag = activeGroup

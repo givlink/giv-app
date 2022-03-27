@@ -206,9 +206,10 @@ export default function RequestSugestion({ fromUser, toUser }) {
   const [requestOpen, setRequestOpen] = React.useState(false)
   const [toInterests, setToInterests] = React.useState([])
 
-
-  const isFromUserCurrentUser = state.authUser?.uid === fromUser?.id
-  const isToUserCurrentUser = state.authUser?.uid === toUser?.id
+  const isFromUserCurrentUser =
+    state.authUser?.uid === (fromUser?.firebaseId || fromUser?.id)
+  const isToUserCurrentUser =
+    state.authUser?.uid === (toUser?.firebaseId || toUser?.id)
   const requestType = isToUserCurrentUser ? 'receive' : 'send'
 
   const tagField = i18n.language === 'en' ? 'tagEn' : 'tag'

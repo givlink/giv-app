@@ -24,7 +24,7 @@ export default function Footer() {
   const { unreadCount, user, chatsUnreadCount } = useSelector(s => ({
     unreadCount: s.notificationsUnreadCount,
     chatsUnreadCount: s.chatsUnreadCount,
-    user: s.authUser,
+    user: s.user,
   }))
   const loc = useLocation()
 
@@ -35,7 +35,7 @@ export default function Footer() {
   const isNotsList = !!useMatch('/notifications')
   const isReccomendationList = !!useMatch('/recommendations')
 
-  const isMyPage = loc.pathname === `/users/${user?.uid}`
+  const isMyPage = loc.pathname === `/users/${user?.id}`
 
   const shouldShow =
     isPostList ||
@@ -147,7 +147,7 @@ export default function Footer() {
             <label className='hidden md:block'>Notifications</label>
           </Link>
           <Link
-            to={`/users/${user?.uid}`}
+            to={`/users/${user?.id}`}
             className={`${
               isMyPage
                 ? 'text-giv-blue-dark border-giv-blue'

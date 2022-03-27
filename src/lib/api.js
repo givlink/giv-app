@@ -13,8 +13,8 @@ export const allowContent = (contentId, contentType = 'user') => {
   return !blocked
 }
 
-const API_URL = `https://api.giv.link/api`
-// const API_URL = 'http://localhost:3000/api'
+// const API_URL = `https://api.giv.link/api`
+const API_URL = 'http://localhost:3000/api'
 export const _apiClient = async (path, opts = {}) => {
   const token = await firebase.auth().currentUser?.getIdToken()
   const payload = { url: `${API_URL}${path}`, ...opts }
@@ -35,6 +35,8 @@ export const listAreas = () => _apiClient('/areas')
 export const listPlaceCategories = () => _apiClient('/area-categories')
 export const listSkillCategories = () => _apiClient('/skill-categories')
 export const listSkills = () => _apiClient('/skills')
+
+export const getMyProfile = () => _apiClient(`/users/profile`)
 
 export const getUserProfile = uid => {
   if (!allowContent(uid, 'user')) {
@@ -239,7 +241,7 @@ export const isActivatedUser = async uid => {
   const user = await _apiClient(`/users/${uid}`)
   if (!user) return false
 
-  return user.status === 'Activated'
+  return ['active', 'Activated'].includes(user.status)
 }
 
 export const getCurrentUserProfile = async () => {
@@ -330,7 +332,8 @@ export const watchChatMessages = (groupId, cb) => {
     console.log('No group id in watchChatMessages')
     return null
   }
-  const listener = setInterval(() => {
+
+  const run = () => {
     _apiClient(`/chat-messages/${groupId}`, { timeout: 5000 }).then(async r => {
       let msgs = []
       for (const item of r) {
@@ -340,7 +343,10 @@ export const watchChatMessages = (groupId, cb) => {
       }
       cb(msgs)
     })
-  }, 5000)
+  }
+  const listener = setInterval(run, 5000)
+
+  run()
 
   return () => clearInterval(listener)
 }
@@ -599,5 +605,6 @@ const api = {
   blockUser,
   allowContent,
   _apiClient,
+  getMyProfile,
 }
 export default api

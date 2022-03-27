@@ -8,12 +8,12 @@ import api from 'lib/api'
 import utils from 'lib/utils'
 // import { db } from '../lib/db'
 import { useTranslation } from 'react-i18next'
-const makeGroupName = async (group, authUser) => {
+const makeGroupName = async (group, user) => {
   if (group) {
     const memKeys = Object.keys(group?.members)
     if (memKeys.length === 2) {
       for (let m of memKeys) {
-        if (m !== authUser?.uid) {
+        if (m !== user?.id) {
           const user = await api.getUserProfile(m)
           if (user) {
             return user.name
@@ -32,7 +32,7 @@ export default function ChatDetail({ id }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const ref = React.useRef(null)
-  const state = useSelector( s => {
+  const state = useSelector(s => {
     //sort messages just in case
     let messages = s.chatMessages[id] || []
     messages.sort((a, b) => {
@@ -49,12 +49,12 @@ export default function ChatDetail({ id }) {
       chatMessagesLoading: s.chatMessagesLoading,
       messages,
       group: s.chatGroups[id] || null,
-      authUser: s.authUser,
+      user: s.user || {},
     }
   })
 
   const isModerator = utils.checkModerators(
-    state.authUser?.uid,
+    state.user.id,
     state.group?.moderators,
   )
   React.useEffect(() => {
@@ -85,10 +85,10 @@ export default function ChatDetail({ id }) {
   React.useEffect(() => {
     if (!state.group) return
     const run = async () => {
-      makeGroupName(state.group, state.authUser).then(n => setGroupName(n))
+      makeGroupName(state.group, state.user).then(n => setGroupName(n))
     }
     run()
-  }, [state.group, state.authUser])
+  }, [state.group, state.user])
 
   return (
     <div className='h-screen flex flex-col bg-white max-w-2xl md:mx-auto'>
@@ -119,7 +119,7 @@ export default function ChatDetail({ id }) {
                 <MessageRowItem
                   group={state.group}
                   message={m}
-                  authUser={state.authUser}
+                  user={state.user}
                 />
               </li>
             ))}
