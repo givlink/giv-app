@@ -84,6 +84,8 @@ const CommentCard = ({ notification, markRead }) => {
   const { t } = useTranslation()
   const { comment } = notification
 
+  if (!comment) return null
+
   return (
     <Link
       onClick={() => markRead(notification.id)}
@@ -99,7 +101,7 @@ const CommentCard = ({ notification, markRead }) => {
       <div className='w-full flex flex-col pt-1'>
         <span className='text-xs sm:text-sm pb-3'>
           {t('You Got Comment', {
-            name: comment.author ? comment.author.name : 'Someone',
+            name: comment.author ? comment.author?.name : 'Someone',
           })}
         </span>
         <span className='block flex justify-end items-center text-gray-500 text-xs py-1'>

@@ -14,12 +14,19 @@ export const allowContent = (contentId, contentType = 'user') => {
 }
 
 const API_URL = `https://api.giv.link/api`
+// const API_URL = 'http://localhost:3000/api'
 export const _apiClient = async (path, opts = {}) => {
   const token = await firebase.auth().currentUser?.getIdToken()
   const payload = { url: `${API_URL}${path}`, ...opts }
   if (!payload.headers) payload.headers = {}
   payload.headers.authorization = `Bearer ${token}`
-  const { data } = await axios(payload)
+  let data
+  try {
+    const resp = await axios(payload)
+    data = resp.data
+  } catch (err) {
+    console.error(err)
+  }
   // console.log(`${path}`, data)
   return data
 }
@@ -338,16 +345,20 @@ export const watchChatMessages = (groupId, cb) => {
   return () => clearInterval(listener)
 }
 export const watchChatGroups = cb => {
-  const listener = setInterval(() => {
+  const run = () => {
     _apiClient(`/chat-groups`, { timeout: 4000 }).then(groups => cb(groups))
-  }, 10000)
+  }
+  const listener = setInterval(run, 10000)
+
+  run()
 
   return () => clearInterval(listener)
 }
 
 export const watchNotifications = cb => {
-  const listener = setInterval(() => {
+  const run = () => {
     _apiClient(`/notifications`, { timeout: 4000 }).then(async (r = []) => {
+      const items = []
       for (const item of r) {
         if (item.type === 'givFinished') {
           const [giver, giv] = await Promise.all([
@@ -356,11 +367,21 @@ export const watchNotifications = cb => {
           ])
           item.giver = giver
           item.giv = giv
+          if (!item.giver || !item.giv) {
+            continue
+          }
         }
+        if (item.type === 'commentCreated') {
+          item.comment = await getCommentById(item.commentId)
+          if (!item.comment) continue
+        }
+        items.push(item)
       }
-      cb(r)
+      cb(items)
     })
-  }, 10000)
+  }
+  run()
+  const listener = setInterval(run, 10000)
   return () => clearInterval(listener)
 }
 
