@@ -42,7 +42,7 @@ export const listSkills = () => _apiClient('/skills')
 
 export const getMyProfile = () => _apiClient(`/users/profile`)
 
-export const getUserProfile = uid => {
+export const getUserProfile = async uid => {
   if (!allowContent(uid, 'user')) {
     return null
   }
