@@ -25,6 +25,8 @@ export default function UserCircleItem({ user }) {
     return skill[tagField]
   }
 
+  if (!user) return null
+
   return (
     <Link to={`/users/${user?.id}`}>
       <div className='h-48 w-full flex flex-col'>

@@ -7,6 +7,8 @@ const UserInterests = ({ user, editable = false }) => {
   const { t } = useTranslation()
   const [editing, setEditing] = React.useState(false)
   let skillMap = {}
+
+  if (!user) return null
   const interests = user.interests || []
   interests.forEach(s => (skillMap[s] = true))
   return (
