@@ -26,6 +26,10 @@ export const _apiClient = async (path, opts = {}) => {
     data = resp.data
   } catch (err) {
     console.error(err)
+    //ignore get errors
+    if (opts.method && opts.method.toLowerCase() !== 'get') {
+      throw err
+    }
   }
   // console.log(`${path}`, data)
   return data
@@ -42,7 +46,11 @@ export const getUserProfile = uid => {
   if (!allowContent(uid, 'user')) {
     return null
   }
-  return _apiClient(`/users/${uid}`)
+  const profile = await _apiClient(`/users/${uid}`)
+  if (profile && !['Activated', 'active'].includes(profile.status)) {
+    return null
+  }
+  return profile
 }
 
 export const getGivById = id => _apiClient(`/givs/${id}`)
