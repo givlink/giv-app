@@ -13,8 +13,8 @@ export const allowContent = (contentId, contentType = 'user') => {
   return !blocked
 }
 
-// const API_URL = `https://api.giv.link/api`
-const API_URL = 'http://localhost:3000/api'
+const API_URL = `https://api.giv.link/api`
+// const API_URL = 'http://localhost:3000/api'
 export const _apiClient = async (path, opts = {}) => {
   const token = await firebase.auth().currentUser?.getIdToken()
   const payload = { url: `${API_URL}${path}`, ...opts }
