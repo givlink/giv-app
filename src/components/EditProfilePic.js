@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import React from 'react'
 import { PlusIcon, ChevronLeftIcon } from '@heroicons/react/outline'
 import { useTranslation } from 'react-i18next'
@@ -40,8 +40,8 @@ const EditModal = ({ user, editing, setEditing }) => {
     await api.updateCurrentUserPhoto(newImage)
     //@todo err handling
     //update store with new user data , a bit hacky
-    const user = await api.getUserProfile(user.id, false)
-    dispatch({ type: 'edit_user/new_data', user })
+    const newUser = await api.getUserProfile(user.id, false)
+    dispatch({ type: 'edit_user/new_data', user: newUser })
     setSending(false)
     closeModal()
   }
