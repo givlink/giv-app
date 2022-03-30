@@ -229,7 +229,6 @@ const reducer = (state = initialState, action) => {
     case 'chat_messages/loading_done':
       return { ...state, chatMessagesLoading: false }
     case 'chat_messages/data':
-      console.log('here:', action)
       const chatMessages = { ...state.chatMessages }
       if (action.messages) {
         chatMessages[action.chatGroupId] = action.messages

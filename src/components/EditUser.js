@@ -159,7 +159,6 @@ export default function EditUser({ user }) {
   const { t } = useTranslation()
 
   if (!user) return null
-  console.log('here:', user)
 
   return (
     <div className='flex justify-end'>

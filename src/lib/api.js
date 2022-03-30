@@ -1,7 +1,6 @@
 import firebase from './firebase'
 import utils from 'lib/utils'
 import Err from 'lib/err'
-import shortId from 'short-uuid'
 import axios from 'axios'
 import qs from 'query-string'
 
@@ -13,8 +12,10 @@ export const allowContent = (contentId, contentType = 'user') => {
   return !blocked
 }
 
-const API_URL = `https://api.giv.link/api`
-// const API_URL = 'http://localhost:3000/api'
+let API_URL = `https://api.giv.link/api`
+if (process.env.NODE_ENV === 'development') {
+  API_URL = 'http://localhost:3000/api'
+}
 export const _apiClient = async (path, opts = {}) => {
   const token = await firebase.auth().currentUser?.getIdToken()
   const payload = { url: `${API_URL}${path}`, ...opts }
@@ -81,35 +82,38 @@ export const saveDeviceToken = (token = null) => {
   return _apiClient(`/device-tokens/${token}`, { method: 'PUT' })
 }
 
+const uploadToS3 = (uploadData, file) => {
+  const formDataArtwork = new FormData()
+  Object.entries({ ...uploadData.fields }).forEach(([key, value]) => {
+    formDataArtwork.append(key, value)
+  })
+  formDataArtwork.append('file', file) //File needs to be last
+
+  return fetch(uploadData.url, {
+    method: 'POST',
+    body: formDataArtwork,
+  })
+}
+
 export const updateCurrentUserPhoto = async file => {
   if (!file) return null
 
   const user = await getCurrentUserProfile()
   if (!user) return null
 
-  const oldPhotoURL = user.photoURL
-  const newPhotoURL = `images/${user.id}/profile/${shortId.generate()}`
-
-  const ref = firebase.storage().ref().child(newPhotoURL)
-
-  //1. Upload the image
-  await ref.put(file)
-
-  //2. Update the user profile
-  await _apiClient(`/users/${user.id}`, {
+  const resp = await _apiClient(`/users/${user.id}`, {
     method: 'PUT',
-    data: { photoURL: newPhotoURL },
+    data: {
+      photoData: {
+        size: file.size,
+        contentType: file.type,
+      },
+    },
   })
 
-  //3. Delete old profile photo if its a local url
-  if (oldPhotoURL && !oldPhotoURL.startsWith('http')) {
-    await firebase.storage().ref().child(oldPhotoURL).delete()
-  }
+  uploadToS3(resp.uploadData, file)
 
-  //@Todo sentry on err, slack on err
-  //@Todo if any of these fail then we have a junk files in db
-  //setup a function to clear those
-  return newPhotoURL
+  return 'ok'
 }
 
 export const updateCurrentUser = data => {
@@ -162,6 +166,7 @@ export const listUsers = async query => {
   }
 
   const result = await _apiClient(`/users?${qs.stringify(qq)}`)
+  console.log(result, qq)
   let users = result
   users = users.filter(u => allowContent(u.id, 'user'))
 
@@ -304,7 +309,7 @@ export const acceptGivRequest = id =>
 export const watchGivRequests = cb => {
   const listener = setInterval(() => {
     _apiClient(`/requests`, { timeout: 4000 }).then(r => cb(r))
-  }, 10000)
+  }, 100000)
 
   return () => clearInterval(listener)
 }
@@ -395,7 +400,7 @@ export const watchNotifications = cb => {
     })
   }
   run()
-  const listener = setInterval(run, 10000)
+  const listener = setInterval(run, 100000)
   return () => clearInterval(listener)
 }
 
@@ -410,12 +415,12 @@ export const createGivRequest = (senderId, receiverId, type) =>
 export const deleteImage = path => {
   return firebase.storage().ref().child(path).delete()
 }
-export const uploadImage = (img, path) => {
-  return firebase.storage().ref().child(path).put(img)
-}
 export const deletePost = id => _apiClient(`/posts/${id}`, { method: 'DELETE' })
 
 export const updatePostImages = async (postId, newImages, oldImages) => {
+  //todo
+  return
+
   //new images contains old image urls and new File objects
   //old images ONLY contain string urls
   //first we upload all newImage file objects and generate ids
@@ -438,12 +443,8 @@ export const updatePostImages = async (postId, newImages, oldImages) => {
     }
 
     //else its a file so upload it
-    const path = `images/${
-      user.uid
-    }/posts/${postId}/images/${shortId.generate()}`
-    await api.uploadImage(f, path)
-
-    newImageUrls.push(path)
+    //todo
+    // newImageUrls.push(path)
   }
 
   for (let f of oldImages) {
@@ -478,24 +479,16 @@ export const createPost = async ({
     group: activeGroup,
   }
 
+  payload.imagesData = images.map(i => ({ size: i.size, contentType: i.type }))
+
   const post = await _apiClient(`/posts`, { method: 'POST', data: payload })
 
-  const imagePaths = images.map(img => {
-    const path = `images/${post.authorId}/posts/${
-      post.id
-    }/images/${shortId.generate()}`
-    return path
-  })
-
-  const promises = imagePaths.map((path, index) => {
-    const img = images[index]
-    return uploadImage(img, path)
+  const promises = post.uploadData.map((d, idx) => {
+    return uploadToS3(d, images[idx])
   })
   //@Todo if upload fails write to sentry
   //and also try uploading via functions
   await Promise.all(promises)
-
-  await updatePost({ id: post.id, images: imagePaths })
 
   return post
 }
@@ -578,7 +571,6 @@ const api = {
   updateCurrentUser,
   updateCurrentUserPhoto,
 
-  uploadImage,
   deleteImage,
 
   createGivRequest,
