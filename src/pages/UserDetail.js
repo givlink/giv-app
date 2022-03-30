@@ -102,7 +102,7 @@ export default function UserDetail(props) {
   const [user, setUser] = React.useState(null)
   const [loading, setLoading] = React.useState(true)
   const state = useSelector(s => ({
-    currUser: s.currUser,
+    currUser: s.user,
     areaMap: s.areas,
   }))
 
@@ -126,6 +126,7 @@ export default function UserDetail(props) {
     }
     run()
   }, [props.id])
+
 
   const isMyPage = loc.pathname === `/users/${state.currUser?.id}`
   const isAdmin = props.id === ADMIN_ID

@@ -92,7 +92,6 @@ const actions = {
       dispatch({ type: 'auth/user_profile_data', user })
 
       const lastActiveGroup = localStorage.getItem('lastActiveGroup')
-      console.log('here:', lastActiveGroup, activeGroup)
       if (user?.groups) {
         if (
           !user?.groups[lastActiveGroup] &&
