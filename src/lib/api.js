@@ -307,9 +307,12 @@ export const acceptGivRequest = id =>
   _apiClient(`/requests/${id}`, { method: 'PUT' })
 
 export const watchGivRequests = cb => {
-  const listener = setInterval(() => {
-    _apiClient(`/requests`, { timeout: 4000 }).then(r => cb(r))
-  }, 100000)
+  const listener = setInterval(
+    () => {
+      _apiClient(`/requests`, { timeout: 4000 }).then(r => cb(r))
+    },
+    process.env.NODE_ENV === 'development' ? 100000 : 10000,
+  )
 
   return () => clearInterval(listener)
 }
@@ -357,7 +360,10 @@ export const watchChatMessages = (groupId, cb) => {
       cb(msgs)
     })
   }
-  const listener = setInterval(run, 5000)
+  const listener = setInterval(
+    run,
+    process.env.NODE_ENV === 'development' ? 100000 : 5000,
+  )
 
   run()
 
@@ -367,7 +373,10 @@ export const watchChatGroups = cb => {
   const run = () => {
     _apiClient(`/chat-groups`, { timeout: 4000 }).then(groups => cb(groups))
   }
-  const listener = setInterval(run, 10000)
+  const listener = setInterval(
+    run,
+    process.env.NODE_ENV === 'development' ? 100000 : 10000,
+  )
 
   run()
 
@@ -400,7 +409,10 @@ export const watchNotifications = cb => {
     })
   }
   run()
-  const listener = setInterval(run, 100000)
+  const listener = setInterval(
+    run,
+    process.env.NODE_ENV === 'development' ? 100000 : 10000,
+  )
   return () => clearInterval(listener)
 }
 
