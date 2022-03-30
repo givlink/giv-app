@@ -48,6 +48,7 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
     handleNext({
       job,
       name: name || state.authUser?.displayName,
+      photoURL: state.authUser?.photoURL || '',
       intro,
       area,
     })
