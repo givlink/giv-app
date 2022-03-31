@@ -164,7 +164,7 @@ export default function UserDetail(props) {
                 </span>
                 <div className='mt-4 flex items-center'>
                   <LocationMarkerIcon className='h-5 w-5 mr-1 text-gray-400' />
-                  <span>{renderArea(user.area)}</span>
+                  <span>{renderArea(user.areaId)}</span>
                 </div>
                 <div className='mt-4'>
                   <SkillTagList skills={user.skills} size='medium' />

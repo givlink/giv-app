@@ -181,7 +181,7 @@ const CommentCard = ({ comment, user, onDelete }) => {
   )
 }
 const CreateComment = ({ postId, onAddComment }) => {
-  const authUser = useSelector(s => s.authUser)
+  const currUser = useSelector(s => s.user)
   const [user, setUser] = React.useState(null)
   const [message, setMessage] = React.useState('')
   const [sending, setSending] = React.useState(false)
@@ -189,9 +189,9 @@ const CreateComment = ({ postId, onAddComment }) => {
   const { t } = useTranslation()
   //@Todo this should be done in store
   React.useEffect(() => {
-    if (!authUser) return
-    api.getUserProfile(authUser.uid).then(u => setUser(u))
-  }, [authUser])
+    if (!currUser) return
+    api.getUserProfile(currUser.id).then(u => setUser(u))
+  }, [currUser])
 
   const handleChange = e => {
     resizeTextarea(e)
@@ -320,7 +320,7 @@ export default function PostDetail(props) {
   const dispatch = useDispatch()
   const state = useSelector(s => ({
     post: s.postById[props.id],
-    authUser: s.authUser,
+    currUser: s.user,
     user: s.user,
     postSingleLoading: s.postSingleLoading,
     isLiked: s.postLikeById[props.id],
@@ -333,12 +333,12 @@ export default function PostDetail(props) {
       //Else call api and update user list
       const run = async () => {
         //@Todo err handling
-        const liked = await api.checkLiked(props.id, state.authUser?.uid)
+        const liked = await api.checkLiked(props.id, state.currUser?.id)
         dispatch({ type: 'postLike/data', postId: props.id, liked })
       }
       run()
     }
-  }, [dispatch, state.user, state.isLiked, props.id, state.authUser])
+  }, [dispatch, state.user, state.isLiked, props.id, state.currUser])
 
   React.useEffect(() => {
     if (post) return

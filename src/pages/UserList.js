@@ -11,12 +11,12 @@ import usePreserveScroll from 'hooks/scroll'
 const makeOptions = (map, type, category) => {
   const result = []
 
-  const otherCategory = Object.values(map).filter(i => !i.category)
+  const otherCategory = Object.values(map).filter(i => !i.categoryId)
 
   category.forEach(ac => {
     const itemsInCategory = []
     Object.values(map).forEach(i => {
-      if (i.category === ac.id) {
+      if (i.categoryId === ac.id) {
         itemsInCategory.push(i)
       }
     })

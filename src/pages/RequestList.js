@@ -7,7 +7,6 @@ import usePreserveScroll from 'hooks/scroll'
 
 export default function RequestList() {
   const state = useSelector(s => ({
-    authUser: s.authUser,
     requests: s.requests,
     chatsUnreadCount: s.chatsUnreadCount,
     requestsPendingCount: s.requestsPendingCount,

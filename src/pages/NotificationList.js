@@ -9,7 +9,7 @@ import usePreserveScroll from 'hooks/scroll'
 export default function NotificationList() {
   const { t } = useTranslation()
   const state = useSelector(s => ({
-    authUser: s.authUser,
+    currUser: s.user,
     notifications: s.notifications,
     loading: s.notificationsLoading,
   }))
@@ -25,7 +25,7 @@ export default function NotificationList() {
         {state.notifications.map(n => {
           return (
             <li key={n.id}>
-              <NotificationListCard user={state.authUser} notification={n} />
+              <NotificationListCard user={state.currUser} notification={n} />
             </li>
           )
         })}

@@ -88,7 +88,7 @@ const actions = {
         return
       }
       dispatch({ type: 'auth/user_profile_loading' })
-      const user = await api.getUserProfile(authUser.uid, false)
+      const user = await api.getMyProfile()
       dispatch({ type: 'auth/user_profile_data', user })
 
       const lastActiveGroup = localStorage.getItem('lastActiveGroup')
@@ -138,13 +138,9 @@ const actions = {
   },
   loadUserProfileAndInitialPost: () => {
     return async (dispatch, getState) => {
-      const { authUser, activeGroup } = getState()
+      const { activeGroup } = getState()
       dispatch({ type: 'auth/user_profile_loading' })
-      let user = await api.getMyProfile()
-      if (!user) {
-        user = await api.getUserProfile(authUser.uid, false)
-      }
-      if (!user.id) user.id = user.uid //todo hack cleanup after migration
+      const user = await api.getMyProfile()
 
       dispatch({ type: 'auth/user_profile_data', user })
 

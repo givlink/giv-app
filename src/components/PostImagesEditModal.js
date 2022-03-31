@@ -71,11 +71,11 @@ const PostImagesEditModal = ({
   }
 
   let isAnyFile = false
-  images.forEach(i => {
+  images?.forEach(i => {
     if (typeof i !== 'string') isAnyFile = true
   })
-  const didChange = images.length !== initialImages.length || isAnyFile
-  const isValid = images.length //there should be at least 1 image
+  const didChange = images?.length !== initialImages?.length || isAnyFile
+  const isValid = images?.length || false//there should be at least 1 image
 
   return (
     <Transition.Root show={editing} as={React.Fragment}>
@@ -143,7 +143,7 @@ const PostImagesEditModal = ({
                     </Dialog.Title>
                   </div>
                   <div className='flex-1 grid grid-cols-2 gap-x-3 gap-y-1 mt-5 pb-16 pt-6 pl-5 pr-3 text-center overflow-auto'>
-                    {images.map((i, idx) => {
+                    {images?.map((i, idx) => {
                       return (
                         <div key={getKey(i)} className='relative'>
                           <button
@@ -163,7 +163,7 @@ const PostImagesEditModal = ({
                     })}
                     <label
                       className={`${
-                        images.length < 3
+                        images?.length < 3
                           ? 'opacity-100'
                           : 'opacity-25 pointer-events-none'
                       } rounded h-52 shadow bg-gray-50 border-2 border-gray-200 flex flex-col items-center justify-center`}

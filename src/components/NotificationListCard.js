@@ -117,7 +117,7 @@ export default function NotificationCard({ user, notification }) {
   const markRead = () => {
     //@Todo err
     api.updateNotification({
-      userId: user.uid,
+      userId: user.id,
       id: notification.id,
       status: 'read',
     })

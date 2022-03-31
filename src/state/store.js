@@ -423,9 +423,13 @@ const reducer = (state = initialState, action) => {
     case 'areas/loading':
       return { ...state, areasLoading: true }
     case 'areas/data':
+      const areas = {}
+      action.areas.forEach(a => {
+        areas[a.id] = a
+      })
       return {
         ...state,
-        areas: action.areas,
+        areas,
         areasLoading: false,
       }
     //Area Categories

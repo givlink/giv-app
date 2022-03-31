@@ -29,6 +29,9 @@ export const _apiClient = async (path, opts = {}) => {
     console.error(err)
     //ignore get errors
     if (opts.method && opts.method.toLowerCase() !== 'get') {
+      if (err.response && err.response.data && err.response.data.error) {
+        throw Error(err.response.data.error)
+      }
       throw err
     }
   }
@@ -98,10 +101,7 @@ const uploadToS3 = (uploadData, file) => {
 export const updateCurrentUserPhoto = async file => {
   if (!file) return null
 
-  const user = await getCurrentUserProfile()
-  if (!user) return null
-
-  const resp = await _apiClient(`/users/${user.id}`, {
+  const resp = await _apiClient(`/users/profile`, {
     method: 'PUT',
     data: {
       photoData: {
@@ -118,11 +118,7 @@ export const updateCurrentUserPhoto = async file => {
 
 export const updateCurrentUser = data => {
   if (!data) return null
-
-  const user = getCurrentUser()
-  if (!user) return null
-
-  return _apiClient(`/users/${user.uid}`, { method: 'PUT', data })
+  return _apiClient(`/users/profile`, { method: 'PUT', data })
 }
 
 const login = prov => {
@@ -166,13 +162,12 @@ export const listUsers = async query => {
   }
 
   const result = await _apiClient(`/users?${qs.stringify(qq)}`)
-  console.log(result, qq)
-  let users = result
+  let users = result || []
   users = users.filter(u => allowContent(u.id, 'user'))
 
   let offset = null
-  if (result.length) {
-    offset = result[result.length - 1].id
+  if (result && result.length) {
+    offset = result[result.length - 1].createdAt
   }
 
   return [users, offset]
@@ -194,7 +189,9 @@ export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
     limit: 10,
   }
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
-  items = items.filter(u => allowContent(u.id, 'user'))
+  items = items
+    .filter(u => allowContent(u.id, 'user'))
+    .filter(u => u.id !== user.id) //don't recommend yourself
 
   return items
 }
@@ -216,7 +213,9 @@ export const listSimilarUsers = async (user, activeGroup) => {
   }
 
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
-  items = items.filter(u => allowContent(u.id, 'user'))
+  items = items
+    .filter(u => allowContent(u.id, 'user'))
+    .filter(u => u.id !== user.id) //don't recommend yourself
 
   return items
 }
@@ -245,13 +244,15 @@ export const listRecommendations = async (user, activeGroup) => {
   }
 
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
-  items = items.filter(u => allowContent(u.id, 'user'))
+  items = items
+    .filter(u => allowContent(u.id, 'user'))
+    .filter(u => u.id !== user.id) //don't recommend yourself
 
   return items
 }
 
-export const isActivatedUser = async uid => {
-  const user = await _apiClient(`/users/${uid}`)
+export const isActivatedUser = async () => {
+  const user = await getMyProfile()
   if (!user) return false
 
   return ['active', 'Activated'].includes(user.status)
@@ -263,7 +264,7 @@ export const getCurrentUserProfile = async () => {
     Err.warn(`No current user found`)
     return null
   }
-  return getUserProfile(user.uid)
+  return getMyProfile()
 }
 
 export const getUserReceivedPosts = uid => _apiClient(`/posts?giverId=${uid}`)
@@ -388,10 +389,10 @@ export const watchNotifications = cb => {
     _apiClient(`/notifications`, { timeout: 4000 }).then(async (r = []) => {
       const items = []
       for (const item of r) {
-        if (item.type === 'givFinished') {
+        if (item.type === 'givFinished' && item.data) {
           const [giver, giv] = await Promise.all([
-            getCachedProfile(item.giverId),
-            getGivById(item.givId),
+            getCachedProfile(item.data.giverId),
+            getGivById(item.data.givId),
           ])
           item.giver = giver
           item.giv = giv
@@ -525,7 +526,8 @@ const listPosts = async (query = {}) => {
   let posts = await _apiClient(`/posts?${qs.stringify(qq)}`)
   let offset = null
   if (posts.length) {
-    offset = posts[posts.length - 1].id
+    offset = posts[posts.length - 1].createdAt
+    console.log(offset)
   }
 
   posts = posts.filter(

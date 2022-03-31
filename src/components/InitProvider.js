@@ -15,7 +15,7 @@ const InitProvider = props => {
     if (loading || !user) return
 
     const run = async () => {
-      const isActivatedUser = await api.isActivatedUser(user.uid)
+      const isActivatedUser = await api.isActivatedUser()
       if (!isActivatedUser) {
         navigate('/invite')
         return

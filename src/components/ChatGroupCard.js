@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import SafeImage from 'components/SafeImage'
 import api from 'lib/api'
 
-export default function ChatGroupCard({ group, authUser }) {
+export default function ChatGroupCard({ group, currUser }) {
   const { t } = useTranslation()
   const [groupName, setGroupName] = React.useState('Group')
   const [groupImg, setGroupImg] = React.useState()
@@ -13,14 +13,14 @@ export default function ChatGroupCard({ group, authUser }) {
   //@Todo this a poor man's implementation of unread count
   //once we have correct data in backend replace it.
   const lastRead = localStorage.getItem(`lastRead-${group.id}`)
-  const isModerator = utils.checkModerators(authUser?.uid, group?.moderators)
+  const isModerator = utils.checkModerators(currUser?.id, group?.moderators)
 
   React.useEffect(() => {
     const run = async () => {
       const memKeys = Object.keys(group?.members)
       if (memKeys.length === 2) {
         for (let m of memKeys) {
-          if (m !== authUser.uid) {
+          if (m !== currUser.id) {
             const user = await api.getUserProfile(m)
             if (user) {
               setGroupName(user.name)
@@ -34,7 +34,7 @@ export default function ChatGroupCard({ group, authUser }) {
       }
     }
     run()
-  }, [group, authUser])
+  }, [group, currUser])
 
   const hasUnread =
     !!lastRead && !!group.lastMessage && lastRead !== group?.lastMessage?.id

@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next'
 const Modal = ({ open, setOpen, giv, giver, markRead }) => {
   const { t } = useTranslation()
   const state = useSelector(s => ({
-    authUser: s.authUser,
     activeGroup: s.activeGroup,
   }))
   const ref = React.useRef()
@@ -64,7 +63,6 @@ const Modal = ({ open, setOpen, giv, giver, markRead }) => {
         title,
         message,
         images,
-        authorId: state.authUser.uid,
         giv,
         giver,
         activeGroup: state.activeGroup,

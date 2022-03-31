@@ -9,7 +9,7 @@ const makeOptions = (map, type, category) => {
   category.forEach(ac => {
     const itemsInCategory = []
     Object.values(map).forEach(i => {
-      if (i.category === ac.id) {
+      if (i.categoryId === ac.id) {
         itemsInCategory.push(i)
       }
     })

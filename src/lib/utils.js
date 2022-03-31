@@ -105,10 +105,12 @@ const utils = {
   },
   sleep: ms => new Promise(r => setTimeout(r, ms)),
   parseUrl: path => {
+    if (!path) return path
+
     if (path && path.includes('facebook')) {
       return path + `?height=500` //for fb higher quality image
     } else {
-      if(path.startsWith('http')){
+      if (path.startsWith('http')) {
         return path
       }
       return `${CDN_URL}/${path}`

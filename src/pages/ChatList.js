@@ -24,7 +24,7 @@ const ChatComingSoon = () => {
 
 export default function ChatList() {
   const state = useSelector(s => ({
-    authUser: s.authUser,
+    currUser: s.user,
     chats: s.chats,
     chatGroups: s.chatGroups,
     requestsPendingCount: s.requestsPendingCount,
@@ -58,7 +58,7 @@ export default function ChatList() {
             {sortedChatGroups.map(p => {
               return (
                 <li key={p.id}>
-                  <ChatGroupCard authUser={state.authUser} group={p} />
+                  <ChatGroupCard currUser={state.currUser} group={p} />
                 </li>
               )
             })}

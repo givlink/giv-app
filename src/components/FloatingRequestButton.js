@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 
 const RequestModal = ({ open, setOpen, userId }) => {
   const { t } = useTranslation()
-  const user = useSelector(s => s.authUser)
+  const user = useSelector(s => s.user)
   const [loading, setLoading] = React.useState(false)
   const [sent, setSent] = React.useState(false)
   const closeModal = () => {
@@ -23,12 +23,12 @@ const RequestModal = ({ open, setOpen, userId }) => {
     let senderId
     let receiverId
     if (type === 'send') {
-      senderId = user.uid
+      senderId = user.id
       receiverId = userId
     }
     if (type === 'receive') {
       senderId = userId
-      receiverId = user.uid
+      receiverId = user.id
     }
     await api.createGivRequest(senderId, receiverId, type)
     setSent(true)
