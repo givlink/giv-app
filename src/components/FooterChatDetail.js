@@ -1,12 +1,13 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import api from 'lib/api'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 export default function FooterChatDetail({ groupId }) {
   const dispatch = useDispatch()
   const ref = React.useRef()
   const { t } = useTranslation()
   const [msg, setMsg] = React.useState('')
+  const currUser = useSelector(s => s.user)
   const [sending, setSending] = React.useState(false)
   const sendMessage = async () => {
     if (!groupId) return //@Todo err
@@ -17,7 +18,12 @@ export default function FooterChatDetail({ groupId }) {
       setMsg('')
       dispatch({
         type: 'chat_messages/data',
-        message: { ...msg, id: lastMsgId },
+        message: {
+          content: msg,
+          id: lastMsgId,
+          groupId,
+          senderId: currUser.id,
+        },
       })
       setSending(false)
       ref.current.focus()

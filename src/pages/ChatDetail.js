@@ -37,9 +37,9 @@ export default function ChatDetail({ id }) {
     let messages = s.chatMessages[id] || []
     messages.sort((a, b) => {
       try {
-        return a.timestamp < b.timestamp
+        return a.createdAt < b.createdAt
           ? -1
-          : a.timestamp > b.timestamp
+          : a.createdAt > b.createdAt
           ? 1
           : 0
       } catch (err) {}

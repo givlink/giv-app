@@ -35,8 +35,10 @@ export default function ChatList() {
 
   const sortedChatGroups = Object.values(state.chatGroups || {})
   sortedChatGroups.sort((a, b) => {
+    if(!a.lastMessage && !b.lastMessage) return 0
+
     try {
-      return a.lastMessage?.timestamp > b.lastMessage?.timestamp ? -1 : 1
+      return a.lastMessage?.createdAt > b.lastMessage?.createdAt ? -1 : 1
     } catch (err) {}
     return 0
   })

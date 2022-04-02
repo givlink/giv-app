@@ -37,7 +37,12 @@ export default function ChatGroupCard({ group, currUser }) {
   }, [group, currUser])
 
   const hasUnread =
-    !!lastRead && !!group.lastMessage && lastRead !== group?.lastMessage?.id
+    !!lastRead &&
+    !!group.lastMessage &&
+    lastRead !== group?.lastMessage?.id &&
+    group?.lastMessage?.senderId !== currUser?.id
+
+  console.log(group)
 
   return (
     <Link to={`/chats/${group?.id}`}>
@@ -81,7 +86,7 @@ export default function ChatGroupCard({ group, currUser }) {
               )}
             </p>
             <span className='text-xs flex justify-end items-end font-medium'>
-              {utils.parseAgo(group?.lastMessage?.timestamp)}
+              {utils.parseAgo(group?.lastMessage?.createdAt)}
             </span>
           </div>
         </div>

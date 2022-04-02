@@ -230,16 +230,32 @@ const reducer = (state = initialState, action) => {
       return { ...state, chatMessagesLoading: false }
     case 'chat_messages/data':
       const chatMessages = { ...state.chatMessages }
+      let targetGroupId
       if (action.messages) {
+        targetGroupId = action.chatGroupId
         chatMessages[action.chatGroupId] = action.messages
       }
       if (action.message) {
-        chatMessages[action.chatGroupId].push(action.message)
+        targetGroupId = action.message.groupId
+        chatMessages[action.message.groupId].push({
+          ...action.message,
+          createdAt: new Date().toISOString(),
+        })
+      }
+      const lastMessage =
+        chatMessages[targetGroupId][chatMessages[targetGroupId].length - 1]
+      const newChatGroups = {
+        ...state.chatGroups,
+        [targetGroupId]: {
+          ...state.chatGroups[targetGroupId],
+          lastMessage,
+        },
       }
       return {
         ...state,
         chatMessages,
-        chatsUnreadCount: recalcUnreadCount(state.chatGroups),
+        chatGroups: newChatGroups,
+        chatsUnreadCount: recalcUnreadCount(newChatGroups),
         chatMessagesLoading: false,
       }
 

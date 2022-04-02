@@ -81,7 +81,7 @@ export default function MessageRowItem({ message, group, user }) {
             isSenderCurrent ? 'text-gray-200' : 'text-gray-400'
           } leading-none'`}
         >
-          {utils.parseSmartDate(message?.timestamp)}
+          {utils.parseSmartDate(message?.createdAt)}
         </span>
       </div>
     </div>

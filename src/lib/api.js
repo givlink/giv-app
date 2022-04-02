@@ -3,6 +3,7 @@ import utils from 'lib/utils'
 import Err from 'lib/err'
 import axios from 'axios'
 import qs from 'query-string'
+import uuid from 'uuid'
 
 const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
 
@@ -329,7 +330,10 @@ export const checkLiked = async postId => {
 export const postComment = ({ message, postId }) =>
   _apiClient(`/comments`, { method: 'POST', data: { message, postId } })
 export const sendMessage = (groupId, message) =>
-  _apiClient(`/chat-messages`, { method: 'POST', data: { message, groupId } })
+  _apiClient(`/chat-messages`, {
+    method: 'POST',
+    data: { message, groupId, id: uuid.v4() },
+  })
 
 const userCache = {}
 const getCachedProfile = async id => {
@@ -372,7 +376,9 @@ export const watchChatMessages = (groupId, cb) => {
 }
 export const watchChatGroups = cb => {
   const run = () => {
-    _apiClient(`/chat-groups`, { timeout: 4000 }).then(groups => cb(groups))
+    _apiClient(`/chat-groups`, { timeout: 4000 }).then(groups => {
+      if (groups) cb(groups)
+    })
   }
   const listener = setInterval(
     run,
