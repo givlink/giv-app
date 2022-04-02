@@ -61,9 +61,21 @@ const PostImagesEditModal = ({
   }
   const onSave = async () => {
     setSending(true)
-    //@todo err handling
-    await api.updatePostImages(id, images, initialImages)
-    //update store with new user data , a bit hacky
+    const resp = await api.updatePost({
+      id,
+      images: images.map(i => {
+        if (typeof i === 'string') return i
+        return { size: i.size, contentType: i.type }
+      }),
+    })
+    if (resp?.uploadData) {
+      await Promise.all(
+        resp.uploadData.map((ud, idx) => {
+          if (!ud) return Promise.resolve()
+          return api.uploadToS3(ud, images[idx])
+        }),
+      )
+    }
     const post = await api.getPostById(id, false)
     dispatch({ type: 'edit_post/new_data', post })
     setSending(false)
@@ -75,7 +87,7 @@ const PostImagesEditModal = ({
     if (typeof i !== 'string') isAnyFile = true
   })
   const didChange = images?.length !== initialImages?.length || isAnyFile
-  const isValid = images?.length || false//there should be at least 1 image
+  const isValid = images?.length || false //there should be at least 1 image
 
   return (
     <Transition.Root show={editing} as={React.Fragment}>

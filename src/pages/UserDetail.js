@@ -127,7 +127,7 @@ export default function UserDetail(props) {
       dispatch({ type: 'users/data_single', user })
       setLoading(false)
     })
-  }, [props.id, state.user])
+  }, [props.id, state.user, dispatch])
 
   const isMyPage = loc.pathname === `/users/${state.currUser?.id}`
   const isAdmin = props.id === ADMIN_ID

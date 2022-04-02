@@ -431,53 +431,14 @@ export const createGivRequest = (senderId, receiverId, type) =>
     data: { senderId, receiverId, type },
   })
 
-export const deleteImage = path => {
-  return firebase.storage().ref().child(path).delete()
-}
 export const deletePost = id => _apiClient(`/posts/${id}`, { method: 'DELETE' })
 
-export const updatePostImages = async (postId, newImages, oldImages) => {
-  //todo
-  return
-
-  //new images contains old image urls and new File objects
-  //old images ONLY contain string urls
-  //first we upload all newImage file objects and generate ids
-  //then we delete any image that was in the old list but not it newList
-  //then we update post in db with new image urls
-
-  const user = getCurrentUser()
-  if (!user) {
-    throw new Error('Unauthorized')
-  }
-
-  const newImageUrls = []
-
-  //Uploading files
-  //we need to do this kind of loop to preserve ordering
-  for (let f of newImages) {
-    if (typeof f === 'string') {
-      newImageUrls.push(f)
-      continue
-    }
-
-    //else its a file so upload it
-    //todo
-    // newImageUrls.push(path)
-  }
-
-  for (let f of oldImages) {
-    if (newImages.includes(f)) {
-      continue
-    }
-
-    await api.deleteImage(f)
-  }
-
-  return updatePost({ id: postId, images: newImageUrls })
-}
-
-export const updatePost = ({ id, title, message, images }) =>
+export const updatePost = ({
+  id,
+  title = null,
+  message = null,
+  images = null,
+}) =>
   _apiClient(`/posts/${id}`, {
     method: 'PUT',
     data: { title, message, images },
@@ -533,7 +494,6 @@ const listPosts = async (query = {}) => {
   let offset = null
   if (posts.length) {
     offset = posts[posts.length - 1].createdAt
-    console.log(offset)
   }
 
   posts = posts.filter(
@@ -591,12 +551,9 @@ const api = {
   updateCurrentUser,
   updateCurrentUserPhoto,
 
-  deleteImage,
-
   createGivRequest,
   createPost,
   updatePost,
-  updatePostImages,
   deletePost,
 
   getPostByGivId,
@@ -626,5 +583,6 @@ const api = {
   allowContent,
   _apiClient,
   getMyProfile,
+  uploadToS3,
 }
 export default api
