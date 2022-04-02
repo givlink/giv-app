@@ -82,7 +82,7 @@ const actions = {
   },
   loadUserProfile: () => {
     return async (dispatch, getState) => {
-      const { authUser, activeGroup } = getState()
+      const { authUser } = getState()
       if (!authUser) {
         console.warn('trying to load user profile but not authUser found')
         return
