@@ -3,7 +3,7 @@ import utils from 'lib/utils'
 import Err from 'lib/err'
 import axios from 'axios'
 import qs from 'query-string'
-import uuid from 'uuid'
+import { v4 } from 'uuid'
 
 const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
 
@@ -332,7 +332,7 @@ export const postComment = ({ message, postId }) =>
 export const sendMessage = (groupId, message) =>
   _apiClient(`/chat-messages`, {
     method: 'POST',
-    data: { message, groupId, id: uuid.v4() },
+    data: { message, groupId, id: v4() },
   })
 
 const userCache = {}

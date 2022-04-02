@@ -3,7 +3,7 @@ import HeaderBack from 'components/HeaderBack'
 import Spinner from 'components/Spinner'
 import React from 'react'
 import { useLocation } from '@reach/router'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import utils from 'lib/utils'
 import api from 'lib/api'
 import SkillTagList from 'components/SkillTagList'
@@ -99,9 +99,10 @@ const EmptyUser = () => {
 export default function UserDetail(props) {
   const { t, i18n } = useTranslation()
   const loc = useLocation()
-  const [user, setUser] = React.useState(null)
+  const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(true)
   const state = useSelector(s => ({
+    user: s.userById[props.id],
     currUser: s.user,
     areaMap: s.areas,
   }))
@@ -117,19 +118,20 @@ export default function UserDetail(props) {
   usePreserveScroll('userDetail', true)
 
   React.useEffect(() => {
-    //call api and update user list
-    const run = async () => {
-      setLoading(true)
-      const resp = await api.getUserProfile(props.id)
-      setUser(resp)
-      setLoading(false)
+    if (state.user && state.user.interests && state.user.interests.length) {
+      return
     }
-    run()
-  }, [props.id])
-
+    //call api and update user list
+    setLoading(true)
+    api.getUserProfile(props.id).then(user => {
+      dispatch({ type: 'users/data_single', user })
+      setLoading(false)
+    })
+  }, [props.id, state.user])
 
   const isMyPage = loc.pathname === `/users/${state.currUser?.id}`
   const isAdmin = props.id === ADMIN_ID
+  const user = state.user
 
   return (
     <div className='bg-white h-full'>

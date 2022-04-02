@@ -9,7 +9,7 @@ const UserInterests = ({ user, editable = false }) => {
   let skillMap = {}
 
   if (!user) return null
-  const interests = user.interests || []
+  const interests = user?.interests || []
   interests.forEach(s => (skillMap[s] = true))
   return (
     <div className='mt-4'>
@@ -33,8 +33,8 @@ const UserInterests = ({ user, editable = false }) => {
       </div>
       <div className='pl-4 pr-1 pt-2'>
         <SkillTagList
-          skills={user.interests}
-          size={user.interests.length > 20 ? 'normal' : 'large'}
+          skills={user?.interests || []}
+          size={user?.interests?.length > 20 ? 'normal' : 'large'}
           limit={100}
         />
       </div>

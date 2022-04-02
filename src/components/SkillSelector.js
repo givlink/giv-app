@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 const groupByCategory = (allSkills = []) => {
   const result = {}
   Object.values(allSkills).forEach(s => {
-    let key = s.category || 'others'
+    let key = s.categoryId || 'others'
     const theList = result[key] || []
     theList.push(s)
     result[key] = theList

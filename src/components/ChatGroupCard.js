@@ -42,8 +42,6 @@ export default function ChatGroupCard({ group, currUser }) {
     lastRead !== group?.lastMessage?.id &&
     group?.lastMessage?.senderId !== currUser?.id
 
-  console.log(group)
-
   return (
     <Link to={`/chats/${group?.id}`}>
       <div className='pl-2 shadow-sm border-b grid grid-cols-10'>

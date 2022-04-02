@@ -463,6 +463,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         userById: getUpdatedUserMap([action.user], state),
+        user: { ...state.user, ...action.user },
       }
     case 'edit_user/update_value': {
       const newState = {
