@@ -3,16 +3,6 @@ import { format, formatDistance } from 'date-fns'
 
 const CDN_URL = 'https://media2.giv.link'
 
-function isTimestamp(str) {
-  return /^\d+$/.test(str)
-}
-
-function isIsoDate(str) {
-  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false
-  var d = new Date(str)
-  return d.toISOString() === str
-}
-
 const utils = {
   checkModerators: (id, allModerators = {}) => {
     let result = false
