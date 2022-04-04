@@ -179,7 +179,7 @@ export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
-  const filters = getRandomItemsInArray(user.skills)
+  const filters = getRandomItemsInArray(user?.skills || [])
   if (!filters.length) {
     return []
   }
@@ -202,7 +202,7 @@ export const listSimilarUsers = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
-  const filters = getRandomItemsInArray(user.interests)
+  const filters = getRandomItemsInArray(user?.interests || [])
   if (!filters.length) {
     return []
   }
@@ -236,7 +236,7 @@ export const listRecommendations = async (user, activeGroup) => {
     user = await getCurrentUserProfile()
   }
 
-  const filters = getRandomItemsInArray(user.interests)
+  const filters = getRandomItemsInArray(user?.interests || [])
 
   const qq = {
     activeGroup,
@@ -315,7 +315,7 @@ export const unlikePost = postId =>
   _apiClient(`/posts/${postId}/like`, { method: 'DELETE' })
 export const checkLiked = async postId => {
   const resp = await _apiClient(`/posts/${postId}/like`)
-  return resp.liked
+  return resp?.liked || false
 }
 export const postComment = ({ message, postId }) =>
   _apiClient(`/comments`, { method: 'POST', data: { message, postId } })
@@ -347,6 +347,10 @@ export const watchChatMessages = (groupId, cb) => {
   const run = () => {
     _apiClient(`/chat-messages/${groupId}`, { timeout: 5000 }).then(async r => {
       let msgs = []
+      if (!r) {
+        cb(msgs)
+        return
+      }
       for (const item of r) {
         item.sender = await getCachedProfile(item.senderId)
         item.groupId = groupId
@@ -488,7 +492,7 @@ const listPosts = async (query = {}) => {
 
   let posts = await _apiClient(`/posts?${qs.stringify(qq)}`)
   let offset = null
-  if (posts.length) {
+  if (posts && posts.length) {
     offset = posts[posts.length - 1].createdAt
   }
 

@@ -19,7 +19,7 @@ const actions = {
       if (setLoading) {
         dispatch({ type: 'area_categories/loading' })
       }
-      const areaCategories = await api.listPlaceCategories()
+      const areaCategories = (await api.listPlaceCategories()) || []
       dispatch({ type: 'area_categories/data', areaCategories })
     }
   },
@@ -37,7 +37,7 @@ const actions = {
       if (setLoading) {
         dispatch({ type: 'areas/loading' })
       }
-      const areas = await api.listAreas()
+      const areas = (await api.listAreas()) || []
       dispatch({ type: 'areas/data', areas })
     }
   },
