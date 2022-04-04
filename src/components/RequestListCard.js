@@ -179,6 +179,7 @@ export default function RequestListCard({ request }) {
   if (!requester) return null
 
   const completed = request.status === 'match'
+  console.log(requester.id, requester.photoURL)
 
   return (
     <div className='border-b border-gray-300 mx-1.5 bg-white'>

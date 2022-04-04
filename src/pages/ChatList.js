@@ -33,15 +33,12 @@ export default function ChatList() {
   }))
   usePreserveScroll('chatList')
 
-  const sortedChatGroups = Object.values(state.chatGroups || {})
-  sortedChatGroups.sort((a, b) => {
-    if(!a.lastMessage && !b.lastMessage) return 0
-
-    try {
-      return a.lastMessage?.createdAt > b.lastMessage?.createdAt ? -1 : 1
-    } catch (err) {}
-    return 0
-  })
+  let sortedChatGroups = Object.values(state.chatGroups || {})
+  const emptyChats = sortedChatGroups.filter(i => !i.lastMessage)
+  const nonEmptyChats = sortedChatGroups.filter(i => i.lastMessage)
+  emptyChats.sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1))
+  nonEmptyChats.sort((a, b) => (a.lastMessage?.createdAt > b.lastMessage?.createdAt ? -1 : 1))
+  sortedChatGroups = [...emptyChats, ...nonEmptyChats]
 
   return (
     <div className='pb-20 overflow-hidden'>

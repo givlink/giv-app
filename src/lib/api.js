@@ -46,6 +46,7 @@ export const listSkillCategories = () => _apiClient('/skill-categories')
 export const listSkills = () => _apiClient('/skills')
 
 export const getMyProfile = () => _apiClient(`/users/profile`)
+export const getAvailableGroups = () => _apiClient(`/groups`)
 
 export const getUserProfile = async uid => {
   if (!allowContent(uid, 'user')) {
@@ -282,19 +283,6 @@ export const getUserPosts = async (uid, limit = 20, offset = null) => {
 export const getCurrentUser = () => firebase.auth().currentUser
 
 export const updateNotification = ({ id, status = null }) => {
-  if (!id || !status) {
-    //@Todo log err
-    console.log('Invalid payload:', id, status)
-    return null
-  }
-
-  const VALID_STATUSES = ['read', 'unread']
-  if (!VALID_STATUSES.includes(status)) {
-    //@Todo log err invalid status
-    console.log('Invalid status:', status)
-    return null
-  }
-
   return _apiClient(`/notifications/${id}`, { method: 'PUT', data: { status } })
 }
 
@@ -309,12 +297,14 @@ export const acceptGivRequest = id =>
   _apiClient(`/requests/${id}`, { method: 'PUT' })
 
 export const watchGivRequests = cb => {
+  const fetch = () => {
+    _apiClient(`/requests`, { timeout: 4000 }).then(r => cb(r))
+  }
   const listener = setInterval(
-    () => {
-      _apiClient(`/requests`, { timeout: 4000 }).then(r => cb(r))
-    },
+    fetch,
     process.env.NODE_ENV === 'development' ? 100000 : 10000,
   )
+  fetch()
 
   return () => clearInterval(listener)
 }
@@ -403,12 +393,18 @@ export const watchNotifications = cb => {
           item.giver = giver
           item.giv = giv
           if (!item.giver || !item.giv) {
+            //Invalid giv delete this notification
+            _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
             continue
           }
         }
         if (item.type === 'commentCreated') {
           item.comment = await getCommentById(item.commentId)
-          if (!item.comment) continue
+          if (!item.comment) {
+            //Invalid comment nots, delete it
+            _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
+            continue
+          }
         }
         items.push(item)
       }
@@ -583,6 +579,7 @@ const api = {
   allowContent,
   _apiClient,
   getMyProfile,
+  getAvailableGroups,
   uploadToS3,
 }
 export default api

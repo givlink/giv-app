@@ -5,17 +5,18 @@ import { useTranslation } from 'react-i18next'
 import { CogIcon } from '@heroicons/react/outline'
 import actions from 'state/actions'
 
-const groupMap = {
-  'all': '全体',
-  'senboku': '泉北ニュータウン',
-  'wellbeing-daigaku': 'Well-Being大学',
-  'hiroshima': '東広島市',
-}
+// const groupMap = {
+//   'all': '全体',
+//   'senboku': '泉北ニュータウン',
+//   'wellbeing-daigaku': 'Well-Being大学',
+//   'hiroshima': '東広島市',
+// }
 
 export default function Header() {
   const [open, setOpen] = React.useState(false)
   const { t } = useTranslation()
   const state = useSelector(s => ({
+    groupMap: s.groupMap,
     activeGroup: s.activeGroup,
     userLoading: s.userLoading,
     user: s.user,
@@ -30,6 +31,7 @@ export default function Header() {
         setOpen={setOpen}
         user={state.user}
         activeGroup={state.activeGroup}
+        groupMap={state.groupMap}
       />
       <header className='z-10 border-b border-gray-200 bg-white px-3 py-2 shadow fixed w-full top-0'>
         <div className='flex items-center justify-between max-w-2xl mx-auto'>
@@ -46,7 +48,7 @@ export default function Header() {
                 onClick={() => setOpen(true)}
               >
                 <span className='text-xs pt-px text-gray-500'>
-                  {t(groupMap[state.activeGroup])}
+                  {t(state.groupMap[state.activeGroup]?.tag)}
                 </span>
                 <CogIcon className='h-4 w-4 text-blue-400 ml-1' />
               </button>
@@ -58,7 +60,7 @@ export default function Header() {
   )
 }
 
-const SwitchGroupModal = ({ open, setOpen, user, activeGroup }) => {
+const SwitchGroupModal = ({ open, setOpen, user, activeGroup, groupMap }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const cancelButtonRef = React.useRef(null)
@@ -147,7 +149,9 @@ const SwitchGroupModal = ({ open, setOpen, user, activeGroup }) => {
                             d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
                           />
                         </svg>
-                        <span className='flex-1'>{t(item)}</span>
+                        <span className='flex-1'>
+                          {t(groupMap[item]?.tag || item)}
+                        </span>
                       </button>
                     </li>
                   ))}

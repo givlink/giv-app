@@ -15,6 +15,7 @@ const DEFAULT_EDIT_BEFORE = {
 }
 
 const initialState = {
+  groupMap: {},
   activeGroup: localStorage.getItem('lastActiveGroup') || 'all',
   debugLogs: [],
   appListeners: [],
@@ -192,6 +193,12 @@ const reducer = (state = initialState, action) => {
         console.log('err cleaning up:', err.message)
       }
       return { ...state, appListeners: [] }
+    case 'groups/data':
+      const groupMap = {}
+      action.groups.forEach(g => {
+        groupMap[g.id] = g
+      })
+      return { ...state, groupMap }
     case 'app/switch_active_group':
       localStorage.setItem('lastActiveGroup', action.activeGroup)
       return { ...state, activeGroup: action.activeGroup }

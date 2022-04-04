@@ -46,7 +46,7 @@ const actions = {
       if (setLoading) {
         dispatch({ type: 'skills/loading' })
       }
-      const skills = await api.listSkills()
+      const skills = (await api.listSkills()) || []
       const skillMap = {}
       skills.forEach(s => (skillMap[s.id] = s))
       dispatch({ type: 'skills/data', skills: skillMap })
@@ -143,6 +143,8 @@ const actions = {
       const user = await api.getMyProfile()
 
       dispatch({ type: 'auth/user_profile_data', user })
+      const groups = await api.getAvailableGroups()
+      dispatch({ type: 'groups/data', groups: groups || [] })
 
       let ag = activeGroup
       if (user?.groups && !user?.groups[activeGroup]) {
