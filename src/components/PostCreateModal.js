@@ -69,6 +69,7 @@ const Modal = ({ open, setOpen, giv, giver, markRead }) => {
       }
       //@todo err handling
       const p = await api.createPost(data)
+      markRead()
       setSending(false)
       setPost(p)
       setStep(2)
