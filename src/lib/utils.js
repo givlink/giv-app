@@ -1,4 +1,5 @@
 import moment from 'moment'
+import Err from './err'
 import { format, formatDistance } from 'date-fns'
 
 const CDN_URL = 'https://media2.giv.link'
@@ -24,9 +25,8 @@ const utils = {
     try {
       return formatDistance(new Date(date), new Date(), { addSuffix: true })
     } catch (err) {
-      //@Todo sentry err
-      console.log('err:', err)
-      return 'N/A'
+      Err.error(err)
+      return date.split(' ')[0]
     }
   },
   //Gives duration if date too old else
