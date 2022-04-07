@@ -14,7 +14,7 @@ const groupByCategory = (allSkills = []) => {
 
 const SkillSelector = ({
   userSkills = {},
-  skillCategories,
+  skillCategories = [],
   allSkills = {},
   handleClick,
 }) => {
@@ -31,7 +31,7 @@ const SkillSelector = ({
   return Object.entries(byCat).map(([catId, skills]) => {
     let title = 'Skill'
     const category = categoryMap[catId]
-    if(category){
+    if (category) {
       title = category[tagField]
     }
 

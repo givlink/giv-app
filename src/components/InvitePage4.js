@@ -9,7 +9,7 @@ const Page4 = ({ activeStepIndex = 0, handleNext }) => {
 
   const state = useSelector(s => ({
     skillMap: s.skills,
-    skillCategories: s.skillCategories,
+    skillCategories: s.skillCategories || [],
   }))
 
   const onSubmit = () => {
