@@ -10,7 +10,7 @@ import utils from 'lib/utils'
 import { useTranslation } from 'react-i18next'
 const makeGroupName = async (group, user) => {
   if (group) {
-    const memKeys = Object.keys(group?.members)
+    const memKeys = Object.keys(group?.members || {})
     if (memKeys.length === 2) {
       for (let m of memKeys) {
         if (m !== user?.id) {
