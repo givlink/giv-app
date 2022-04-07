@@ -28,47 +28,50 @@ import InitProvider from 'components/InitProvider'
 import NavigationProvider from 'components/NavigationProvider'
 import useSavePushToken from 'hooks/savePushToken'
 import OfflineBanner from 'components/Offline'
+import ErrorBoundary from 'components/ErrorBoundary'
 import { Toaster } from 'react-hot-toast'
 
 const App = () => {
   useSavePushToken()
   useGlobalFuncs()
   return (
-    <AuthProvider>
-      <InitProvider>
-        <AppUpdateProvider>
-          <NavigationProvider>
-            <Toaster />
-            <OfflineBanner />
+    <ErrorBoundary>
+      <AuthProvider>
+        <InitProvider>
+          <AppUpdateProvider>
+            <NavigationProvider>
+              <Toaster />
+              <OfflineBanner />
 
-            <Router className='h-screen w-screen' primary={false}>
-              {/* Setup */}
-              <Login path='login' />
-              <Invite path='invite' />
+              <Router className='h-screen w-screen' primary={false}>
+                {/* Setup */}
+                <Login path='login' />
+                <Invite path='invite' />
 
-              <RecomendationList path='recommendations' />
-              {/* Users */}
-              <UserList path='users' />
-              <UserDetail path='users/:id' />
+                <RecomendationList path='recommendations' />
+                {/* Users */}
+                <UserList path='users' />
+                <UserDetail path='users/:id' />
 
-              {/* Posts */}
-              <PostDetail path='posts/:id' />
-              <PostEdit path='posts/:id/edit' />
-              <PostList path='/' />
+                {/* Posts */}
+                <PostDetail path='posts/:id' />
+                <PostEdit path='posts/:id/edit' />
+                <PostList path='/' />
 
-              {/* Chats and Requests */}
-              <RequestList path='chats/requests' />
-              <ChatList path='chats' />
-              <ChatDetail path='chats/:id' />
+                {/* Chats and Requests */}
+                <RequestList path='chats/requests' />
+                <ChatList path='chats' />
+                <ChatDetail path='chats/:id' />
 
-              {/* Notifications */}
-              <NotificationList path='notifications' />
-            </Router>
-            <Footer />
-          </NavigationProvider>
-        </AppUpdateProvider>
-      </InitProvider>
-    </AuthProvider>
+                {/* Notifications */}
+                <NotificationList path='notifications' />
+              </Router>
+              <Footer />
+            </NavigationProvider>
+          </AppUpdateProvider>
+        </InitProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
 export default App

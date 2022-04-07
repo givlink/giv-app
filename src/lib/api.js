@@ -28,13 +28,10 @@ export const _apiClient = async (path, opts = {}) => {
     data = resp.data
   } catch (err) {
     console.error(err)
-    //ignore get errors
-    if (opts.method && opts.method.toLowerCase() !== 'get') {
-      if (err.response && err.response.data && err.response.data.error) {
-        throw Error(err.response.data.error)
-      }
-      throw err
+    if (err.response && err.response.data && err.response.data.error) {
+      throw Error(err.response.data.error)
     }
+    throw err
   }
   // console.log(`${path}`, data)
   return data
