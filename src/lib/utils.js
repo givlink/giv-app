@@ -26,6 +26,7 @@ const utils = {
       return formatDistance(new Date(date), new Date(), { addSuffix: true })
     } catch (err) {
       Err.error(err)
+      Err.warn(`Failed time: ${err.message}, input-> ${date}`)
       return date.split(' ')[0]
     }
   },
