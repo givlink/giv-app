@@ -179,6 +179,7 @@ export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
+  if (!user) return []
   const filters = getRandomItemsInArray(user?.skills || [])
   if (!filters.length) {
     return []
@@ -202,6 +203,7 @@ export const listSimilarUsers = async (user, activeGroup) => {
   if (!user) {
     user = await getCurrentUserProfile()
   }
+  if (!user) return []
   const filters = getRandomItemsInArray(user?.interests || [])
   if (!filters.length) {
     return []
@@ -215,6 +217,7 @@ export const listSimilarUsers = async (user, activeGroup) => {
   }
 
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
+  if (!items) items = []
   items = items
     .filter(u => allowContent(u.id, 'user'))
     .filter(u => u.id !== user.id) //don't recommend yourself
@@ -236,6 +239,8 @@ export const listRecommendations = async (user, activeGroup) => {
     user = await getCurrentUserProfile()
   }
 
+  if (!user) return []
+
   const filters = getRandomItemsInArray(user?.interests || [])
 
   const qq = {
@@ -246,6 +251,7 @@ export const listRecommendations = async (user, activeGroup) => {
   }
 
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
+  if (!items) items = []
   items = items
     .filter(u => allowContent(u.id, 'user'))
     .filter(u => u.id !== user.id) //don't recommend yourself
