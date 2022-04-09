@@ -8,7 +8,6 @@ const groupByCategory = (allSkills = []) => {
     theList.push(s)
     result[key] = theList
   })
-
   return result
 }
 

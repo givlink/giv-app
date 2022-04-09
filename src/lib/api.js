@@ -13,6 +13,7 @@ export const allowContent = (contentId, contentType = 'user') => {
   return !blocked
 }
 
+const DELAY_WATCH = process.env.NODE_ENV === 'development' && false
 let API_URL = `https://api.giv.link/api`
 if (process.env.NODE_ENV === 'development') {
   API_URL = 'http://localhost:3000/api'
@@ -303,10 +304,7 @@ export const watchGivRequests = cb => {
   const fetch = () => {
     _apiClient(`/requests`, { timeout: 4000 }).then(r => cb(r))
   }
-  const listener = setInterval(
-    fetch,
-    process.env.NODE_ENV === 'development' ? 100000 : 10000,
-  )
+  const listener = setInterval(fetch, DELAY_WATCH ? 100000 : 10000)
   fetch()
 
   return () => clearInterval(listener)
@@ -362,10 +360,7 @@ export const watchChatMessages = (groupId, cb) => {
       cb(msgs)
     })
   }
-  const listener = setInterval(
-    run,
-    process.env.NODE_ENV === 'development' ? 100000 : 5000,
-  )
+  const listener = setInterval(run, DELAY_WATCH ? 100000 : 5000)
 
   run()
 
@@ -377,10 +372,7 @@ export const watchChatGroups = cb => {
       if (groups) cb(groups)
     })
   }
-  const listener = setInterval(
-    run,
-    process.env.NODE_ENV === 'development' ? 100000 : 10000,
-  )
+  const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
 
   run()
 
@@ -419,10 +411,7 @@ export const watchNotifications = cb => {
     })
   }
   run()
-  const listener = setInterval(
-    run,
-    process.env.NODE_ENV === 'development' ? 100000 : 10000,
-  )
+  const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
   return () => clearInterval(listener)
 }
 
