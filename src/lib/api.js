@@ -13,7 +13,7 @@ export const allowContent = (contentId, contentType = 'user') => {
   return !blocked
 }
 
-const DELAY_WATCH = process.env.NODE_ENV === 'development' && false
+const DELAY_WATCH = process.env.NODE_ENV === 'development' && true
 let API_URL = `https://api.giv.link/api`
 if (process.env.NODE_ENV === 'development') {
   API_URL = 'http://localhost:3000/api'
@@ -320,11 +320,23 @@ export const checkLiked = async postId => {
 }
 export const postComment = ({ message, postId }) =>
   _apiClient(`/comments`, { method: 'POST', data: { message, postId } })
-export const sendMessage = (groupId, message) =>
-  _apiClient(`/chat-messages`, {
+export const sendMessage = async (groupId, message, images) => {
+  let attachments = null
+  if (images) {
+    attachments = images.map(i => ({ size: i.size, contentType: i.type }))
+  }
+  const resp = await _apiClient(`/chat-messages`, {
     method: 'POST',
-    data: { message, groupId, id: v4() },
+    data: { version: 'v2', message, attachments, groupId, id: v4() },
   })
+  if (images && resp.uploadData) {
+    const promises = resp.uploadData.map((d, idx) => {
+      return uploadToS3(d, images[idx])
+    })
+    await Promise.all(promises)
+  }
+  return resp
+}
 
 const userCache = {}
 const getCachedProfile = async id => {

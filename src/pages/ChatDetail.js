@@ -58,14 +58,16 @@ export default function ChatDetail({ id }) {
     state.group?.moderators,
   )
   React.useEffect(() => {
-    //@Todo scroll to last unread
-    ref.current?.scrollIntoView()
+    setTimeout(() => {
+      ref.current?.scrollIntoView()
+    }, 500)
   }, [state.messages?.length, id])
 
   React.useEffect(() => {
     //Update last read item
     if (state.messages && state.messages.length) {
       const lastItem = state.messages[state.messages.length - 1]
+      console.log('lastRead:', lastItem.id)
       localStorage.setItem(`lastRead-${id}`, lastItem.id)
     }
   }, [state.messages, id])
@@ -111,12 +113,9 @@ export default function ChatDetail({ id }) {
         >
           {state.messages &&
             state.messages.map((m, idx) => (
-              <li
-                id={`msg-${m.id}`}
-                key={m.id}
-                ref={idx === state.messages.length - 1 ? ref : null}
-              >
+              <li id={`msg-${m.id}`} key={m.id}>
                 <MessageRowItem
+                  ref={idx === state.messages.length - 1 ? ref : null}
                   group={state.group}
                   message={m}
                   user={state.user}
