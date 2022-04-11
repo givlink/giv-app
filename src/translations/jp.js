@@ -45,7 +45,7 @@ const translations = {
   'All': '全体',
 
   //Header user list
-  'Search by last name': '名前(名字)で検索',
+  'Search by last name': '名前で検索',
 
   //Header chat list
   'Chats': 'チャット',

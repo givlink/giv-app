@@ -90,9 +90,7 @@ export default function FooterChatDetail({ groupId }) {
         </div>
       )}
       <div className='flex items-center'>
-        <label
-          className={`${currUser?.role === 'admin' ? 'visible' : 'hidden'}`}
-        >
+        <label>
           <input
             multiple
             onChange={onImagesSelected}
