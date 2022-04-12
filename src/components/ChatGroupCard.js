@@ -20,7 +20,7 @@ export default function ChatGroupCard({ group, currUser }) {
       const memKeys = Object.keys(group?.members)
       if (memKeys.length === 2) {
         for (let m of memKeys) {
-          if (m !== currUser.id) {
+          if (m !== currUser?.id) {
             const user = await api.getUserProfile(m)
             if (user) {
               setGroupName(user.name)

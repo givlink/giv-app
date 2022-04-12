@@ -27,7 +27,7 @@ export default function FooterChatDetail({ groupId }) {
           attachments,
           id: lastMsgId,
           groupId,
-          senderId: currUser.id,
+          senderId: currUser?.id,
         },
       })
       setSending(false)
