@@ -16,7 +16,7 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
     group?.moderators,
   )
 
-  if (message?.content === '' && !message.attachments) {
+  if (message?.content === '' && !message?.attachments) {
     return null
   }
 
@@ -99,8 +99,11 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
         </div>
       )}
       <div className={`flex flex-col ${isSenderCurrent ? 'items-end' : ''}`}>
-        {!isSameSender && !isSenderCurrent && (
-          <span style={{ maxWidth: '280px' }} className='text-gray-400 pl-2.5 text-xs'>
+        {!isSameSender && !isSenderCurrent && message?.attachments?.length > 0 && (
+          <span
+            style={{ maxWidth: '280px' }}
+            className='text-gray-400 pl-2.5 text-xs'
+          >
             {senderName}さんからファイルをもらいました。
           </span>
         )}

@@ -63,14 +63,14 @@ export default function ChatDetail({ id }) {
     }, 500)
   }, [state.messages?.length, id])
 
-  //React.useEffect(() => {
-  //  //Update last read item
-  //  if (state.messages && state.messages.length) {
-  //    const lastItem = state.messages[state.messages.length - 1]
-  //    console.log('lastRead:', lastItem.id)
-  //    localStorage.setItem(`lastRead-${id}`, lastItem.id)
-  //  }
-  //}, [state.messages, id])
+  React.useEffect(() => {
+    //Update last read item
+    if (state.messages && state.messages.length) {
+      const lastItem = state.messages[state.messages.length - 1]
+      console.log('lastRead:', lastItem.id)
+      localStorage.setItem(`lastRead-${id}`, lastItem.id)
+    }
+  }, [state.messages, id])
 
   React.useEffect(() => {
     if (!id) return
