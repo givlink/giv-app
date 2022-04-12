@@ -13,7 +13,7 @@ export const allowContent = (contentId, contentType = 'user') => {
   return !blocked
 }
 
-const DELAY_WATCH = process.env.NODE_ENV === 'development' && true
+const DELAY_WATCH = process.env.NODE_ENV === 'development' && false
 let API_URL = `https://api.giv.link/api`
 if (process.env.NODE_ENV === 'development') {
   API_URL = 'http://localhost:3000/api'
@@ -30,6 +30,9 @@ export const _apiClient = async (path, opts = {}) => {
   } catch (err) {
     console.error(err)
     if (err.response && err.response.data && err.response.data.error) {
+      if (err.response.data.error.toLowerCase().includes('not found')) {
+        return null
+      }
       throw Error(err.response.data.error)
     }
     throw err
@@ -396,6 +399,23 @@ export const watchNotifications = cb => {
     _apiClient(`/notifications`, { timeout: 4000 }).then(async (r = []) => {
       const items = []
       for (const item of r) {
+        if (item.type === 'givRequest' && item.data) {
+          item.requestType = item.data.requestType
+          if (item.data.requestType === 'receive') {
+            item.receiver = await getCachedProfile(item.data.receiverId)
+            if (!item.receiver) {
+              _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
+              continue
+            }
+          }
+          if (item.data.requestType === 'send') {
+            item.sender = await getCachedProfile(item.data.senderId)
+            if (!item.sender) {
+              _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
+              continue
+            }
+          }
+        }
         if (item.type === 'givFinished' && item.data) {
           const [giver, giv] = await Promise.all([
             getCachedProfile(item.data.giverId),
@@ -410,7 +430,7 @@ export const watchNotifications = cb => {
           }
         }
         if (item.type === 'commentCreated') {
-          item.comment = await getCommentById(item.commentId)
+          item.comment = await getCommentById(item.data?.commentId)
           if (!item.comment) {
             //Invalid comment nots, delete it
             _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
