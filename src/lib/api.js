@@ -261,10 +261,14 @@ export const listRecommendations = async (user, activeGroup) => {
 }
 
 export const isActivatedUser = async () => {
-  const user = await getMyProfile()
-  if (!user) return false
+  try {
+    const user = await getMyProfile()
+    if (!user) return false
 
-  return ['active', 'Activated'].includes(user.status)
+    return ['active', 'Activated'].includes(user.status)
+  } catch (err) {
+    return false
+  }
 }
 
 export const getCurrentUserProfile = async () => {
