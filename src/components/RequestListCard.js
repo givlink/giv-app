@@ -170,11 +170,11 @@ export default function RequestListCard({ request }) {
   let msg = ''
   if (type === 'send') {
     requester = sender
-    msg = t('wantSendRequest', { name: requester.name })
+    msg = t('wantSendRequest', { name: requester?.name })
   }
   if (type === 'receive') {
     requester = receiver
-    msg = t('wantReceiveRequest', { name: requester.name })
+    msg = t('wantReceiveRequest', { name: requester?.name })
   }
   if (!requester) return null
 
