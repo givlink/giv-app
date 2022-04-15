@@ -114,7 +114,7 @@ export const updateCurrentUserPhoto = async file => {
     },
   })
 
-  uploadToS3(resp.uploadData, file)
+  await uploadToS3(resp.uploadData, file)
 
   return 'ok'
 }
