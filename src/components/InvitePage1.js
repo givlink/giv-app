@@ -1,11 +1,12 @@
 import React from 'react'
-import { LogoutIcon } from '@heroicons/react/outline'
+import { LogoutIcon, HomeIcon } from '@heroicons/react/outline'
 import actions from 'state/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import ErrorComponent from 'components/Error'
 import Spinner from 'components/Spinner'
 import api from 'lib/api'
 import { useTranslation } from 'react-i18next'
+import { navigate } from '@reach/router'
 
 const Page1 = ({ activeStepIndex = 0, code, setInviteCode, handleNext }) => {
   const state = useSelector(s => ({
@@ -76,15 +77,24 @@ const Page1 = ({ activeStepIndex = 0, code, setInviteCode, handleNext }) => {
         {checking ? <Spinner /> : t('Next')}
       </button>
 
-      {state.authUser && (
+      <div className='w-full flex items-center justify-between'>
         <button
-          onClick={() => dispatch(actions.logout())}
-          className='text-gray-600 flex items-center text-xs py-2 mb-2 font-medium hover:bg-gray-100 rounded'
+          onClick={() => navigate('/')}
+          className='flex-1 text-gray-600 flex items-center justify-center text-xs py-4 px-4 mb-2 font-medium hover:bg-gray-100 rounded'
         >
-          {t('Logout')}
-          <LogoutIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
+          <HomeIcon className='h-4 w-4 -mb-px mr-1 text-gray-500' />
+          {t('Go to Home')}
         </button>
-      )}
+        {state.authUser && (
+          <button
+            onClick={() => dispatch(actions.logout())}
+            className='flex-1 text-gray-600 flex items-center justify-center text-xs py-4 px-4 mb-2 font-medium hover:bg-gray-100 rounded'
+          >
+            {t('Logout')}
+            <LogoutIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
+          </button>
+        )}
+      </div>
     </>
   )
 }

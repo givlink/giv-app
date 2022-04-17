@@ -15,7 +15,7 @@ export const allowContent = (contentId, contentType = 'user') => {
 
 const DELAY_WATCH = process.env.NODE_ENV === 'development' && false
 let API_URL = `https://api.giv.link/api`
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && true) {
   API_URL = 'http://localhost:3000/api'
 }
 export const _apiClient = async (path, opts = {}) => {
@@ -309,7 +309,9 @@ export const acceptGivRequest = id =>
 
 export const watchGivRequests = cb => {
   const fetch = () => {
-    _apiClient(`/requests`, { timeout: 4000 }).then(r => cb(r))
+    _apiClient(`/requests`, { timeout: 4000 })
+      .then(r => cb(r))
+      .catch(() => {})
   }
   const listener = setInterval(fetch, DELAY_WATCH ? 100000 : 10000)
   fetch()
@@ -387,9 +389,11 @@ export const watchChatMessages = (groupId, cb) => {
 }
 export const watchChatGroups = cb => {
   const run = () => {
-    _apiClient(`/chat-groups`, { timeout: 4000 }).then(groups => {
-      if (groups) cb(groups)
-    })
+    _apiClient(`/chat-groups`, { timeout: 4000 })
+      .then(groups => {
+        if (groups) cb(groups)
+      })
+      .catch(() => {})
   }
   const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
 
@@ -400,51 +404,53 @@ export const watchChatGroups = cb => {
 
 export const watchNotifications = cb => {
   const run = () => {
-    _apiClient(`/notifications`, { timeout: 4000 }).then(async (r = []) => {
-      const items = []
-      for (const item of r) {
-        if (item.type === 'givRequest' && item.data) {
-          item.requestType = item.data.requestType
-          if (item.data.requestType === 'receive') {
-            item.receiver = await getCachedProfile(item.data.receiverId)
-            if (!item.receiver) {
+    _apiClient(`/notifications`, { timeout: 4000 })
+      .then(async (r = []) => {
+        const items = []
+        for (const item of r) {
+          if (item.type === 'givRequest' && item.data) {
+            item.requestType = item.data.requestType
+            if (item.data.requestType === 'receive') {
+              item.receiver = await getCachedProfile(item.data.receiverId)
+              if (!item.receiver) {
+                _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
+                continue
+              }
+            }
+            if (item.data.requestType === 'send') {
+              item.sender = await getCachedProfile(item.data.senderId)
+              if (!item.sender) {
+                _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
+                continue
+              }
+            }
+          }
+          if (item.type === 'givFinished' && item.data) {
+            const [giver, giv] = await Promise.all([
+              getCachedProfile(item.data.giverId),
+              getGivById(item.data.givId),
+            ])
+            item.giver = giver
+            item.giv = giv
+            if (!item.giver || !item.giv) {
+              //Invalid giv delete this notification
               _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
               continue
             }
           }
-          if (item.data.requestType === 'send') {
-            item.sender = await getCachedProfile(item.data.senderId)
-            if (!item.sender) {
+          if (item.type === 'commentCreated') {
+            item.comment = await getCommentById(item.data?.commentId)
+            if (!item.comment) {
+              //Invalid comment nots, delete it
               _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
               continue
             }
           }
+          items.push(item)
         }
-        if (item.type === 'givFinished' && item.data) {
-          const [giver, giv] = await Promise.all([
-            getCachedProfile(item.data.giverId),
-            getGivById(item.data.givId),
-          ])
-          item.giver = giver
-          item.giv = giv
-          if (!item.giver || !item.giv) {
-            //Invalid giv delete this notification
-            _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
-            continue
-          }
-        }
-        if (item.type === 'commentCreated') {
-          item.comment = await getCommentById(item.data?.commentId)
-          if (!item.comment) {
-            //Invalid comment nots, delete it
-            _apiClient(`/notifications/${item.id}`, { method: 'DELETE' })
-            continue
-          }
-        }
-        items.push(item)
-      }
-      cb(items)
-    })
+        cb(items)
+      })
+      .catch(() => {})
   }
   run()
   const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
