@@ -89,19 +89,18 @@ const CommentCard = ({ notification, markRead }) => {
   return (
     <Link
       onClick={() => markRead(notification.id)}
-      to={`/posts/${notification.postId}`}
+      to={`/posts/${notification.data?.postId}`}
       className='w-full flex space-x-3 pt-2 pb-3 px-3'
     >
       <SafeImage
-        src={utils.parseUrl(comment.author?.photoURL)}
-        alt='Author'
+        src={utils.parseUrl(comment.photoURL)}
         className='h-12 w-12 object-cover border-2 border-gray-500 rounded-full'
         classNameFallback='w-12 object-cover rounded-full'
       />
       <div className='w-full flex flex-col pt-1'>
         <span className='text-xs sm:text-sm pb-3'>
           {t('You Got Comment', {
-            name: comment.author ? comment.author?.name : 'Someone',
+            name: comment.name ? comment.name : 'Someone',
           })}
         </span>
         <span className='block flex justify-end items-center text-gray-500 text-xs py-1'>
