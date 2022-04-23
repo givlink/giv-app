@@ -18,16 +18,16 @@ const ImageModal = ({ open, setOpen, src }) => {
           <Transition.Child as={React.Fragment}>
             <Dialog.Overlay className='fixed inset-0 bg-gray-500 opacity-75 transition-opacity' />
           </Transition.Child>
-          {/* This element is to trick the browser into centering the modal contents. */}
-          <span
-            className='hidden sm:inline-block sm:align-middle sm:h-screen'
-            aria-hidden='true'
-          >
-            &#8203;
-          </span>
           <Transition.Child as={React.Fragment}>
-            <div className='z-10'>
-              <img src={src} alt='' className='h-full w-full rounded' />
+            <div
+              className='relative z-10 overflow-hidden flex flex-col items-center justify-center'
+              style={{ maxWidth: '95vw', maxHeight: '90vh' }}
+            >
+              <img
+                src={src}
+                alt=''
+                className='rounded overflow-hidden mx-auto mt-6'
+              />
               <div>
                 <button
                   onClick={closeModal}
