@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import Spinner from 'components/Spinner'
 import SafeImage from 'components/SafeImage'
 import { ChevronRightIcon } from '@heroicons/react/outline'
-import { useSelector } from 'react-redux'
 
 const GivCard = ({ post, type = 'receive' }) => {
   let firstImage

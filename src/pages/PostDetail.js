@@ -4,7 +4,6 @@ import EditPost from 'components/EditPost'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation } from '@reach/router'
-import qs from 'query-string'
 import { Carousel } from 'react-responsive-carousel'
 import Spinner from 'components/Spinner'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
