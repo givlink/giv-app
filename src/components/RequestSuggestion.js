@@ -206,7 +206,6 @@ export default function RequestSugestion({ fromUser, toUser }) {
   const [requestOpen, setRequestOpen] = React.useState(false)
   const [toInterests, setToInterests] = React.useState([])
 
-  const isFromUserCurrentUser = state.currUser?.id === fromUser?.id
   const isToUserCurrentUser = state.currUser?.id === toUser?.id
   const requestType = isToUserCurrentUser ? 'receive' : 'send'
 
