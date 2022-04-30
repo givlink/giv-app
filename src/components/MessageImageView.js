@@ -1,10 +1,13 @@
 import React from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XIcon } from '@heroicons/react/outline'
+import { XIcon, DownloadIcon } from '@heroicons/react/outline'
 
 const ImageModal = ({ open, setOpen, src }) => {
   const cancelButtonRef = React.useRef(null)
   const closeModal = () => setOpen(false)
+  const share = () => {
+    console.log('hello')
+  }
 
   return (
     <Transition.Root show={open} as={React.Fragment}>
@@ -30,7 +33,15 @@ const ImageModal = ({ open, setOpen, src }) => {
                 alt=''
                 className='rounded overflow-hidden mx-auto mt-6'
               />
-              <div className='w-full max-w-md flex items-center justify-center'>
+              <div className='w-full max-w-md flex items-center justify-between'>
+                <a
+                  href={src}
+                  rel='noreferrer'
+                  target='_blank'
+                  className='mt-2 bg-white rounded-full p-2'
+                >
+                  <DownloadIcon className='h-8 w-8 text-gray-600' />
+                </a>
                 <button
                   onClick={closeModal}
                   className='mt-2 bg-white rounded-full p-2'
