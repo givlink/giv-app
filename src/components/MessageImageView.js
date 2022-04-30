@@ -5,9 +5,6 @@ import { XIcon, DownloadIcon } from '@heroicons/react/outline'
 const ImageModal = ({ open, setOpen, src }) => {
   const cancelButtonRef = React.useRef(null)
   const closeModal = () => setOpen(false)
-  const share = () => {
-    console.log('hello')
-  }
 
   return (
     <Transition.Root show={open} as={React.Fragment}>
