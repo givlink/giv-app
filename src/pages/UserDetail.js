@@ -169,13 +169,15 @@ export default function UserDetail(props) {
               <SkillTagList skills={user.skills} size='large' limit={100} />
             </div>
             <span className='block mt-4 mb-1 px-4 py-2 border-b font-medium'>
-              {t('Giv Given')}
+              {t('Giv Given')}{' '}
+              {user.totalGivsGiven && ` (${user.totalGivsGiven})`}
             </span>
             <div className='px-4 pt-2'>
               <GivList userId={user.id} type='receive' limit={4} />
             </div>
             <span className='block mt-4 mb-1 px-4 py-2 border-b font-medium'>
               {t('Giv Received')}
+              {user.totalGivsReceived && ` (${user.totalGivsReceived})`}
             </span>
             <div className='px-4 pt-2'>
               <GivList userId={user.id} type='send' limit={4} />
