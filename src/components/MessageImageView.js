@@ -1,9 +1,32 @@
 import React from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XIcon } from '@heroicons/react/outline'
+import { XIcon, DownloadIcon } from '@heroicons/react/outline'
+import mime from 'mime-types'
+
+const getExtension = str => {
+  try {
+    const url = str.split('?')[0]
+    return url
+  } catch (_) {
+    return str
+  }
+}
+
 const ImageModal = ({ open, setOpen, src }) => {
   const cancelButtonRef = React.useRef(null)
   const closeModal = () => setOpen(false)
+  const filename = getExtension(src)
+  const mimeType = mime.lookup(filename)
+
+  const share = async () => {
+    const response = await fetch(src)
+    const data = await response.blob()
+
+    const file = new File([data], filename, {
+      type: mimeType,
+    })
+    navigator.share({ files: [file] })
+  }
   return (
     <Transition.Root show={open} as={React.Fragment}>
       <Dialog
@@ -28,7 +51,16 @@ const ImageModal = ({ open, setOpen, src }) => {
                 alt=''
                 className='rounded overflow-hidden mx-auto mt-6'
               />
-              <div>
+              <div className='w-full max-w-md flex items-center justify-between'>
+                <button
+                  disabled={!mimeType}
+                  onClick={share}
+                  className={`mt-2 bg-white rounded-full p-2 ${
+                    !mimeType && 'opacity-0 pointer-events-none'
+                  }`}
+                >
+                  <DownloadIcon className='h-8 w-8 text-gray-600' />
+                </button>
                 <button
                   onClick={closeModal}
                   className='mt-2 bg-white rounded-full p-2'

@@ -18,6 +18,7 @@
     "firebase": "^8.7.1",
     "i18next": "^20.3.5",
     "logrocket": "^2.1.2",
+    "mime-types": "^2.1.35",
     "moment": "^2.29.1",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
