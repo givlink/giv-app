@@ -89,7 +89,10 @@ const CommentCard = ({ notification, markRead }) => {
   return (
     <Link
       onClick={() => markRead(notification.id)}
-      to={`/posts/${notification.data?.postId}`}
+      to={`/posts/${notification.data?.postId}?highlightComment=${comment.id}`}
+      state={{
+        highlightComment: comment.id,
+      }}
       className='w-full flex space-x-3 pt-2 pb-3 px-3'
     >
       <SafeImage
@@ -103,6 +106,11 @@ const CommentCard = ({ notification, markRead }) => {
             name: comment.name ? comment.name : 'Someone',
           })}
         </span>
+        {comment.message && (
+          <span className='text-xs sm:text-sm max-w-xs break-words pb-3'>
+            {utils.snipText(comment.message, 40)}
+          </span>
+        )}
         <span className='block flex justify-end items-center text-gray-500 text-xs py-1'>
           <CalendarIcon className='h-4 w-4 mr-1.5 text-gray-400' />
           {utils.parseDate(notification.createdAt)}

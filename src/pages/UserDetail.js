@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 import EditUser from 'components/EditUser'
 import usePreserveScroll from 'hooks/scroll'
 import ReportActions from 'components/ReportActions'
+import EmptyUser from 'components/EmptyUser'
 
 const safeJsonStringify = require('safe-json-stringify')
 
@@ -78,20 +79,6 @@ const Debug = () => {
           </code>
         </div>
       </div>
-    </div>
-  )
-}
-
-const EmptyUser = () => {
-  const { t } = useTranslation()
-  return (
-    <div className='flex flex-col items-center justify-center pt-20'>
-      <img
-        className='w-24 h-24 animate-wobble-slow opacity-50'
-        src='/icons/tama_def_sleepy.png'
-        alt=''
-      />
-      <span className='text-sm text-gray-500 pt-2'>{t('User Not Found')}</span>
     </div>
   )
 }
@@ -185,13 +172,13 @@ export default function UserDetail(props) {
               {t('Giv Given')}
             </span>
             <div className='px-4 pt-2'>
-              <GivList userId={user.id} type='receive' />
+              <GivList userId={user.id} type='receive' limit={4} />
             </div>
             <span className='block mt-4 mb-1 px-4 py-2 border-b font-medium'>
               {t('Giv Received')}
             </span>
             <div className='px-4 pt-2'>
-              <GivList userId={user.id} type='send' />
+              <GivList userId={user.id} type='send' limit={4} />
             </div>
 
             {!isMyPage && <ReportActions targetUser={user} />}

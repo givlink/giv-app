@@ -280,14 +280,20 @@ export const getCurrentUserProfile = async () => {
   return getMyProfile()
 }
 
-export const getUserReceivedPosts = uid => _apiClient(`/posts?giverId=${uid}`)
-
-export const getUserPosts = async (uid, limit = 20, offset = null) => {
-  if (!getCurrentUser()) {
-    return []
+export const getUserReceivedPosts = async (uid, limit = 20) => {
+  let q = `?giverId=${uid}`
+  if (limit) {
+    q += `&limit=${limit}`
   }
-
-  const posts = await _apiClient(`/posts?authorId=${uid}`)
+  const posts = await _apiClient(`/posts${q}`)
+  return posts
+}
+export const getUserPosts = async (uid, limit = 20) => {
+  let q = `?authorId=${uid}`
+  if (limit) {
+    q += `&limit=${limit}`
+  }
+  const posts = await _apiClient(`/posts${q}`)
   return posts
 }
 

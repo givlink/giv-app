@@ -5,6 +5,8 @@ import { Link } from '@reach/router'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/Spinner'
 import SafeImage from 'components/SafeImage'
+import { ChevronRightIcon } from '@heroicons/react/outline'
+import { useSelector } from 'react-redux'
 
 const GivCard = ({ post, type = 'receive' }) => {
   let firstImage
@@ -49,19 +51,21 @@ const EmptyGivList = () => {
   )
 }
 
-const GivList = ({ userId, type = 'receive' }) => {
+const GivList = ({ userId, type = 'receive', showViewMore = true, limit }) => {
+  const { t } = useTranslation()
   const [givs, setGivs] = React.useState([])
   const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
+    if (!userId) return
     const run = async () => {
       //@Todo err handling
       //@Todo pagination??
       let givs
       if (type === 'receive') {
-        givs = await api.getUserReceivedPosts(userId)
+        givs = await api.getUserReceivedPosts(userId, limit)
       } else {
-        givs = await api.getUserPosts(userId)
+        givs = await api.getUserPosts(userId, limit)
       }
       try {
         givs.sort((a, b) => {
@@ -72,19 +76,34 @@ const GivList = ({ userId, type = 'receive' }) => {
       setLoading(false)
     }
     run()
-  }, [userId, type])
+  }, [userId, type, limit])
 
+  if (!userId) return <EmptyGivList />
   if (loading) return <Spinner />
   if (!givs.length) return <EmptyGivList />
 
   return (
-    <ul className='grid grid-cols-2 gap-x-3 gap-y-5'>
-      {givs.map(s => (
-        <li key={s.id} className=''>
-          <GivCard post={s} type={type} />
-        </li>
-      ))}
-    </ul>
+    <div>
+      <ul className='grid grid-cols-2 gap-x-3 gap-y-5'>
+        {givs.map(s => (
+          <li key={s.id} className=''>
+            <GivCard post={s} type={type} />
+          </li>
+        ))}
+      </ul>
+
+      <div className='max-w-2xl md:mx-auto flex items-center justify-end mx-2'>
+        {showViewMore && (
+          <Link
+            to={`/users/${userId}/posts?type=${type}`}
+            className='flex items-center justify-end px-6 w-full md:w-auto border border-gray-400 shadow rounded py-3 my-3'
+          >
+            <span className='mr-2 mb-px'>{t('Load More')}</span>
+            <ChevronRightIcon className='h-5 w-5' />
+          </Link>
+        )}
+      </div>
+    </div>
   )
 }
 

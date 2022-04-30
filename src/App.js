@@ -6,6 +6,7 @@ import React from 'react'
 import RecomendationList from 'pages/RecommendationList.js'
 import UserList from 'pages/UserList'
 import UserDetail from 'pages/UserDetail'
+import UserPosts from 'pages/UserPosts'
 
 import NotificationList from 'pages/NotificationList'
 
@@ -52,6 +53,7 @@ const App = () => {
                 {/* Users */}
                 <UserList path='users' />
                 <UserDetail path='users/:id' />
+                <UserPosts path='users/:id/posts' />
 
                 {/* Posts */}
                 <PostDetail path='posts/:id' />

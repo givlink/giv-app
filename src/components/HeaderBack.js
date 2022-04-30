@@ -5,6 +5,18 @@ import { useInView } from 'react-intersection-observer'
 import ComplaintModal from 'components/ComplaintModal'
 import { Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
+function goBack(fallbackUrl = '/') {
+  fallbackUrl = fallbackUrl || '/'
+  const prevPage = window.location.href
+
+  window.history.go(-1)
+
+  setTimeout(function () {
+    if (window.location.href === prevPage) {
+      window.location.href = fallbackUrl
+    }
+  }, 500)
+}
 
 const FloatingBackHeader = () => {
   return (
@@ -21,7 +33,7 @@ const FloatingBackHeader = () => {
     >
       <header className='z-10 px-3 py-2 mb-3 fixed top-0'>
         <button
-          onClick={() => window.history.go(-1)}
+          onClick={goBack}
           className='focus:translate-y-1 transform h-10 w-10 flex items-center justify-center bg-giv-blue text-white rounded-full shadow-xl'
         >
           <Transition.Child
@@ -61,6 +73,7 @@ const ComplaintButton = props => {
 const BackHeader = React.forwardRef((props, ref) => {
   const { showComplaintButton = false } = props
   const { t } = useTranslation()
+
   return (
     <header
       ref={ref}
@@ -68,7 +81,7 @@ const BackHeader = React.forwardRef((props, ref) => {
     >
       <div className='flex items-center justify-between max-w-2xl mx-auto'>
         <button
-          onClick={() => window.history.go(-1)}
+          onClick={goBack}
           className='focus:translate-y-1 transform py-2 flex items-center justify-center bg-white'
         >
           <ChevronLeftIcon className='h-6 w-6 mr-1' />

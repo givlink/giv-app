@@ -3,6 +3,8 @@ import ComplaintModal from 'components/ComplaintModal'
 import EditPost from 'components/EditPost'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useLocation } from '@reach/router'
+import qs from 'query-string'
 import { Carousel } from 'react-responsive-carousel'
 import Spinner from 'components/Spinner'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
@@ -119,6 +121,7 @@ const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
 }
 
 const CommentCard = ({ comment, user, onDelete }) => {
+  const loc = useLocation()
   const [deleteOpen, setDeleteOpen] = React.useState(false)
   const [complaintOpen, setComplaintOpen] = React.useState(false)
 
@@ -130,8 +133,16 @@ const CommentCard = ({ comment, user, onDelete }) => {
     //@Todo dispatch toast
   }
 
+  const { highlightComment } = loc.state
+
   return (
-    <div className='flex mx-3 py-3 border-b border-gray-200'>
+    <div
+      className={`flex mx-3 py-3 ${
+        parseInt(highlightComment) === comment.id
+          ? 'border-2 px-2 rounded-sm border-blue-500 shadow-xl'
+          : 'border-b border-gray-200'
+      }`}
+    >
       <DeleteCommentModal
         open={deleteOpen}
         setOpen={setDeleteOpen}
@@ -170,7 +181,10 @@ const CommentCard = ({ comment, user, onDelete }) => {
             </button>
           )}
         </div>
-        <p className='pr-2 text-sm sm:text-base font-light'>
+        <p
+          className='pr-2 text-sm sm:text-base font-light'
+          id={`comment-${comment.id}`}
+        >
           {comment.message}
         </p>
         <span className='block text-gray-500 text-sm text-right'>
