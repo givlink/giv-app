@@ -1,8 +1,8 @@
 @tailwind base;
 
 html {
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
+  /* -webkit-touch-callout: none; */
+  /* -webkit-tap-highlight-color: transparent; */
 
   font-family: 'メイリオ', Meiryo, '游ゴシック体', YuGothic, '游ゴシック',
     'Yu Gothic', sans-serif;
