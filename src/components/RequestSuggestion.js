@@ -266,26 +266,16 @@ export default function RequestSugestion({ fromUser, toUser }) {
               <SafeImage
                 src={utils.parseUrl(fromUser.photoURL)}
                 alt=''
-                className='h-10 w-10 object-cover rounded-full shadow-xl mb-2'
+                className='h-16 w-16 object-cover rounded-full shadow-xl mb-2'
               />
-              {!isFromUserCurrentUser && (
-                <span className='text-xs'>
-                  {utils.snipText(fromUser.name, 20)}
-                </span>
-              )}
             </div>
-            <ArrowNarrowRightIcon className='flex-shrink-0 w-5 text-gray-300' />
+            <ArrowNarrowRightIcon className='flex-shrink-0 w-9 text-gray-300' />
             <div className='flex-shrink-0 flex flex-col items-end'>
               <SafeImage
                 src={utils.parseUrl(toUser.photoURL)}
                 alt=''
-                className='h-10 w-10 object-cover rounded-full shadow-xl mb-2'
+                className='h-16 w-16 object-cover rounded-full shadow-xl mb-2'
               />
-              {!isToUserCurrentUser && (
-                <span className='text-xs'>
-                  {utils.snipText(toUser.name, 20)}
-                </span>
-              )}
             </div>
           </div>
 
