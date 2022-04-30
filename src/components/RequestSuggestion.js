@@ -265,7 +265,7 @@ export default function RequestSugestion({ fromUser, toUser }) {
               <SafeImage
                 src={utils.parseUrl(fromUser.photoURL)}
                 alt=''
-                className='h-16 w-16 object-cover rounded-full shadow-xl mb-2'
+                className='h-12 w-12 object-cover rounded-full shadow-xl mb-2'
               />
             </div>
             <ArrowNarrowRightIcon className='flex-shrink-0 w-9 text-gray-300' />
@@ -273,7 +273,7 @@ export default function RequestSugestion({ fromUser, toUser }) {
               <SafeImage
                 src={utils.parseUrl(toUser.photoURL)}
                 alt=''
-                className='h-16 w-16 object-cover rounded-full shadow-xl mb-2'
+                className='h-12 w-12 object-cover rounded-full shadow-xl mb-2'
               />
             </div>
           </div>
