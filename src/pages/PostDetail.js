@@ -369,13 +369,15 @@ const CommentList = ({ postId, postMembers }) => {
     setComments(newComments)
   }
 
-  const members = {}
+  let members = {}
   postMembers.forEach(p => {
     members[p.id] = p
   })
   comments.forEach(c => {
     members[c.author.id] = c.author
   })
+  //Ignore your own tag
+  members = Object.values(members).filter(m => m.id !== state.user?.id)
 
   return (
     <div>
@@ -383,7 +385,7 @@ const CommentList = ({ postId, postMembers }) => {
         {t('Comments')}
       </h4>
       <CreateComment
-        postMembers={Object.values(members)}
+        postMembers={members}
         postId={postId}
         onAddComment={onAddComment}
       />
