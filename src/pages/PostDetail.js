@@ -132,7 +132,7 @@ const CommentCard = ({ comment, user, onDelete }) => {
     //@Todo dispatch toast
   }
 
-  const { highlightComment } = loc.state
+  const { highlightComment } = loc?.state || {}
 
   return (
     <div
@@ -193,8 +193,24 @@ const CommentCard = ({ comment, user, onDelete }) => {
     </div>
   )
 }
-const CreateComment = ({ postId, onAddComment }) => {
+
+const UserSearchItem = ({ onSelect = () => {}, user }) => {
+  return (
+    <button
+      onClick={() => onSelect(user)}
+      className='focus:bg-gray-100 rounded w-full hover:bg-gray-100 text-sm px-2 py-1 flex items-center gap-2'
+    >
+      <SafeImage src={user.photoURL} className='w-8 h-8 rounded-full' />
+      <span>{user.name}</span>
+    </button>
+  )
+}
+
+const CreateComment = ({ postId, onAddComment, postMembers }) => {
   const currUser = useSelector(s => s.user)
+  const ref = React.createRef()
+  const [userFilterActive, setUserFilterActive] = React.useState(false)
+  const [userFilter, setUserFilter] = React.useState('')
   const [user, setUser] = React.useState(null)
   const [message, setMessage] = React.useState('')
   const [sending, setSending] = React.useState(false)
@@ -208,7 +224,30 @@ const CreateComment = ({ postId, onAddComment }) => {
 
   const handleChange = e => {
     resizeTextarea(e)
-    setMessage(e.target.value)
+    const newVal = e.target.value
+    const currVal = message
+
+    if (userFilterActive) {
+      const items = newVal.split('@')
+      if (items.length > 1) {
+        //update filter
+        setUserFilter(items.pop())
+      }
+    }
+
+    if (newVal[newVal.length - 1] === '@') {
+      setUserFilterActive(true)
+    }
+    //if currVal had @ but new one didn't that means we want to stop
+    if (
+      newVal[newVal.length - 1] !== '@' &&
+      currVal[currVal.length - 1] === '@' &&
+      newVal.length < currVal.length
+    ) {
+      setUserFilterActive(false)
+    }
+
+    setMessage(newVal)
   }
 
   const resizeTextarea = e => {
@@ -230,6 +269,11 @@ const CreateComment = ({ postId, onAddComment }) => {
   }
 
   if (!user) return null
+  const filteredMembers = !!userFilter
+    ? postMembers.filter(p =>
+        p.name.toLowerCase().includes(userFilter.toLowerCase()),
+      )
+    : postMembers
 
   return (
     <div className='px-3 py-3 flex border-b border-gray-200'>
@@ -238,8 +282,41 @@ const CreateComment = ({ postId, onAddComment }) => {
         alt={user.displayName}
         className='h-14 w-14 object-cover border-2 border-gray-500 mr-2 rounded-full'
       />
-      <div className='flex-1'>
+      <div className='flex-1 relative'>
+        {userFilterActive && (
+          <div className='absolute left-2 bottom-full'>
+            <div
+              style={{ minWidth: '250px' }}
+              className='mb-2 p-2 rounded text-sm bg-white shadow-xl border border-gray-200'
+            >
+              <span className='text-xs font-semibold'>Tag User</span>
+              <ul className='space-y-2'>
+                {filteredMembers.map(p => (
+                  <UserSearchItem
+                    onSelect={u => {
+                      const newMsg = message.split('@')
+                      newMsg.pop()
+                      newMsg.push(u.name)
+                      setMessage(newMsg.join('@'))
+                      setUserFilter('')
+                      setUserFilterActive(false)
+                      ref.current.focus()
+                    }}
+                    key={p.id}
+                    user={p}
+                  />
+                ))}
+                {filteredMembers.length <= 0 && (
+                  <span className='block text-xs py-3 px-2'>
+                    No member found
+                  </span>
+                )}
+              </ul>
+            </div>
+          </div>
+        )}
         <textarea
+          ref={ref}
           value={message}
           onChange={handleChange}
           placeholder={t('Your Comment')}
@@ -270,7 +347,7 @@ const CreateComment = ({ postId, onAddComment }) => {
   )
 }
 
-const CommentList = ({ postId }) => {
+const CommentList = ({ postId, postMembers }) => {
   const { t } = useTranslation()
   //@Todo move fetching to store
   const [comments, setComments] = React.useState([])
@@ -292,12 +369,24 @@ const CommentList = ({ postId }) => {
     setComments(newComments)
   }
 
+  const members = {}
+  postMembers.forEach(p => {
+    members[p.id] = p
+  })
+  comments.forEach(c => {
+    members[c.author.id] = c.author
+  })
+
   return (
     <div>
       <h4 className='border-b border-gray-300 font-medium text-xl py-2 px-4'>
         {t('Comments')}
       </h4>
-      <CreateComment postId={postId} onAddComment={onAddComment} />
+      <CreateComment
+        postMembers={Object.values(members)}
+        postId={postId}
+        onAddComment={onAddComment}
+      />
       <ul>
         {comments.map(c => (
           <li key={c.id}>
@@ -499,7 +588,10 @@ export default function PostDetail(props) {
                 <RequestSuggestion fromUser={post.author} toUser={state.user} />
               </div>
             </div>
-            <CommentList postId={props.id} />
+            <CommentList
+              postId={props.id}
+              postMembers={[post.giver, post.author]}
+            />
           </>
         ) : (
           !state.postSingleLoading && <EmptyPost />
