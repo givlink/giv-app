@@ -50,7 +50,13 @@ const EmptyGivList = () => {
   )
 }
 
-const GivList = ({ userId, type = 'receive', showViewMore = true, limit }) => {
+const GivList = ({
+  total = 0,
+  userId,
+  type = 'receive',
+  showViewMore = true,
+  limit,
+}) => {
   const { t } = useTranslation()
   const [givs, setGivs] = React.useState([])
   const [loading, setLoading] = React.useState(true)
@@ -94,7 +100,7 @@ const GivList = ({ userId, type = 'receive', showViewMore = true, limit }) => {
       <div className='max-w-2xl md:mx-auto flex items-center justify-end mx-2'>
         {showViewMore && (
           <Link
-            to={`/users/${userId}/posts?type=${type}`}
+            to={`/users/${userId}/posts?type=${type}&count=${total}`}
             className='flex items-center justify-end px-6 w-full md:w-auto border border-gray-400 shadow rounded py-3 my-3'
           >
             <span className='mr-2 mb-px'>{t('Load More')}</span>

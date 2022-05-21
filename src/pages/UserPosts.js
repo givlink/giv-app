@@ -32,7 +32,7 @@ export default function UserPosts(props) {
     })
   }, [props.id, state.user, dispatch])
 
-  const { type } = qs.parse(loc.search)
+  const { type, count = 0 } = qs.parse(loc.search)
   usePreserveScroll(`userPosts${type}`, true)
 
   const title = type === 'receive' ? 'Giv Given' : 'Giv Received'
@@ -48,7 +48,7 @@ export default function UserPosts(props) {
         ) : user ? (
           <>
             <span className='block mt-4 mb-1 px-4 py-2 border-b font-medium text-2xl'>
-              {state.user?.name}さんが{t(title)}
+              {state.user?.name}さんが{t(title)} {count > 0 && `(${count})`}
             </span>
             <div className='px-4 pt-2'>
               <GivList

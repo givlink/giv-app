@@ -1,5 +1,6 @@
 import HeaderBack from 'components/HeaderBack'
 import ComplaintModal from 'components/ComplaintModal'
+import Error from 'components/Error'
 import EditPost from 'components/EditPost'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -212,6 +213,7 @@ const CreateComment = ({ postId, onAddComment, postMembers }) => {
   const [userFilterActive, setUserFilterActive] = React.useState(false)
   const [userFilter, setUserFilter] = React.useState('')
   const [user, setUser] = React.useState(null)
+  const [error, setError] = React.useState(null)
   const [message, setMessage] = React.useState('')
   const [sending, setSending] = React.useState(false)
 
@@ -223,6 +225,7 @@ const CreateComment = ({ postId, onAddComment, postMembers }) => {
   }, [currUser])
 
   const handleChange = e => {
+    setError(null)
     resizeTextarea(e)
     const newVal = e.target.value
     const currVal = message
@@ -259,9 +262,15 @@ const CreateComment = ({ postId, onAddComment, postMembers }) => {
   const messageValid = message && message !== ''
   const submitComment = async () => {
     setSending(true)
+    setError(null)
     const comment = await api.postComment({ postId, message, author: user })
+    console.log(comment)
     if (comment) {
-      onAddComment(comment)
+      if (comment.error) {
+        setError(comment.error)
+      } else {
+        onAddComment(comment)
+      }
     }
     //@Todo err handle
     setSending(false)
@@ -276,74 +285,79 @@ const CreateComment = ({ postId, onAddComment, postMembers }) => {
     : postMembers
 
   return (
-    <div className='px-3 py-3 flex border-b border-gray-200'>
-      <img
-        src={utils.parseUrl(user.photoURL)}
-        alt={user.displayName}
-        className='h-14 w-14 object-cover border-2 border-gray-500 mr-2 rounded-full'
-      />
-      <div className='flex-1 relative'>
-        {userFilterActive && (
-          <div className='absolute left-2 bottom-full'>
-            <div
-              style={{ minWidth: '250px' }}
-              className='mb-2 p-2 rounded text-sm bg-white shadow-xl border border-gray-200'
-            >
-              <span className='text-xs font-semibold'>Tag User</span>
-              <ul className='space-y-2'>
-                {filteredMembers.map(p => (
-                  <UserSearchItem
-                    onSelect={u => {
-                      const newMsg = message.split('@')
-                      newMsg.pop()
-                      newMsg.push(u.name)
-                      setMessage(newMsg.join('@'))
-                      setUserFilter('')
-                      setUserFilterActive(false)
-                      ref.current.focus()
-                    }}
-                    key={p.id}
-                    user={p}
-                  />
-                ))}
-                {filteredMembers.length <= 0 && (
-                  <span className='block text-xs py-3 px-2'>
-                    No member found
-                  </span>
-                )}
-              </ul>
-            </div>
-          </div>
-        )}
-        <textarea
-          ref={ref}
-          value={message}
-          onChange={handleChange}
-          placeholder={t('Your Comment')}
-          style={{ maxHeight: '200px' }}
-          className='resize-none w-full border border-gray-300 rounded'
+    <>
+      <div className='flex items-center justify-center py-2'>
+        <Error error={error} />
+      </div>
+      <div className='px-3 py-3 flex border-b border-gray-200'>
+        <img
+          src={utils.parseUrl(user.photoURL)}
+          alt={user.displayName}
+          className='h-14 w-14 object-cover border-2 border-gray-500 mr-2 rounded-full'
         />
-        <div className='flex justify-end'>
-          {messageValid && (
-            <button
-              onClick={submitComment}
-              disabled={!messageValid && !sending}
-              className={`transition duration-150 flex items-center justify-center rounded-full h-12 w-12 ${
-                messageValid
-                  ? 'bg-giv-blue text-white'
-                  : 'bg-gray-100 text-gray-300'
-              }`}
-            >
-              {sending ? (
-                <Spinner color='text-gray-100' />
-              ) : (
-                <ArrowCircleRightIcon className='h-8 w-8' />
-              )}
-            </button>
+        <div className='flex-1 relative'>
+          {userFilterActive && (
+            <div className='absolute left-2 bottom-full'>
+              <div
+                style={{ minWidth: '250px' }}
+                className='mb-2 p-2 rounded text-sm bg-white shadow-xl border border-gray-200'
+              >
+                <span className='text-xs font-semibold'>Tag User</span>
+                <ul className='space-y-2'>
+                  {filteredMembers.map(p => (
+                    <UserSearchItem
+                      onSelect={u => {
+                        const newMsg = message.split('@')
+                        newMsg.pop()
+                        newMsg.push(u.name)
+                        setMessage(newMsg.join('@'))
+                        setUserFilter('')
+                        setUserFilterActive(false)
+                        ref.current.focus()
+                      }}
+                      key={p.id}
+                      user={p}
+                    />
+                  ))}
+                  {filteredMembers.length <= 0 && (
+                    <span className='block text-xs py-3 px-2'>
+                      No member found
+                    </span>
+                  )}
+                </ul>
+              </div>
+            </div>
           )}
+          <textarea
+            ref={ref}
+            value={message}
+            onChange={handleChange}
+            placeholder={t('Your Comment')}
+            style={{ maxHeight: '200px' }}
+            className='resize-none w-full border border-gray-300 rounded'
+          />
+          <div className='flex justify-end'>
+            {messageValid && (
+              <button
+                onClick={submitComment}
+                disabled={!messageValid && !sending}
+                className={`transition duration-150 flex items-center justify-center rounded-full h-12 w-12 ${
+                  messageValid
+                    ? 'bg-giv-blue text-white'
+                    : 'bg-gray-100 text-gray-300'
+                }`}
+              >
+                {sending ? (
+                  <Spinner color='text-gray-100' />
+                ) : (
+                  <ArrowCircleRightIcon className='h-8 w-8' />
+                )}
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
