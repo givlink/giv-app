@@ -152,6 +152,19 @@ const DEFAULT_QUERY_LIST_POSTS = {
   limit: 20,
 }
 
+export const searchUsers = async (nameLike, activeGroup) => {
+  const qq = {
+    activeGroup,
+    filterType: 'name',
+    filterValue: nameLike,
+    limit: 5,
+  }
+
+  const result = await _apiClient(`/users?${qs.stringify(qq)}`)
+  const users = result || []
+  return users
+}
+
 export const listUsers = async query => {
   const q = { ...DEFAULT_QUERY_LIST_USERS, ...query }
 
@@ -333,8 +346,11 @@ export const checkLiked = async postId => {
   const resp = await _apiClient(`/posts/${postId}/like`)
   return resp?.liked || false
 }
-export const postComment = ({ message, postId }) =>
-  _apiClient(`/comments`, { method: 'POST', data: { message, postId } })
+export const postComment = ({ message, postId, taggedUsers }) =>
+  _apiClient(`/comments`, {
+    method: 'POST',
+    data: { message, postId, taggedUsers },
+  })
 export const sendMessage = async (groupId, message, images) => {
   let attachments = null
   if (images) {

@@ -13,6 +13,7 @@ import SafeImage from 'components/SafeImage'
 import RequestSuggestion from 'components/RequestSuggestion'
 import { Dialog, Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
+import TagUser from 'components/TagUser'
 import Linkify from 'react-linkify'
 import {
   ExclamationIcon,
@@ -195,22 +196,11 @@ const CommentCard = ({ comment, user, onDelete }) => {
   )
 }
 
-const UserSearchItem = ({ onSelect = () => {}, user }) => {
-  return (
-    <button
-      onClick={() => onSelect(user)}
-      className='focus:bg-gray-100 rounded w-full hover:bg-gray-100 text-sm px-2 py-1 flex items-center gap-2'
-    >
-      <SafeImage src={user.photoURL} className='w-8 h-8 rounded-full' />
-      <span>{user.name}</span>
-    </button>
-  )
-}
-
 const CreateComment = ({ postId, onAddComment, postMembers }) => {
   const currUser = useSelector(s => s.user)
   const ref = React.createRef()
   const [userFilterActive, setUserFilterActive] = React.useState(false)
+  const [taggedUsers, setTaggedUsers] = React.useState([])
   const [userFilter, setUserFilter] = React.useState('')
   const [user, setUser] = React.useState(null)
   const [error, setError] = React.useState(null)
@@ -263,8 +253,15 @@ const CreateComment = ({ postId, onAddComment, postMembers }) => {
   const submitComment = async () => {
     setSending(true)
     setError(null)
-    const comment = await api.postComment({ postId, message, author: user })
-    console.log(comment)
+    const payload = {
+      postId,
+      message,
+      //prevent sending deleted ones
+      taggedUsers: taggedUsers
+        .filter(t => message.includes(t.name))
+        .map(t => t.id),
+    }
+    const comment = await api.postComment(payload)
     if (comment) {
       if (comment.error) {
         setError(comment.error)
@@ -278,11 +275,6 @@ const CreateComment = ({ postId, onAddComment, postMembers }) => {
   }
 
   if (!user) return null
-  const filteredMembers = !!userFilter
-    ? postMembers.filter(p =>
-        p.name.toLowerCase().includes(userFilter.toLowerCase()),
-      )
-    : postMembers
 
   return (
     <>
@@ -298,34 +290,16 @@ const CreateComment = ({ postId, onAddComment, postMembers }) => {
         <div className='flex-1 relative'>
           {userFilterActive && (
             <div className='absolute left-2 bottom-full'>
-              <div
-                style={{ minWidth: '250px' }}
-                className='mb-2 p-2 rounded text-sm bg-white shadow-xl border border-gray-200'
-              >
-                <span className='text-xs font-semibold'>Tag User</span>
-                <ul className='space-y-2'>
-                  {filteredMembers.map(p => (
-                    <UserSearchItem
-                      onSelect={u => {
-                        const newMsg = message.split('@')
-                        newMsg.pop()
-                        newMsg.push(u.name)
-                        setMessage(newMsg.join('@'))
-                        setUserFilter('')
-                        setUserFilterActive(false)
-                        ref.current.focus()
-                      }}
-                      key={p.id}
-                      user={p}
-                    />
-                  ))}
-                  {filteredMembers.length <= 0 && (
-                    <span className='block text-xs py-3 px-2'>
-                      No member found
-                    </span>
-                  )}
-                </ul>
-              </div>
+              <TagUser
+                textRef={ref}
+                userFilter={userFilter}
+                setUserFilterActive={setUserFilterActive}
+                setUserFilter={setUserFilter}
+                taggedUsers={taggedUsers}
+                setTaggedUsers={setTaggedUsers}
+                message={message}
+                setMessage={setMessage}
+              />
             </div>
           )}
           <textarea
