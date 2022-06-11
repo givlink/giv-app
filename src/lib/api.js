@@ -79,7 +79,26 @@ export const deleteComment = id => {
 
 const getCommentById = id => _apiClient(`/comments/${id}`)
 
-const listComments = async postId => _apiClient(`/comments?postId=${postId}`)
+const listComments = async postId => {
+  const data = await _apiClient(`/comments?postId=${postId}`)
+  const reactionsByComments = {}
+  data.reactions.forEach(r => {
+    if (!reactionsByComments[r.commentId]) {
+      reactionsByComments[r.commentId] = []
+    }
+    reactionsByComments[r.commentId].push(r)
+  })
+
+  const result = []
+  data.comments.forEach(c => {
+    result.push({
+      ...c,
+      reactions: reactionsByComments[c.id] || [],
+    })
+  })
+
+  return result
+}
 
 export const saveDeviceToken = (token = null) => {
   if (!token || token === '') {
@@ -351,6 +370,13 @@ export const postComment = ({ message, postId, taggedUsers }) =>
     method: 'POST',
     data: { message, postId, taggedUsers },
   })
+
+export const reactOnComment = ({ commentId, icon }) =>
+  _apiClient(`/comments/${commentId}/react`, {
+    method: 'PUT',
+    data: { icon },
+  })
+
 export const sendMessage = async (groupId, message, images) => {
   let attachments = null
   if (images) {
@@ -626,6 +652,7 @@ const api = {
   likePost,
   unlikePost,
   postComment,
+  reactOnComment,
   getCommentById,
   deleteComment,
   mock,

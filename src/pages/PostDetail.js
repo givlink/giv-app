@@ -6,6 +6,8 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation } from '@reach/router'
 import { Carousel } from 'react-responsive-carousel'
+import CommentReactionButton from 'components/CommentReactionButton'
+import CommentReactionList from 'components/CommentReactionList'
 import Spinner from 'components/Spinner'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
 import utils from 'lib/utils'
@@ -125,6 +127,7 @@ const CommentCard = ({ comment, user, onDelete }) => {
   const loc = useLocation()
   const [deleteOpen, setDeleteOpen] = React.useState(false)
   const [complaintOpen, setComplaintOpen] = React.useState(false)
+  const [reactions, setReactions] = React.useState(comment.reactions || [])
 
   const handleDelete = () => {
     //@Todo err handling
@@ -132,6 +135,15 @@ const CommentCard = ({ comment, user, onDelete }) => {
     setDeleteOpen(false)
     onDelete(comment.id)
     //@Todo dispatch toast
+  }
+
+  const onReact = v => {
+    const newItems = reactions.filter(i => !(i.icon === v && i.name === user.name))
+    if (newItems.length < reactions.length) {
+      setReactions(newItems)
+      return
+    }
+    setReactions([...newItems, { name: user.name, icon: v }])
   }
 
   const { highlightComment } = loc?.state || {}
@@ -176,7 +188,7 @@ const CommentCard = ({ comment, user, onDelete }) => {
           ) : (
             <button
               onClick={() => setComplaintOpen(true)}
-              className='p-2 rounded text-red-500 hover:bg-red-500 hover:text-white'
+              className='hidden p-2 rounded text-red-500 hover:bg-red-500 hover:text-white'
             >
               <BanIcon className='h-4 w-4' />
             </button>
@@ -188,9 +200,15 @@ const CommentCard = ({ comment, user, onDelete }) => {
         >
           {comment.message}
         </p>
-        <span className='block text-gray-500 text-sm text-right'>
-          {utils.parseDate(comment.createdAt)}
-        </span>
+        <div className='flex items-center justify-between'>
+          <div className='flex gap-x-3'>
+            <CommentReactionButton onSelect={onReact} commentId={comment.id} />
+            <CommentReactionList reactions={reactions} />
+          </div>
+          <span className='block text-gray-500 text-sm text-right'>
+            {utils.parseDate(comment.createdAt)}
+          </span>
+        </div>
       </div>
     </div>
   )

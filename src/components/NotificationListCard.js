@@ -80,6 +80,35 @@ const GivFinished = ({ notification, markRead }) => {
     </>
   )
 }
+const CommentReactionCard = ({ notification, markRead }) => {
+  return (
+    <Link
+      onClick={() => markRead(notification.id)}
+      to={`/posts/${notification.data?.postId}?highlightComment=${notification.data?.commentId}`}
+      state={{
+        highlightComment: notification.data?.commentId,
+      }}
+      className='w-full flex space-x-3 pt-2 pb-3 px-3'
+    >
+      <SafeImage
+        src={utils.parseUrl(notification.data?.photoURL)}
+        className='h-12 w-12 object-cover border-2 border-gray-500 rounded-full'
+        classNameFallback='w-12 object-cover rounded-full'
+      />
+      <div className='w-full flex flex-col pt-1'>
+        {notification.data?.message && (
+          <span className='text-xs sm:text-sm max-w-xs break-words pb-3'>
+            {utils.snipText(notification.data?.message, 40)}
+          </span>
+        )}
+        <span className='block flex justify-end items-center text-gray-500 text-xs py-1'>
+          <CalendarIcon className='h-4 w-4 mr-1.5 text-gray-400' />
+          {utils.parseDate(notification.createdAt)}
+        </span>
+      </div>
+    </Link>
+  )
+}
 const CommentCard = ({ notification, markRead }) => {
   const { t } = useTranslation()
   const { comment } = notification
@@ -133,6 +162,9 @@ export default function NotificationCard({ user, notification }) {
     <div className='border-b border-gray-300 mx-1.5 bg-white'>
       {notification.type === 'commentCreated' && (
         <CommentCard notification={notification} markRead={markRead} />
+      )}
+      {notification.type === 'commentReactionCreated' && (
+        <CommentReactionCard notification={notification} markRead={markRead} />
       )}
       {notification.type === 'givFinished' && (
         <GivFinished notification={notification} markRead={markRead} />
