@@ -138,7 +138,9 @@ const CommentCard = ({ comment, user, onDelete }) => {
   }
 
   const onReact = v => {
-    const newItems = reactions.filter(i => !(i.icon === v && i.name === user.name))
+    const newItems = reactions.filter(
+      i => !(i.icon === v && i.name === user.name),
+    )
     if (newItems.length < reactions.length) {
       setReactions(newItems)
       return
@@ -166,13 +168,15 @@ const CommentCard = ({ comment, user, onDelete }) => {
         setOpen={setComplaintOpen}
         contentPathOverride={`/comments/${comment.id}`}
       />
-      <div className='w-16 mr-2'>
-        <img
-          src={utils.parseUrl(comment.author.photoURL)}
-          alt={comment.author.name}
-          className='h-14 w-14 object-cover border-2 border-gray-500 mr-2 rounded-full'
-        />
-      </div>
+      <Link to={`/users/${comment.author.id}`}>
+        <div className='w-16 mr-2'>
+          <img
+            src={utils.parseUrl(comment.author.photoURL)}
+            alt={comment.author.name}
+            className='h-14 w-14 object-cover border-2 border-gray-500 mr-2 rounded-full'
+          />
+        </div>
+      </Link>
       <div className='flex-1'>
         <div className='flex items-center justify-between'>
           <span className='font-medium text-base sm:text-lg'>
