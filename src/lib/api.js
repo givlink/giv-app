@@ -377,14 +377,14 @@ export const reactOnComment = ({ commentId, icon }) =>
     data: { icon },
   })
 
-export const sendMessage = async (groupId, message, images) => {
+export const sendMessage = async (groupId, message, images, inReplyTo) => {
   let attachments = null
   if (images) {
     attachments = images.map(i => ({ size: i.size, contentType: i.type }))
   }
   const resp = await _apiClient(`/chat-messages`, {
     method: 'POST',
-    data: { version: 'v2', message, attachments, groupId, id: v4() },
+    data: { version: 'v2', message, attachments, groupId, id: v4(), inReplyTo },
   })
   if (images && resp.uploadData) {
     const promises = resp.uploadData.map((d, idx) => {
@@ -416,6 +416,7 @@ export const watchChatMessages = (groupId, cb) => {
 
   const run = () => {
     _apiClient(`/chat-messages/${groupId}`, { timeout: 5000 }).then(async r => {
+      const msgsMap = {}
       let msgs = []
       if (!r) {
         cb(msgs)
@@ -424,6 +425,10 @@ export const watchChatMessages = (groupId, cb) => {
       for (const item of r) {
         item.sender = await getCachedProfile(item.senderId)
         item.groupId = groupId
+        msgsMap[item.id] = item
+        if (item.inReplyTo) {
+          item.reply = msgsMap[item.inReplyTo]
+        }
         msgs.push(item)
       }
       cb(msgs)

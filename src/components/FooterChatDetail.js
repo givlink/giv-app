@@ -1,21 +1,27 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { CameraIcon, XIcon } from '@heroicons/react/outline'
+import { CameraIcon, XIcon, ReplyIcon } from '@heroicons/react/outline'
 import api from 'lib/api'
+import utils from 'lib/utils'
 import { useDispatch, useSelector } from 'react-redux'
+
 export default function FooterChatDetail({ groupId }) {
   const dispatch = useDispatch()
   const ref = React.useRef()
   const { t } = useTranslation()
   const [msg, setMsg] = React.useState('')
   const [images, setImages] = React.useState(null)
-  const currUser = useSelector(s => s.user)
+  const state = useSelector(s => ({
+    currUser: s.user,
+    inReplyTo: s.inReplyTo,
+  }))
+  const { currUser, inReplyTo } = state
   const [sending, setSending] = React.useState(false)
   const sendMessage = async () => {
     if (!groupId) return //@Todo err
     setSending(true)
     try {
-      const resp = await api.sendMessage(groupId, msg, images)
+      const resp = await api.sendMessage(groupId, msg, images, inReplyTo?.id)
       const { id: lastMsgId, attachments } = resp
       localStorage.setItem(`lastRead-${groupId}`, lastMsgId)
       setMsg('')
@@ -28,8 +34,12 @@ export default function FooterChatDetail({ groupId }) {
           id: lastMsgId,
           groupId,
           senderId: currUser?.id,
+          reply: inReplyTo,
         },
       })
+      if (inReplyTo) {
+        dispatch({ type: 'chat/set-in-reply-to' })
+      }
       setSending(false)
       ref.current.focus()
     } catch (err) {
@@ -87,6 +97,29 @@ export default function FooterChatDetail({ groupId }) {
               </div>
             )
           })}
+        </div>
+      )}
+      {inReplyTo && (
+        <div className='-ml-1.5 bg-giv-blue py-2 px-3 flex gap-2 items-center justify-between'>
+          <div className='flex-1'>
+            <div className='text-xs flex items-center gap-2 text-gray-100'>
+              <ReplyIcon className='w-4 h-4' />
+              {utils.snipText(inReplyTo.sender?.name, 30)}
+            </div>
+            <p className='text-xs text-white'>
+              {utils.snipText(inReplyTo.content, 100)}
+            </p>
+          </div>
+          <div className='flex-shrink-0'>
+            <button
+              onClick={() =>
+                dispatch({ type: 'chat/set-in-reply-to', id: null })
+              }
+              className='bg-white rounded-full p-1'
+            >
+              <XIcon className='w-4 h-4' />
+            </button>
+          </div>
         </div>
       )}
       <div className='flex items-center'>

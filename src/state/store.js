@@ -235,6 +235,16 @@ const reducer = (state = initialState, action) => {
     }
     case 'chat_messages/loading_done':
       return { ...state, chatMessagesLoading: false }
+    case 'chat/set-in-reply-to':
+      if (!action.id) {
+        return { ...state, inReplyTo: null }
+      }
+      const msgs = state.chatMessages[action.groupId] || []
+      const msg = msgs.find(i => i.id === action.id)
+      if (msg) {
+        return { ...state, inReplyTo: msg }
+      }
+      return state
     case 'chat_messages/data':
       const chatMessages = { ...state.chatMessages }
       let targetGroupId

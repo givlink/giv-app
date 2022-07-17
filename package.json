@@ -41,7 +41,7 @@
   },
   "scripts": {
     "predev": "yarn",
-    "dev": "cross-env HTTPS=true craco start",
+    "dev": "cross-env HTTPS=true craco start --port 3001",
     "start": "yarn dev",
     "build": "craco build",
     "eject": "react-scripts eject",

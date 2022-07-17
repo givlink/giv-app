@@ -5,8 +5,11 @@ import SafeImage from 'components/SafeImage'
 import MessageImageView from 'components/MessageImageView'
 import { Link } from '@reach/router'
 import Linkify from 'react-linkify'
+import { ReplyIcon } from '@heroicons/react/outline'
+import { useDispatch } from 'react-redux'
 
 const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   //@Todo show name instead of id
 
@@ -37,15 +40,31 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
   const senderName = utils.snipText(message?.sender?.name, 20)
   let content = message?.content
   return (
-    <>
+    <div className=''>
       {content && (
         <div
-          className={`w-2/3 mb-2 rounded-lg ${
+          className={`relative group w-2/3 mb-2 rounded-lg ${
             isSenderCurrent
               ? 'chat-mine relative ml-auto bg-giv-blue-dark text-white'
               : 'mr-auto bg-gray-100 text-gray-800'
           }`}
         >
+          {!isSenderCurrent && (
+            <div className='absolute left-full group-hover:opacity-100 opacity-0'>
+              <button
+                onClick={() => {
+                  dispatch({
+                    type: 'chat/set-in-reply-to',
+                    id: message?.id,
+                    groupId: group?.id,
+                  })
+                }}
+                className='p-2 rounded hover:bg-gray-100'
+              >
+                <ReplyIcon className='w-5 h-5' />
+              </button>
+            </div>
+          )}
           <div className='-mb-2 pl-2.5 pt-2'>
             {showName && (
               <Link
@@ -68,6 +87,21 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
               </span>
             )}
           </div>
+          {message.reply && (
+            <p
+              className={`text-xs border shadow ${
+                isSenderCurrent
+                  ? 'border-transparent bg-giv-blue text-gray-200'
+                  : 'border-giv-blue bg-gray-50 text-gray-500'
+              } rounded p-2 mt-3 mb-1 mx-2`}
+            >
+              <div className='flex items-center gap-1'>
+                <ReplyIcon className='w-3 h-3 text-gray-500' />
+                {utils.snipText(message.reply?.sender?.name, 30)}
+              </div>
+              {utils.snipText(message.reply?.content)}
+            </p>
+          )}
           <div className='pt-3 pb-2 px-2.5 mx-1'>
             <p className='whitespace-pre-wrap text-sm font-medium'>
               <Linkify
@@ -122,7 +156,7 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
         </div>
         <span ref={ref} />
       </div>
-    </>
+    </div>
   )
 }
 
