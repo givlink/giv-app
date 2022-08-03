@@ -673,5 +673,6 @@ const api = {
   getMyProfile,
   getAvailableGroups,
   uploadToS3,
+  getCachedProfile,
 }
 export default api

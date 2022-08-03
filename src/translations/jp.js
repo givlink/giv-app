@@ -163,7 +163,7 @@ const translations = {
   'Delete': '削除',
   'Update available. Click to update': 'クリックしてアプリを更新',
   'Terms': '利用規約',
-  'Moderator': 'モデレーター',
+  'Moderator': 'コミュニティマネージャー',
 
   'You are offline': 'インターネットに繋がっていません',
 
@@ -186,6 +186,7 @@ const translations = {
   'Report Content': '内容',
   'reportContentSubmitted':
     '事務局に報告しました。調査をした上で、必要に応じてご連絡させて頂きます。ありがとうございました。',
+  'Chat Users': 'チャットユーザ'
 }
 
 export default translations

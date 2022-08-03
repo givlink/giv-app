@@ -95,6 +95,7 @@ export default function ChatDetail({ id }) {
   return (
     <div className='h-screen flex flex-col bg-white max-w-2xl md:mx-auto'>
       <Header
+        id={id}
         title={groupName}
         subText={() =>
           isModerator && (

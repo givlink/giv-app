@@ -88,7 +88,7 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
             )}
           </div>
           {message.reply && (
-            <p
+            <div
               className={`text-xs border shadow ${
                 isSenderCurrent
                   ? 'border-transparent bg-giv-blue text-gray-200'
@@ -100,7 +100,7 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
                 {utils.snipText(message.reply?.sender?.name, 30)}
               </div>
               {utils.snipText(message.reply?.content)}
-            </p>
+            </div>
           )}
           <div className='pt-3 pb-2 px-2.5 mx-1'>
             <p className='whitespace-pre-wrap text-sm font-medium'>
