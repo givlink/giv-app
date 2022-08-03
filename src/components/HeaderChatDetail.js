@@ -19,7 +19,6 @@ const ChatUsersModal = ({ open, setOpen, id }) => {
 
   React.useEffect(() => {
     if (!group) return
-    console.log(group)
     const run = async () => {
       const members = []
       for (const m of Object.keys(group.members || {})) {
