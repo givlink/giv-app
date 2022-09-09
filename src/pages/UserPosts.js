@@ -55,6 +55,7 @@ export default function UserPosts(props) {
                 userId={state.user?.id}
                 type={type}
                 showViewMore={false}
+                limit={9999}
               />
             </div>
           </>
