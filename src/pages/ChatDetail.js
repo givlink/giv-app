@@ -14,7 +14,7 @@ const makeGroupName = async (group, user) => {
     if (memKeys.length === 2) {
       for (let m of memKeys) {
         if (m !== user?.id) {
-          const user = await api.getUserProfile(m)
+          const user = await api.getCachedProfile(m)
           if (user) {
             return user.name
           }

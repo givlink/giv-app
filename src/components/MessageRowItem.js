@@ -2,11 +2,58 @@ import React from 'react'
 import utils from 'lib/utils'
 import { useTranslation } from 'react-i18next'
 import SafeImage from 'components/SafeImage'
+import api from 'lib/api'
 import MessageImageView from 'components/MessageImageView'
 import { Link } from '@reach/router'
 import Linkify from 'react-linkify'
 import { ReplyIcon } from '@heroicons/react/outline'
 import { useDispatch } from 'react-redux'
+
+const ReadMarker = ({ group, messageId }) => {
+  const [users, setUsers] = React.useState([])
+
+  React.useEffect(() => {
+    if (!group?.readReceipts) return
+
+    const run = async () => {
+      const newItems = []
+      for (const mem of Object.keys(group?.members || {})) {
+        if (group?.readReceipts[mem] === messageId) {
+          const user = await api.getCachedProfile(mem)
+          if (user) {
+            newItems.push(user)
+          }
+        }
+      }
+      setUsers(newItems)
+    }
+    run()
+  }, [group, messageId])
+
+  if (!users.length) return null
+
+  return (
+    <ul className='flex items-center flex-wrap gap-1 pb-2 max-w-xs'>
+      <span
+        className='text-gray-600 leading-none pt-1 pr-2 font-medium'
+        style={{ fontSize: '0.70em' }}
+      >
+        Read
+      </span>
+      {users.map((u, idx) => (
+        <li key={idx}>
+          <span>
+            <SafeImage
+              className='h-4 w-4 rounded-full'
+              classNameFallback='hidden'
+              src={utils.parseUrl(u?.photoURL)}
+            />
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
   const dispatch = useDispatch()
@@ -154,6 +201,9 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
             </div>
           )}
         </div>
+        {isSenderCurrent && (
+          <ReadMarker group={group} messageId={message?.id} />
+        )}
         <span ref={ref} />
       </div>
     </div>
