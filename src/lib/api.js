@@ -76,6 +76,15 @@ export const reportContent = async ({ description, category, contentPath }) => {
 export const deleteComment = id => {
   return _apiClient(`/comments/${id}`, { method: 'DELETE' })
 }
+export const updateReadReceipts = (groupId, messageId) => {
+  return _apiClient(`/chat-groups/${groupId}`, {
+    method: 'PUT',
+    data: {
+      action: 'update-lastRead',
+      messageId,
+    },
+  })
+}
 
 const getCommentById = id => _apiClient(`/comments/${id}`)
 
@@ -674,5 +683,6 @@ const api = {
   getAvailableGroups,
   uploadToS3,
   getCachedProfile,
+  updateReadReceipts,
 }
 export default api

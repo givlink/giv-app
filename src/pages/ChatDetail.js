@@ -68,8 +68,20 @@ export default function ChatDetail({ id }) {
     if (state.messages && state.messages.length) {
       const lastItem = state.messages[state.messages.length - 1]
       localStorage.setItem(`lastRead-${id}`, lastItem.id)
+
+      let lastOtherMessage
+      for (let i = state.messages.length - 1; i >= 0; i--) {
+        const msg = state.messages[i]
+        if (msg.senderId !== state.user?.id) {
+          lastOtherMessage = msg
+          break
+        }
+      }
+      if (lastOtherMessage) {
+        api.updateReadReceipts(id, lastOtherMessage.id)
+      }
     }
-  }, [state.messages, id])
+  }, [state.messages, id, state?.user])
 
   React.useEffect(() => {
     if (!id) return
