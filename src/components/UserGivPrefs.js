@@ -10,6 +10,7 @@ const UserInterests = ({ user, type = 'send', editable = false }) => {
 
   if (!user) return null
   const prefs = (user?.givPrefs || []).filter(i => i.givType === type)
+  if (!prefs.length) return null
   prefs.forEach(s => (prefMap[s.id] = true))
   return (
     <div className='mt-4'>
