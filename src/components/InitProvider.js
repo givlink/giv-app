@@ -6,6 +6,8 @@ import * as Sentry from '@sentry/browser'
 import actions from 'state/actions'
 import api from 'lib/api'
 
+const sleep = ms => new Promise(r => setTimeout(r, ms))
+
 //Loads up all initial resources
 const InitProvider = props => {
   const { user, loading } = useAuth()
@@ -17,6 +19,7 @@ const InitProvider = props => {
 
     const run = async () => {
       try {
+        await sleep(3000) //initial delay to make sure we have the auth
         const isActivatedUser = await api.isActivatedUser()
         if (!isActivatedUser) {
           navigate('/invite')
