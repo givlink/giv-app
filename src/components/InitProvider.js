@@ -31,6 +31,7 @@ const InitProvider = props => {
         dispatch(actions.watchRequests())
         dispatch(actions.loadInitialUsers())
         dispatch(actions.loadInitialSkills())
+        dispatch(actions.loadInitialGivTypes())
         dispatch(actions.loadInitialAreas())
         dispatch(actions.loadInitialSkillCategories())
         dispatch(actions.loadInitialAreaCategories())

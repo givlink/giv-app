@@ -41,6 +41,17 @@ const actions = {
       dispatch({ type: 'areas/data', areas })
     }
   },
+  loadInitialGivTypes: (setLoading = true) => {
+    return async dispatch => {
+      if (setLoading) {
+        dispatch({ type: 'givTypes/loading' })
+      }
+      const givTypes = (await api.listGivTypes()) || []
+      const givTypeMap = {}
+      givTypes.forEach(s => (givTypeMap[s.id] = s))
+      dispatch({ type: 'givTypes/data', givTypeMap })
+    }
+  },
   loadInitialSkills: (setLoading = true) => {
     return async dispatch => {
       if (setLoading) {

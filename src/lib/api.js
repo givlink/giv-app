@@ -45,6 +45,7 @@ export const listAreas = () => _apiClient('/areas')
 export const listPlaceCategories = () => _apiClient('/area-categories')
 export const listSkillCategories = () => _apiClient('/skill-categories')
 export const listSkills = () => _apiClient('/skills')
+export const listGivTypes = () => _apiClient('/giv-types')
 
 export const getMyProfile = () => _apiClient(`/users/profile`)
 export const getAvailableGroups = () => _apiClient(`/groups`)
@@ -684,5 +685,6 @@ const api = {
   uploadToS3,
   getCachedProfile,
   updateReadReceipts,
+  listGivTypes,
 }
 export default api

@@ -1,5 +1,8 @@
 const translations = {
   //Login
+  'Edit Your Giv Type': 'givのタイプを修正',
+  'Giv Prefs send': '贈りたいgivのタイプ',
+  'Giv Prefs receive': '受け取りたいgivのタイプ',
   'Login': 'ログイン',
   'Privacy Policy': 'プライバシーポリシー',
   'Sign in with Apple': 'Appleサインイン',

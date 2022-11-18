@@ -8,6 +8,7 @@ import utils from 'lib/utils'
 import api from 'lib/api'
 import SkillTagList from 'components/SkillTagList'
 import UserInterests from 'components/UserInterests'
+import UserGivPrefs from 'components/UserGivPrefs'
 import UserAbout from 'components/UserAbout'
 import FloatingRequestButton from 'components/FloatingRequestButton'
 import ProfilePic from 'components/ProfilePic'
@@ -161,6 +162,8 @@ export default function UserDetail(props) {
               </div>
             </div>
             <UserAbout user={user} editable={isMyPage} />
+            <UserGivPrefs type='send'user={user} editable={isMyPage} />
+            <UserGivPrefs type='receive'user={user} editable={isMyPage} />
             <UserInterests user={user} editable={isMyPage} />
             <span className='block mt-4 mb-1 px-4 py-2 border-b font-medium'>
               {t('Skills')}

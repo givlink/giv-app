@@ -425,6 +425,15 @@ const reducer = (state = initialState, action) => {
         userSingleLoading: false,
         userById: getUpdatedUserMap([action.user], state),
       }
+    //Giv Types
+    case 'givTypes/loading':
+      return { ...state, givTypesLoading: true }
+    case 'givTypes/data':
+      return {
+        ...state,
+        givTypeMap: action.givTypeMap,
+        givTypesLoading: false,
+      }
     //Skills
     case 'skills/loading':
       return { ...state, skillsLoading: true }
