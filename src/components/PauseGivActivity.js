@@ -147,7 +147,7 @@ export default function PauseGivActivity({ user }) {
       {isPaused ? (
         <div className='flex flex-wrap'>
           <span>
-            {t('Giv is Paused', { date: utils.parseDate(user.pauseTime) })}
+            {t('Giv is Paused', { date: utils.parseDate(user.pauseTime, 30) })}
           </span>
           <button onClick={handleUnpause} className='underline pl-1'>
             {t('Unpause Giv Activity')}

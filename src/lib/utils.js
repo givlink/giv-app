@@ -59,8 +59,11 @@ const utils = {
       return 'N/A'
     }
   },
-  parseDate: date => {
+  parseDate: (date, addDate) => {
     let d = new Date(date)
+    if (addDate) {
+      d.setDate(d.getDate() + addDate)
+    }
     let str
     try {
       str = moment(d).format('YYYY.MM.DD')
