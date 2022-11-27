@@ -1,15 +1,15 @@
 const translations = {
   //Giv pause activity
-  'Pause Giv Activity': 'giv一時停止する',
-  'Pause Description': 'giv一時停止の内容',
+  'Pause Giv Activity': '1ヶ月お休みする',
+  'Pause Description': '一時的にお休みを設定する(30日後に自動的に再開に戻ります)',
   'Pause': '30日停止',
   'Giv is Paused': 'givは{{date}}まで停止してます。',
-  'Unpause Giv Activity': 'givを再起動する',
+  'Unpause Giv Activity': '再開する',
 
   //Login
   'Edit Your Giv Type': 'givのタイプを修正',
-  'Giv Prefs send': '贈りたいgivのタイプ',
-  'Giv Prefs receive': '受け取りたいgivのタイプ',
+  'Giv Prefs send': '贈るgivの方法',
+  'Giv Prefs receive': '受けるgivの方法',
   'Login': 'ログイン',
   'Privacy Policy': 'プライバシーポリシー',
   'Sign in with Apple': 'Appleサインイン',
