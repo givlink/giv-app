@@ -12,6 +12,7 @@ import UserGivPrefs from 'components/UserGivPrefs'
 import UserAbout from 'components/UserAbout'
 import FloatingRequestButton from 'components/FloatingRequestButton'
 import ProfilePic from 'components/ProfilePic'
+import PauseGivActivity from 'components/PauseGivActivity'
 import GivList from 'components/GivList'
 import { LocationMarkerIcon } from '@heroicons/react/outline'
 import { useTranslation } from 'react-i18next'
@@ -159,11 +160,12 @@ export default function UserDetail(props) {
                 <div className='mt-4'>
                   <SkillTagList skills={user.skills} size='medium' />
                 </div>
+                <PauseGivActivity user={user} />
               </div>
             </div>
             <UserAbout user={user} editable={isMyPage} />
-            <UserGivPrefs type='send'user={user} editable={isMyPage} />
-            <UserGivPrefs type='receive'user={user} editable={isMyPage} />
+            <UserGivPrefs type='send' user={user} editable={isMyPage} />
+            <UserGivPrefs type='receive' user={user} editable={isMyPage} />
             <UserInterests user={user} editable={isMyPage} />
             <span className='block mt-4 mb-1 px-4 py-2 border-b font-medium'>
               {t('Skills')}

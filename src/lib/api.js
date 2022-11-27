@@ -622,6 +622,17 @@ export const setupNotifications = async (token = null) => {
   }
 }
 
+export const pauseGivActivity = () =>
+  _apiClient(`/users/profile`, {
+    method: 'PUT',
+    data: { action: 'pauseGivActivity' },
+  })
+export const unpauseGivActivity = () =>
+  _apiClient(`/users/profile`, {
+    method: 'PUT',
+    data: { action: 'unpauseGivActivity' },
+  })
+
 const api = {
   listSkills,
   listSkillCategories,
@@ -686,5 +697,7 @@ const api = {
   getCachedProfile,
   updateReadReceipts,
   listGivTypes,
+  pauseGivActivity,
+  unpauseGivActivity,
 }
 export default api

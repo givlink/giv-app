@@ -1,4 +1,11 @@
 const translations = {
+  //Giv pause activity
+  'Pause Giv Activity': 'giv一時停止する',
+  'Pause Description': 'giv一時停止の内容',
+  'Pause': '30日停止',
+  'Giv is Paused': 'givは{{date}}まで停止してます。',
+  'Unpause Giv Activity': 'givを再起動する',
+
   //Login
   'Edit Your Giv Type': 'givのタイプを修正',
   'Giv Prefs send': '贈りたいgivのタイプ',
