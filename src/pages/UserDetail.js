@@ -160,7 +160,7 @@ export default function UserDetail(props) {
                 <div className='mt-4'>
                   <SkillTagList skills={user.skills} size='medium' />
                 </div>
-                <PauseGivActivity user={user} />
+                {isMyPage && <PauseGivActivity user={user} />}
               </div>
             </div>
             <UserAbout user={user} editable={isMyPage} />
