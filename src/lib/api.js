@@ -233,6 +233,7 @@ export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
     filterType: 'interests',
     filterValue: filters.join(','),
     limit: 10,
+    isRecommendation:true,
   }
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
   items = items
@@ -257,6 +258,7 @@ export const listSimilarUsers = async (user, activeGroup) => {
     filterType: 'interests',
     filterValue: filters.join(','),
     limit: 10,
+    isRecommendation:true,
   }
 
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
@@ -291,6 +293,7 @@ export const listRecommendations = async (user, activeGroup) => {
     filterType: 'skills',
     filterValue: filters.join(','),
     limit: 10,
+    isRecommendation:true,
   }
 
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)

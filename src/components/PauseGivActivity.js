@@ -124,7 +124,7 @@ const ConfirmModal = ({ open, setOpen }) => {
   )
 }
 
-export default function PauseGivActivity({ user }) {
+export default function PauseGivActivity({ user, editable = false }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const [confirmOpen, setConfirmOpen] = React.useState(false)
@@ -149,22 +149,26 @@ export default function PauseGivActivity({ user }) {
           <span>
             {t('Giv is Paused', { date: utils.parseDate(user.pauseTime, 30) })}
           </span>
-          <button onClick={handleUnpause} className='underline pl-1'>
-            {t('Unpause Giv Activity')}
-          </button>
+          {editable && (
+            <button onClick={handleUnpause} className='underline pl-1'>
+              {t('Unpause Giv Activity')}
+            </button>
+          )}
         </div>
       ) : (
-        <div>
-          <button onClick={() => setConfirmOpen(true)} className='underline'>
-            {t('Pause Giv Activity')}
-          </button>
+        editable && (
+          <div>
+            <button onClick={() => setConfirmOpen(true)} className='underline'>
+              {t('Pause Giv Activity')}
+            </button>
 
-          <ConfirmModal
-            open={confirmOpen}
-            setOpen={setConfirmOpen}
-            user={user}
-          />
-        </div>
+            <ConfirmModal
+              open={confirmOpen}
+              setOpen={setConfirmOpen}
+              user={user}
+            />
+          </div>
+        )
       )}
     </div>
   )
