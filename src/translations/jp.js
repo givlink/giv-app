@@ -1,10 +1,10 @@
 const translations = {
-  'Footer_Posts': 'Posts',
-  'Footer_Search': 'Search',
-  'Footer_Discover': 'Discover',
-  'Footer_Chat': 'Chat',
-  'Footer_Notifications': 'Notifications',
-  'Footer_MyPage': 'My Page',
+  'Footer_Posts': 'タイムライン',
+  'Footer_Search': '検索',
+  'Footer_Discover': '次のお相手',
+  'Footer_Chat': 'チャット',
+  'Footer_Notifications': '通知',
+  'Footer_MyPage': 'マイページ',
 
   //Giv pause activity
   'Pause Giv Activity': '1ヶ月お休みする',
