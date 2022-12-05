@@ -1,7 +1,15 @@
 const translations = {
+  'Footer_Posts': 'Posts',
+  'Footer_Search': 'Search',
+  'Footer_Discover': 'Discover',
+  'Footer_Chat': 'Chat',
+  'Footer_Notifications': 'Notifications',
+  'Footer_MyPage': 'My Page',
+
   //Giv pause activity
   'Pause Giv Activity': '1ヶ月お休みする',
-  'Pause Description': '一時的にお休みを設定する(30日後に自動的に再開に戻ります)',
+  'Pause Description':
+    '一時的にお休みを設定する(30日後に自動的に再開に戻ります)',
   'Pause': '30日停止',
   'Giv is Paused': 'givは{{date}}まで停止してます。',
   'Unpause Giv Activity': '再開する',
@@ -196,7 +204,7 @@ const translations = {
   'Report Content': '内容',
   'reportContentSubmitted':
     '事務局に報告しました。調査をした上で、必要に応じてご連絡させて頂きます。ありがとうございました。',
-  'Chat Users': 'チャットユーザ'
+  'Chat Users': 'チャットユーザ',
 }
 
 export default translations

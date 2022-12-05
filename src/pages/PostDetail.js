@@ -511,30 +511,7 @@ export default function PostDetail(props) {
                 ))}
               </Carousel>
             )}
-            <div className='px-4 pt-6 pb-4'>
-              {isMyPost && <EditPost post={post} id={post.id} />}
-              <h3 className='font-medium text-xl sm:text-xl mb-2'>
-                {post.title}
-              </h3>
-              <p className='px-1 font-light text-sm sm:text-base whitespace-pre-wrap'>
-                <Linkify
-                  componentDecorator={(decoratedHref, decoratedText, key) => (
-                    <a
-                      target='_blank'
-                      rel='noreferrer'
-                      href={decoratedHref}
-                      key={key}
-                      className='underline text-giv-blue-dark'
-                    >
-                      {decoratedText}
-                    </a>
-                  )}
-                >
-                  {post.message}
-                </Linkify>
-              </p>
-            </div>
-            <div className='px-4 py-2 pb-8 flex items-center justify-between'>
+            <div className='px-4 py-2 flex items-center justify-between'>
               <button
                 onClick={toggleLike}
                 className={`${
@@ -566,6 +543,29 @@ export default function PostDetail(props) {
                 <CalendarIcon className='h-6 w-6 mr-1.5 text-gray-400' />
                 {utils.parseDate(post.createdAt)}
               </span>
+            </div>
+            <div className='px-4 pt-6 pb-8'>
+              {isMyPost && <EditPost post={post} id={post.id} />}
+              <h3 className='font-medium text-xl sm:text-xl mb-2'>
+                {post.title}
+              </h3>
+              <p className='px-1 font-light text-sm sm:text-base whitespace-pre-wrap'>
+                <Linkify
+                  componentDecorator={(decoratedHref, decoratedText, key) => (
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={decoratedHref}
+                      key={key}
+                      className='underline text-giv-blue-dark'
+                    >
+                      {decoratedText}
+                    </a>
+                  )}
+                >
+                  {post.message}
+                </Linkify>
+              </p>
             </div>
             <Link to={`/users/${post.giver.id}`}>
               <div className='flex items-center mx-3 mb-3 px-3 py-3 border border-gray-200 rounded-xl hover:shadow-xl'>

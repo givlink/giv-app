@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import React from 'react'
 import { useLocation, useMatch } from '@reach/router'
 import { Transition } from '@headlessui/react'
+import { useTranslation } from 'react-i18next'
 import {
   ClockIcon as ClockIconSolid,
   ChatIcon as ChatIconSolid,
@@ -20,6 +21,7 @@ import {
 } from '@heroicons/react/outline'
 
 export default function Footer() {
+  const { t } = useTranslation()
   // const dispatch = useDispatch();
   const { unreadCount, user, chatsUnreadCount } = useSelector(s => ({
     unreadCount: s.notificationsUnreadCount,
@@ -78,7 +80,7 @@ export default function Footer() {
             ) : (
               <ClockIcon className='h-7 w-7' />
             )}
-            <label className='hidden md:block'>Posts</label>
+            <label className='hidden md:block'>{t('Footer_Posts')}</label>
           </Link>
           <Link
             to='/users'
@@ -89,7 +91,7 @@ export default function Footer() {
             } flex flex-1 flex-col py-2 items-center border-b-4`}
           >
             <SearchIcon className='pt-px h-7 w-7' />
-            <label className='hidden md:block'>Search</label>
+            <label className='hidden md:block'>{t('Footer_Search')}</label>
           </Link>
           <Link
             to='/recommendations'
@@ -104,7 +106,7 @@ export default function Footer() {
             ) : (
               <SparklesIcon className='h-7 w-7' />
             )}
-            <label className='hidden md:block'>Discover</label>
+            <label className='hidden md:block'>{t('Footer_Discover')}</label>
           </Link>
           <Link
             to='/chats'
@@ -124,7 +126,7 @@ export default function Footer() {
                 {chatsUnreadCount}
               </div>
             )}
-            <label className='hidden md:block'>Chat</label>
+            <label className='hidden md:block'>{t('Footer_Chat')}</label>
           </Link>
           <Link
             to='/notifications'
@@ -144,7 +146,9 @@ export default function Footer() {
                 {unreadCount}
               </div>
             )}
-            <label className='hidden md:block'>Notifications</label>
+            <label className='hidden md:block'>
+              {t('Footer_Notifications')}
+            </label>
           </Link>
           <Link
             to={`/users/${user?.id}`}
@@ -159,7 +163,7 @@ export default function Footer() {
             ) : (
               <UserIcon className='h-7 w-7' />
             )}
-            <label className='hidden md:block'>My Page</label>
+            <label className='hidden md:block'>{t('Footer_MyPage')}</label>
           </Link>
         </div>
       </nav>
