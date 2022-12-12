@@ -1,4 +1,12 @@
 const translations = {
+  'RequestMessagePlaceholder': 'Request Message',
+  'Footer_Posts': 'Posts',
+  'Footer_Search': 'Search',
+  'Footer_Discover': 'Discover',
+  'Footer_Chat': 'Chat',
+  'Footer_Notifications': 'Notifications',
+  'Footer_MyPage': 'My Page',
+
   //Login
   'Login': 'Login',
   'Privacy Policy': 'Privacy Policy',
@@ -177,10 +185,11 @@ const translations = {
   'wellbeing-daigaku': 'Well-Being Daigaku',
   'hiroshima': 'Higashi Hiroshima City',
 
-  "Report": "Report",
-  "Report Content": "Report Content",
+  'Report': 'Report',
+  'Report Content': 'Report Content',
   'Block User': 'Block User',
-  "reportContentSubmitted": "Your report has been submitted successfully. We will investigate the issue and get back to you if necessary. Thank you."
+  'reportContentSubmitted':
+    'Your report has been submitted successfully. We will investigate the issue and get back to you if necessary. Thank you.',
 }
 
 export default translations

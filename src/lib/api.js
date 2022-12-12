@@ -525,10 +525,10 @@ export const watchNotifications = cb => {
 
 export const logout = () => firebase.auth().signOut()
 
-export const createGivRequest = (senderId, receiverId, type) =>
+export const createGivRequest = (senderId, receiverId, type, message) =>
   _apiClient(`/requests`, {
     method: 'POST',
-    data: { senderId, receiverId, type },
+    data: { senderId, receiverId, type, message },
   })
 
 export const deletePost = id => _apiClient(`/posts/${id}`, { method: 'DELETE' })

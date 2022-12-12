@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 const RequestModal = ({ open, setOpen, userId }) => {
   const { t } = useTranslation()
   const user = useSelector(s => s.user)
+  const [message, setMessage] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const [sent, setSent] = React.useState(false)
   const closeModal = () => {
@@ -30,7 +31,8 @@ const RequestModal = ({ open, setOpen, userId }) => {
       senderId = userId
       receiverId = user.id
     }
-    await api.createGivRequest(senderId, receiverId, type)
+    await api.createGivRequest(senderId, receiverId, type, message)
+    setMessage('')
     setSent(true)
     setLoading(false)
   }
@@ -103,6 +105,15 @@ const RequestModal = ({ open, setOpen, userId }) => {
                     </div>
                   ) : (
                     <>
+                      <div>
+                        <textarea
+                          rows={4}
+                          className='resize-none w-full border border-gray-300 rounded'
+                          placeholder={t('RequestMessagePlaceholder')}
+                          value={message}
+                          onChange={e => setMessage(e.target.value)}
+                        />
+                      </div>
                       <button
                         onClick={() => sendRequest('send')}
                         className='text-sm font-medium block w-full rounded px-8 py-3 shadow bg-giv-blue text-white flex items-center justify-center'

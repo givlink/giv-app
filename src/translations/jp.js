@@ -1,4 +1,5 @@
 const translations = {
+  'RequestMessagePlaceholder': 'メッセージ',
   'Footer_Posts': 'Posts',
   'Footer_Search': 'Search',
   'Footer_Discover': 'Discover',
