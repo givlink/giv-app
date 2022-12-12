@@ -164,25 +164,24 @@ const AcceptRequestModal = ({ request, requester, open, setOpen }) => {
 export default function RequestListCard({ request }) {
   const [open, setOpen] = React.useState(false)
   const { t } = useTranslation()
-  const { type, sender, receiver } = request
+  const { type, sender, receiver, message } = request
 
   let requester
   let msg = ''
   if (type === 'send') {
     requester = sender
-    msg = t('wantSendRequest', { name: requester?.name })
+    msg = t('wantSendRequest')
   }
   if (type === 'receive') {
     requester = receiver
-    msg = t('wantReceiveRequest', { name: requester?.name })
+    msg = t('wantReceiveRequest')
   }
   if (!requester) return null
 
   const completed = request.status === 'match'
-  console.log(requester.id, requester.photoURL)
 
   return (
-    <div className='border-b border-gray-300 mx-1.5 bg-white'>
+    <div className='border-b border-gray-200 p-2 rounded mx-1.5 bg-white shadow'>
       <AcceptRequestModal
         request={request}
         open={open}
@@ -193,14 +192,22 @@ export default function RequestListCard({ request }) {
         <SafeImage
           src={utils.parseUrl(requester?.photoURL)}
           alt='Sender'
-          className='h-16 w-16 object-cover border-2 border-gray-500 rounded-full'
+          className='h-14 w-14 object-cover border-2 border-gray-300 rounded-full overflow-hidden'
           classNameFallback='w-12 object-cover rounded-full'
         />
-        <div className='flex flex-col pt-1'>
-          <span className='text-sm sm:text-base font-medium pb-1'>
-            {requester?.name}
-          </span>
-          <p className='text-sm text-gray-600'>{msg}</p>
+        <div className='flex w-full flex-col pt-1'>
+          <p className='text-sm sm:text-base pb-1'>
+            <span className='font-semibold'>{requester?.name} </span>
+            <span> {msg}</span>
+          </p>
+          {message && (
+            <div>
+              <span className='leading-none px-2 text-xs rounded-sm bg-gray-100'>
+                {t('Tag_Message')}
+              </span>
+              <p className='px-2 py-1 text-sm text-gray-600'>{message}</p>
+            </div>
+          )}
 
           <span className='block flex justify-end items-center text-gray-500 text-xs pt-1'>
             <CalendarIcon className='h-4 w-4 mr-1.5 text-gray-400' />
@@ -208,7 +215,7 @@ export default function RequestListCard({ request }) {
           </span>
         </div>
       </div>
-      <div className='flex items-center justify-between text-xs px-2 mt-0.5 mb-1.5'>
+      <div className='flex items-center justify-end gap-3 text-xs px-2 mt-0.5 mb-1.5'>
         <Link
           to={`/users/${requester.id}`}
           className='border border border-gray-300 rounded-full px-4 py-1.5'

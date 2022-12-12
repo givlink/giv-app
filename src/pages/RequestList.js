@@ -23,7 +23,7 @@ export default function RequestList() {
       />
       {state.loading && <Spinner className='pt-2' />}
 
-      <ul className='max-w-2xl mx-auto'>
+      <ul className='max-w-xl pt-3 mx-auto space-y-3'>
         {state.requests.map(p => {
           return (
             <li key={p.id}>

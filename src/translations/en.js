@@ -1,4 +1,5 @@
 const translations = {
+  'Tag_Message': 'Message',
   'RequestMessagePlaceholder': 'Request Message',
   'Footer_Posts': 'Posts',
   'Footer_Search': 'Search',

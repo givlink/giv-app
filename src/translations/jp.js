@@ -1,4 +1,6 @@
 const translations = {
+  'Tag_Message': 'メッセージ',
+
   'RequestMessagePlaceholder': 'メッセージ',
 
   'Footer_Posts': 'タイムライン',
@@ -166,8 +168,8 @@ const translations = {
   'You Got Giv':
     '{{name}}さんとのgivをセットしました。終わりましたらサンクスカードを書きましょう。',
   'You Got Comment': '{{name}}さんから新しいコメントがあります。',
-  'wantSendRequest': '{{name}}さんがgivを贈りたい',
-  'wantReceiveRequest': '{{name}}さんがgivを受け取りたい',
+  'wantSendRequest': 'さんがgivを贈りたい',
+  'wantReceiveRequest': 'さんがgivを受け取りたい',
 
   'Filter by Skills': '興味・関心フィルター',
   'Filter by Area': '場所フィルター',
