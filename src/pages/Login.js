@@ -24,7 +24,7 @@ export default function Login() {
     <div className='h-full flex flex-col items-center justify-center max-w-2xl mx-auto'>
       <div className='flex-1'></div>
       <img src='/image/giv_logo.png' alt='Giv' width='90' className='mb-12' />
-      <div className='flex items-center w-2/3 gap-2 mb-8'>
+      <div className='w-2/3 flex flex-wrap items-center px-2 gap-2 mb-8'>
         <button
           onClick={() => handleLogin()}
           className='px-6 py-3 bg-giv-blue text-white rounded-md font-medium w-full'
