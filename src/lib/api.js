@@ -165,6 +165,20 @@ const login = prov => {
 
   firebase.auth().signInWithRedirect(provider)
 }
+const loginWithEmail = async (email, password) => {
+  try {
+    const user = await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+    return user
+  } catch (err) {
+    if (err.code !== 'auth/user-not-found') throw err
+    //if no user then create one and redirect to invite
+    const user = await firebase.auth().createUserWithEmailAndPassword(email, password)
+    user.isNew = true
+    return user
+  }
+}
 
 const onRedirectResult = () => {
   return firebase.auth().getRedirectResult()
@@ -233,7 +247,7 @@ export const listUsersWhoLikeYourSkills = async (user, activeGroup) => {
     filterType: 'interests',
     filterValue: filters.join(','),
     limit: 10,
-    isRecommendation:true,
+    isRecommendation: true,
   }
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
   items = items
@@ -258,7 +272,7 @@ export const listSimilarUsers = async (user, activeGroup) => {
     filterType: 'interests',
     filterValue: filters.join(','),
     limit: 10,
-    isRecommendation:true,
+    isRecommendation: true,
   }
 
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
@@ -293,7 +307,7 @@ export const listRecommendations = async (user, activeGroup) => {
     filterType: 'skills',
     filterValue: filters.join(','),
     limit: 10,
-    isRecommendation:true,
+    isRecommendation: true,
   }
 
   let items = await _apiClient(`/users?${qs.stringify(qq)}`)
@@ -687,6 +701,7 @@ const api = {
   mock,
 
   login,
+  loginWithEmail,
   logout,
   onRedirectResult,
   listComments,

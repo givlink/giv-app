@@ -37,6 +37,7 @@ const translations = {
   'Logged in as': 'Logged in as',
   'Not you? Logout': 'あなたでなければログアウトします',
   'Login with Facebook': 'Facebookでログイン',
+  'Login with Mail': 'メールでログイン',
 
   //Invite: page3
   'Name': '氏名',

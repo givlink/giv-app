@@ -8,6 +8,12 @@ const actions = {
       api.login(provider)
     }
   },
+  loginWithEmail: (email, password) => {
+    return async dispatch => {
+      dispatch({ type: 'auth/init' })
+      api.loginWithEmail(email, password)
+    }
+  },
   logout: () => {
     return async dispatch => {
       dispatch({ type: 'auth/loading' })

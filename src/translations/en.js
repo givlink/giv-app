@@ -23,6 +23,7 @@ const translations = {
   'Logged in as': 'Logged in as',
   'Not you? Logout': 'Not you? Logout',
   'Login with Facebook': 'Login with Facebook',
+  'Login with Mail': 'Login with Mail',
 
   //Invite: page3
   'Name': 'Name',

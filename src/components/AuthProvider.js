@@ -9,7 +9,7 @@ const AuthProvider = (props) => {
 
   if (loading) return <SpinnerFull />;
 
-  const validNoAuthPaths = ["/login", "/invite"];
+  const validNoAuthPaths = ["/login", "/invite", "/login-mail"];
 
   if (!user && !validNoAuthPaths.includes(loc.pathname)) navigate("/login");
 
