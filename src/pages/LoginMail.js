@@ -1,11 +1,13 @@
 import React from 'react'
-import { Link, navigate } from '@reach/router'
+import { Link, navigate, useLocation } from '@reach/router'
 import { useAuth } from 'hooks/auth'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/Spinner'
 import api from 'lib/api'
+import { parse } from 'query-string'
 
 export default function LoginMail() {
+  const loc = useLocation()
   const { t } = useTranslation()
   const { user } = useAuth()
   const [email, setEmail] = React.useState('')
@@ -14,17 +16,23 @@ export default function LoginMail() {
   const [error, setError] = React.useState(null)
   const [newUser, setNewUser] = React.useState(null)
 
+  let { code } = parse(loc.search)
+
   React.useEffect(() => {
     if (user) {
       if (newUser && newUser.isNew) {
-        return navigate('/invite')
+        let newUrl = `/invite`
+        if (code) {
+          newUrl += `#${code}`
+        }
+        return navigate(newUrl)
       }
 
       //already logged in..
       navigate('/')
       return
     }
-  }, [user, newUser])
+  }, [user, newUser, code])
 
   const handleLogin = async () => {
     setLoading(true)
@@ -33,7 +41,11 @@ export default function LoginMail() {
       const user = await api.loginWithEmail(email, pwd)
       setNewUser(user)
       if (user.isNew) {
-        return navigate('/invite')
+        let newUrl = `/invite`
+        if (code) {
+          newUrl += `#${code}`
+        }
+        return navigate(newUrl)
       } else {
         return navigate('/')
       }

@@ -76,7 +76,7 @@ const Page2 = ({ activeStepIndex = 0, code, handleNext }) => {
       <button
         onClick={onSubmit}
         disabled={checking}
-        className={`bg-giv-blue text-white text-sm shadow-xl px-6 py-3 w-2/3 rounded-lg font-medium mt-0 mb-8 transition duration-150`}
+        className={`bg-giv-blue text-white text-sm shadow-xl px-6 py-3 w-2/3 rounded-lg font-medium mt-0 mb-3 transition duration-150`}
       >
         {checking ? (
           <Spinner />
@@ -86,6 +86,21 @@ const Page2 = ({ activeStepIndex = 0, code, handleNext }) => {
           t('Login with Facebook')
         )}
       </button>
+      {!state.authUser && (
+        <button
+          onClick={() => navigate(`/login-mail?code=${code}`)}
+          disabled={checking}
+          className={`text-giv-blue border border-giv-blue text-sm shadow-xl px-6 py-3 w-2/3 rounded-lg font-medium mt-0 mb-8 transition duration-150`}
+        >
+          {checking ? (
+            <Spinner />
+          ) : state.authUser ? (
+            t('Next')
+          ) : (
+            t('Login with Mail')
+          )}
+        </button>
+      )}
     </>
   )
 }
