@@ -24,7 +24,7 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
   const [name, setName] = React.useState('')
   const [job, setJob] = React.useState('')
   const [intro, setIntro] = React.useState('')
-  const [area, setArea] = React.useState('tokyo')
+  const [area, setArea] = React.useState(18) //tokyo
 
   const state = useSelector(s => ({
     authLoading: s.authLoading,
@@ -61,7 +61,7 @@ const Page3 = ({ activeStepIndex = 0, handleNext }) => {
         <input
           name='name'
           onChange={handleChange}
-          value={name || state.authUser?.displayName}
+          value={state.authUser?.displayName || name}
           placeholder={t('Name')}
           className={`mt-1 text-lg border border-gray-300 py-2 px-3 rounded`}
         />

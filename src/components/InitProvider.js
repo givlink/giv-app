@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAuth } from 'hooks/auth'
-import { navigate } from '@reach/router'
+import { navigate, useLocation } from '@reach/router'
 import { useDispatch } from 'react-redux'
 import * as Sentry from '@sentry/browser'
 import actions from 'state/actions'
@@ -10,12 +10,16 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 //Loads up all initial resources
 const InitProvider = props => {
+  const loc = useLocation()
   const { user, loading } = useAuth()
   const [error, setError] = React.useState(null)
   const dispatch = useDispatch()
 
   React.useEffect(() => {
     if (loading || !user) return
+
+    //Don't init of invite pages
+    if (loc.pathname === '/invite') return
 
     const run = async () => {
       try {
@@ -64,7 +68,7 @@ const InitProvider = props => {
     return () => {
       dispatch({ type: 'app/exit' }) //for resetting all listeners
     }
-  }, [dispatch, user, loading, setError])
+  }, [dispatch, user, loading, setError, loc])
 
   if (error) throw error
 

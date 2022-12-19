@@ -45,7 +45,7 @@ const Page2 = ({ activeStepIndex = 0, code, handleNext }) => {
         <div className='flex flex-col items-center'>
           <span className='text-xs'>{t('Logged in as')}</span>
           <span className='font-medium text-blue-900 tracking-wide'>
-            {state.authUser.displayName}
+            {state.authUser.displayName || state.authUser.email}
           </span>
           <button onClick={handleLogout} className='mt-6 text-sm underline'>
             {t('Not you? Logout')}
