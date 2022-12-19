@@ -5,6 +5,7 @@ import SpinnerFull from 'components/SpinnerFull'
 import { useSelector } from 'react-redux'
 import api from 'lib/api'
 import { useTranslation } from 'react-i18next'
+import { navigate } from '@reach/router'
 
 const Page6 = ({ data }) => {
   const { t } = useTranslation()
@@ -55,13 +56,13 @@ const Page6 = ({ data }) => {
       </div>
       <div className='flex-1' />
       {!error && (
-        <a
-          href='/'
+        <button
+          onClick={() => navigate('/')}
           className='mb-6 w-4/5 text-white font-medium bg-giv-blue px-8 py-4 rounded flex items-center justify-center'
         >
           <HomeIcon className='mr-2 h-6 w-6' />
           {t('Go to Home')}
-        </a>
+        </button>
       )}
     </div>
   )
