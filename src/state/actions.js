@@ -5,7 +5,7 @@ const actions = {
   login: provider => {
     return async dispatch => {
       dispatch({ type: 'auth/init' })
-      api.login(provider)
+      await api.login(provider)
     }
   },
   loginWithEmail: (email, password) => {
@@ -15,8 +15,7 @@ const actions = {
     }
   },
   logout: () => {
-    return async dispatch => {
-      dispatch({ type: 'auth/loading' })
+    return async () => {
       await api.logout()
     }
   },

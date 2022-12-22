@@ -1,10 +1,9 @@
 import { LogoutIcon } from '@heroicons/react/outline'
-import actions from 'state/actions'
-import { useDispatch } from 'react-redux'
 import { Link } from '@reach/router'
 import { useTranslation } from 'react-i18next'
+import api from 'lib/api'
+
 export default function Header() {
-  const dispatch = useDispatch()
   const { t } = useTranslation()
   return (
     <div className='mb-16'>
@@ -19,7 +18,7 @@ export default function Header() {
             />
           </Link>
           <button
-            onClick={() => dispatch(actions.logout())}
+            onClick={api.logout}
             className='text-gray-600 flex items-center text-xs pl-3 pr-1 py-2 font-medium hover:bg-gray-100 rounded'
           >
             {t('Logout')}

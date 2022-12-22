@@ -1,19 +1,21 @@
-import { useLocation, navigate } from "@reach/router";
-import { useAuth, useInitAuth } from "hooks/auth";
-import SpinnerFull from "components/SpinnerFull";
+import { useLocation, navigate } from '@reach/router'
+import { useAuth, useInitAuth } from 'hooks/auth'
+import SpinnerFull from 'components/SpinnerFull'
 
-const AuthProvider = (props) => {
-  useInitAuth();
-  const { user, loading } = useAuth();
-  const loc = useLocation();
+const AuthProvider = props => {
+  useInitAuth()
+  const { user, loading } = useAuth()
+  const loc = useLocation()
 
-  if (loading) return <SpinnerFull />;
+  if (loading) return <SpinnerFull />
 
-  const validNoAuthPaths = ["/login", "/invite", "/login-mail"];
+  const validNoAuthPaths = ['/login', '/invite', '/login-mail']
 
-  if (!user && !validNoAuthPaths.includes(loc.pathname)) navigate("/login");
+  if (!user && !loading && !validNoAuthPaths.includes(loc.pathname)) {
+    navigate('/login')
+  }
 
-  return props.children;
-};
+  return props.children
+}
 
-export default AuthProvider;
+export default AuthProvider

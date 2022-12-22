@@ -17,7 +17,7 @@ export default function ChatGroupCard({ group, currUser }) {
 
   React.useEffect(() => {
     const run = async () => {
-      const memKeys = Object.keys(group?.members)
+      const memKeys = Object.keys(group?.members || {})
       if (memKeys.length === 2) {
         for (let m of memKeys) {
           if (m !== currUser?.id) {

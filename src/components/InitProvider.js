@@ -18,12 +18,18 @@ const InitProvider = props => {
   React.useEffect(() => {
     if (loading || !user) return
 
-    //Don't init of invite pages
-    if (loc.pathname === '/invite') return
+    //Don't init on invite or login pages
+    if (
+      loc.pathname === '/invite' ||
+      loc.pathname === '/login' ||
+      loc.pathname === '/login-mail'
+    ) {
+      return
+    }
 
     const run = async () => {
       try {
-        await sleep(3000) //initial delay to make sure we have the auth
+        await sleep(1000) //initial delay to make sure we have the auth
         const isActivatedUser = await api.isActivatedUser()
         if (!isActivatedUser) {
           navigate('/invite')

@@ -2,7 +2,6 @@ import React from 'react'
 import { HomeIcon } from '@heroicons/react/outline'
 import ErrorComponent from 'components/Error'
 import SpinnerFull from 'components/SpinnerFull'
-import { useSelector } from 'react-redux'
 import api from 'lib/api'
 import { useTranslation } from 'react-i18next'
 import { navigate } from '@reach/router'
@@ -11,26 +10,22 @@ const Page6 = ({ data }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState(null)
-  const authUser = useSelector(s => s.authUser)
 
   React.useEffect(() => {
-    if (!authUser) return
     if (!data) return
+
+    setLoading(true)
 
     const run = async () => {
       try {
-        await api.createUserProfile({
-          uid: authUser.uid,
-          ...data,
-        })
-        setLoading(false)
+        await api.createUserProfile(data)
       } catch (err) {
         setError('エラー：' + err.message)
-        setLoading(false)
       }
+      setLoading(false)
     }
     run()
-  }, [authUser, data])
+  }, [data])
 
   if (loading) return <SpinnerFull />
   return (

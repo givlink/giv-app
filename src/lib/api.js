@@ -163,7 +163,7 @@ const login = prov => {
     }
   }
 
-  firebase.auth().signInWithRedirect(provider)
+  return firebase.auth().signInWithRedirect(provider)
 }
 const loginWithEmail = async (email, password) => {
   try {
