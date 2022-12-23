@@ -47,7 +47,7 @@ export default function Login() {
       <div className='flex-1'></div>
       <button
         onClick={() => handleLogin('apple')}
-        className='mb-8 flex items-center leading-0 text-xs shadow-sm hover:shadow-xl transition duration-150 rounded-md px-4 py-2 bg-gray-900 font-semibold text-white'
+        className='hidden mb-8 flex items-center leading-0 text-xs shadow-sm hover:shadow-xl transition duration-150 rounded-md px-4 py-2 bg-gray-900 font-semibold text-white'
       >
         <img className='h-4 w-4 mr-2' src='/image/apple_logo.svg' alt='apple' />
         <span className='mt-1'>{t('Sign in with Apple')}</span>
