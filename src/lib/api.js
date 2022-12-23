@@ -19,7 +19,12 @@ if (process.env.NODE_ENV === 'development' && true) {
   API_URL = 'http://localhost:3000/api'
 }
 export const _apiClient = async (path, opts = {}) => {
-  const token = await firebase.auth().currentUser?.getIdToken()
+  const { currentUser } = firebase.auth()
+  if (currentUser) {
+    await utils.sleep(2000) //sleep to maybe get the user in the meantime
+  }
+  const token = await currentUser.getIdToken()
+
   const payload = { url: `${API_URL}${path}`, ...opts }
   if (!payload.headers) payload.headers = {}
   payload.headers.authorization = `Bearer ${token}`
@@ -164,6 +169,7 @@ const login = prov => {
   }
 
   return firebase.auth().signInWithRedirect(provider)
+  // return firebase.auth().signInWithPopup(provider)
 }
 const loginWithEmail = async (email, password) => {
   try {
@@ -174,7 +180,9 @@ const loginWithEmail = async (email, password) => {
   } catch (err) {
     if (err.code !== 'auth/user-not-found') throw err
     //if no user then create one and redirect to invite
-    const user = await firebase.auth().createUserWithEmailAndPassword(email, password)
+    const user = await firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
     user.isNew = true
     return user
   }
