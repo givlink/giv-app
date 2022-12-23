@@ -23,7 +23,7 @@ export const _apiClient = async (path, opts = {}) => {
   if (currentUser) {
     await utils.sleep(2000) //sleep to maybe get the user in the meantime
   }
-  const token = await currentUser.getIdToken()
+  const token = await currentUser?.getIdToken()
 
   const payload = { url: `${API_URL}${path}`, ...opts }
   if (!payload.headers) payload.headers = {}
