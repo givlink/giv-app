@@ -172,20 +172,8 @@ const login = prov => {
   // return firebase.auth().signInWithPopup(provider)
 }
 const loginWithEmail = async (email, password) => {
-  try {
-    const user = await firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-    return user
-  } catch (err) {
-    if (err.code !== 'auth/user-not-found') throw err
-    //if no user then create one and redirect to invite
-    const user = await firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-    user.isNew = true
-    return user
-  }
+  const user = await firebase.auth().signInWithEmailAndPassword(email, password)
+  return user
 }
 
 const onRedirectResult = () => {
