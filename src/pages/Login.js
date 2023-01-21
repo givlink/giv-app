@@ -1,57 +1,75 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
 import { Link, navigate } from '@reach/router'
-import { useAuth } from 'hooks/auth'
 import { useTranslation } from 'react-i18next'
-import actions from 'state/actions'
+import Spinner from 'components/Spinner'
+import api from 'lib/api'
 
-export default function Login() {
+export default function LoginMail() {
   const { t } = useTranslation()
-  const { user } = useAuth()
-  const dispatch = useDispatch()
+  const [email, setEmail] = React.useState('')
+  const [pwd, setPwd] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(null)
 
-  React.useEffect(() => {
-    if (user) {
-      //already logged in..
-      navigate('/')
-      return
+  const handleLogin = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      await api.loginWithEmail(email, pwd)
+      return navigate('/')
+    } catch (err) {
+      setError(err.message)
     }
-  }, [user])
-
-  const handleLogin = provider => dispatch(actions.login(provider))
+    setLoading(false)
+  }
 
   return (
     <div className='h-full flex flex-col items-center justify-center max-w-2xl mx-auto'>
       <div className='flex-1'></div>
       <img src='/image/giv_logo.png' alt='Giv' width='90' className='mb-12' />
-      <div className='w-2/3 flex flex-wrap items-center px-2 gap-2 mb-8'>
+      <div className='w-2/3 flex flex-col gap-1 mb-8'>
+        <label>
+          <span className='text-xs'>{t('Email')}</span>
+          <input
+            className='w-full border border-gray-200 px-4 py-3 rounded-md'
+            placeholder={t('Email')}
+            name='Email'
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+        </label>
+        <label>
+          <span className='text-xs'>{t('Password')}</span>
+          <input
+            className='w-full border border-gray-200 px-4 py-3 rounded-md'
+            placeholder={t('Password')}
+            type='password'
+            name='Password'
+            value={pwd}
+            onChange={e => setPwd(e.target.value)}
+          />
+        </label>
+        {error && (
+          <p className='text-center text-red-600 bg-red-100 px-3 py-1 leading-none'>
+            {error}
+          </p>
+        )}
         <button
-          onClick={() => handleLogin()}
-          className='px-6 py-3 bg-giv-blue text-white rounded-md font-medium w-full'
+          disabled={loading}
+          onClick={handleLogin}
+          className='px-6 py-3 bg-giv-blue text-white border border-giv-blue rounded-md font-medium w-full'
         >
-          {t('Login with Facebook')}
-        </button>
-        <button
-          onClick={() => navigate('/login-mail')}
-          className='px-6 py-3 text-giv-blue bg-white border border-giv-blue rounded-md font-medium w-full'
-        >
-          {t('Login with Mail')}
+          {loading ? <Spinner color='text-white' /> : t('Login with Mail')}
         </button>
       </div>
       <Link
-        to='/invite'
+        to='/login-legacy'
         className='w-64 px-3 underline leading-6 text-xs text-gray-600 text-center'
       >
-        {t('Got Code?')}
+        {t('Login with Facebook')}
       </Link>
+
       <div className='flex-1'></div>
-      <button
-        onClick={() => handleLogin('apple')}
-        className='hidden mb-8 flex items-center leading-0 text-xs shadow-sm hover:shadow-xl transition duration-150 rounded-md px-4 py-2 bg-gray-900 font-semibold text-white'
-      >
-        <img className='h-4 w-4 mr-2' src='/image/apple_logo.svg' alt='apple' />
-        <span className='mt-1'>{t('Sign in with Apple')}</span>
-      </button>
       <div className='mb-4 flex justify-center space-x-4 text-xs'>
         <a
           href='https://giv.link/privacy-policy/'

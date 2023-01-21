@@ -18,8 +18,8 @@ import ChatList from 'pages/ChatList'
 import ChatDetail from 'pages/ChatDetail'
 import RequestList from 'pages/RequestList'
 
+import LoginLegacy from 'pages/LoginLegacy'
 import Login from 'pages/Login'
-import LoginMail from 'pages/LoginMail'
 import Invite from 'pages/Invite'
 
 import Footer from 'components/Footer'
@@ -47,8 +47,8 @@ const App = () => {
 
               <Router className='h-screen w-screen' primary={false}>
                 {/* Setup */}
+                <LoginLegacy path='login-legacy' />
                 <Login path='login' />
-                <LoginMail path='login-mail' />
                 <Invite path='invite' />
 
                 <RecomendationList path='recommendations' />
