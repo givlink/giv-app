@@ -168,8 +168,8 @@ const login = prov => {
     }
   }
 
-  return firebase.auth().signInWithRedirect(provider)
-  // return firebase.auth().signInWithPopup(provider)
+  // return firebase.auth().signInWithRedirect(provider)
+  return firebase.auth().signInWithPopup(provider)
 }
 const loginWithEmail = async (email, password) => {
   const user = await firebase.auth().signInWithEmailAndPassword(email, password)
