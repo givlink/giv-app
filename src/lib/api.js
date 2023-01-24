@@ -5,7 +5,7 @@ import axios from 'axios'
 import qs from 'query-string'
 import { v4 } from 'uuid'
 
-const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
+const SHOULD_REAUTH = false //process.env.NODE_ENV !== 'development'
 
 export const allowContent = (contentId, contentType = 'user') => {
   if (!contentId || !contentType) return true
@@ -19,10 +19,14 @@ if (process.env.NODE_ENV === 'development' && true) {
   API_URL = 'http://localhost:3000/api'
 }
 export const _apiClient = async (path, opts = {}) => {
-  const { currentUser } = firebase.auth()
-  if (currentUser) {
+  let currentUser = firebase.auth().currentUser
+  if (!currentUser) {
     await utils.sleep(2000) //sleep to maybe get the user in the meantime
+    currentUser = firebase.auth().currentUser
   }
+
+  if (!currentUser) return
+
   const token = await currentUser?.getIdToken()
 
   const payload = { url: `${API_URL}${path}`, ...opts }

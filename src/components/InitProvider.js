@@ -25,7 +25,6 @@ const InitProvider = props => {
 
     const run = async () => {
       try {
-        await sleep(3000) //initial delay to make sure we have the auth
         const isActivatedUser = await api.isActivatedUser()
         if (!isActivatedUser) {
           navigate('/invite')
@@ -66,10 +65,6 @@ const InitProvider = props => {
     }
 
     run()
-
-    return () => {
-      dispatch({ type: 'app/exit' }) //for resetting all listeners
-    }
   }, [dispatch, user, loading, setError, loc])
 
   if (error) throw error

@@ -15,7 +15,9 @@ const actions = {
     }
   },
   logout: () => {
-    return async () => {
+    return async dispatch => {
+      dispatch({ type: 'auth/init' })
+      dispatch({ type: 'app/exit' })
       await api.logout()
     }
   },

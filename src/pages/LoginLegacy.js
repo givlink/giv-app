@@ -1,12 +1,20 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-import { Link } from '@reach/router'
+import { useSelector, useDispatch } from 'react-redux'
+import { Link, navigate } from '@reach/router'
 import { useTranslation } from 'react-i18next'
 import actions from 'state/actions'
 
 export default function Login() {
   const { t } = useTranslation()
+  const state = useSelector(s => ({
+    authUser: s.authUser,
+  }))
   const dispatch = useDispatch()
+  React.useEffect(() => {
+    if (state.authUser) {
+      navigate('/')
+    }
+  }, [state])
 
   const handleLogin = provider => dispatch(actions.login(provider))
 
