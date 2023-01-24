@@ -23,6 +23,10 @@ const translations = {
   'Giv Prefs send': '贈るgivの方法',
   'Giv Prefs receive': '受けるgivの方法',
   'Login': 'ログイン',
+  'Back To Login': 'ログインページへ',
+  'Reset Password': 'パスワードリセット',
+  'Send Reset Password': 'パスワードリセットメール送信',
+  'Reset Password Email Sent': 'パスワードリセットリンク送りました。メールボックスを確認してください。',
   'Privacy Policy': 'プライバシーポリシー',
   'Sign in with Apple': 'Appleサインイン',
 

@@ -20,6 +20,7 @@ import RequestList from 'pages/RequestList'
 
 import LoginLegacy from 'pages/LoginLegacy'
 import Login from 'pages/Login'
+import ResetPassword from 'pages/ResetPassword'
 import Invite from 'pages/Invite'
 
 import Footer from 'components/Footer'
@@ -49,6 +50,7 @@ const App = () => {
                 {/* Setup */}
                 <LoginLegacy path='login-legacy' />
                 <Login path='login' />
+                <ResetPassword path='reset' />
                 <Invite path='invite' />
 
                 <RecomendationList path='recommendations' />

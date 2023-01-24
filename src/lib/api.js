@@ -48,7 +48,6 @@ export const _apiClient = async (path, opts = {}) => {
     }
     throw err
   }
-  // console.log(`${path}`, data)
   return data
 }
 
@@ -180,6 +179,9 @@ const login = prov => {
 const loginWithEmail = async (email, password) => {
   const user = await firebase.auth().signInWithEmailAndPassword(email, password)
   return user
+}
+const resetPassword = async email => {
+  return _apiClient('/reset-password', { method: 'POST', data: { email } })
 }
 
 const onRedirectResult = () => {
@@ -707,6 +709,7 @@ const api = {
 
   login,
   loginWithEmail,
+  resetPassword,
   logout,
   onRedirectResult,
   listComments,

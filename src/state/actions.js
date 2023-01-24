@@ -240,6 +240,9 @@ const actions = {
       await utils.sleep(3000) //Hack to wait until we have activeGroup
 
       const state = getState()
+
+      if (!state.authUser || !state.activeGroup) return
+
       const [users, offset] = await api.listUsers({
         activeGroup: state.activeGroup,
       })

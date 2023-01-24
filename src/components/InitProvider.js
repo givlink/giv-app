@@ -17,7 +17,11 @@ const InitProvider = props => {
     if (loading || !user) return
 
     //Don't init on invite or login pages
-    if (loc.pathname === '/login' || loc.pathname === '/login-legacy') {
+    if (
+      loc.pathname === '/login' ||
+      loc.pathname === '/login-legacy' ||
+      loc.pathname === '/reset'
+    ) {
       return
     }
 
