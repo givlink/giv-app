@@ -25,7 +25,7 @@ const InitProvider = props => {
 
     const run = async () => {
       try {
-        await sleep(1000) //initial delay to make sure we have the auth
+        await sleep(3000) //initial delay to make sure we have the auth
         const isActivatedUser = await api.isActivatedUser()
         if (!isActivatedUser) {
           navigate('/invite')

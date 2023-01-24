@@ -1,15 +1,25 @@
 import React from 'react'
 import { Link, navigate } from '@reach/router'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import Spinner from 'components/Spinner'
 import api from 'lib/api'
 
 export default function LoginMail() {
   const { t } = useTranslation()
+  const state = useSelector(s => ({
+    authUser: s.authUser,
+  }))
   const [email, setEmail] = React.useState('')
   const [pwd, setPwd] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState(null)
+
+  React.useEffect(() => {
+    if (state.authUser) {
+      navigate('/')
+    }
+  }, [state])
 
   const handleLogin = async () => {
     setLoading(true)
