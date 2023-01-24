@@ -6,8 +6,6 @@ import * as Sentry from '@sentry/browser'
 import actions from 'state/actions'
 import api from 'lib/api'
 
-const sleep = ms => new Promise(r => setTimeout(r, ms))
-
 //Loads up all initial resources
 const InitProvider = props => {
   const loc = useLocation()
