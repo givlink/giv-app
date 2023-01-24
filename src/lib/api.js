@@ -19,15 +19,17 @@ if (process.env.NODE_ENV === 'development' && true) {
   API_URL = 'http://localhost:3000/api'
 }
 export const _apiClient = async (path, opts = {}) => {
-  let currentUser = firebase.auth().currentUser
-  if (!currentUser) {
-    await utils.sleep(2000) //sleep to maybe get the user in the meantime
-    currentUser = firebase.auth().currentUser
+  let token = localStorage.getItem('idToken')
+
+  if (!token) {
+    let currentUser = firebase.auth().currentUser
+    if (!currentUser) {
+      await utils.sleep(2000) //sleep to maybe get the user in the meantime
+      currentUser = firebase.auth().currentUser
+    }
+
+    token = await currentUser?.getIdToken()
   }
-
-  if (!currentUser) return
-
-  const token = await currentUser?.getIdToken()
 
   const payload = { url: `${API_URL}${path}`, ...opts }
   if (!payload.headers) payload.headers = {}
@@ -537,7 +539,10 @@ export const watchNotifications = cb => {
   return () => clearInterval(listener)
 }
 
-export const logout = () => firebase.auth().signOut()
+export const logout = () => {
+  localStorage.setItem('idToken', null)
+  firebase.auth().signOut()
+}
 
 export const createGivRequest = (senderId, receiverId, type, message) =>
   _apiClient(`/requests`, {

@@ -10,6 +10,7 @@ export const useInitAuth = () => {
   React.useEffect(() => {
     const unsub = firebase.auth().onAuthStateChanged(user => {
       if (user) {
+        user.getIdToken().then(t => localStorage.setItem('idToken', t))
         Sentry.setUser({
           email: user.email,
           id: user.uid,
