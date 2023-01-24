@@ -5,7 +5,7 @@ import axios from 'axios'
 import qs from 'query-string'
 import { v4 } from 'uuid'
 
-const SHOULD_REAUTH = false //process.env.NODE_ENV !== 'development'
+const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
 
 export const allowContent = (contentId, contentType = 'user') => {
   if (!contentId || !contentType) return true
