@@ -8,6 +8,18 @@ export const useInitAuth = () => {
   const dispatch = useDispatch()
 
   React.useEffect(() => {
+    firebase
+      .auth()
+      .getRedirectResult()
+      .then(result => {
+        console.log('got result')
+        console.log(result)
+      })
+      .catch(err => {
+        console.log('got error')
+        console.log(err)
+        throw err
+      })
     const unsub = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         user.getIdToken().then(t => localStorage.setItem('idToken', t))

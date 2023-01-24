@@ -541,7 +541,7 @@ export const watchNotifications = cb => {
 
 export const logout = () => {
   localStorage.setItem('idToken', null)
-  firebase.auth().signOut()
+  return firebase.auth().signOut()
 }
 
 export const createGivRequest = (senderId, receiverId, type, message) =>

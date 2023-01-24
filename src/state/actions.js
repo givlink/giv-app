@@ -4,6 +4,7 @@ import utils from 'lib/utils'
 const actions = {
   login: provider => {
     return async dispatch => {
+      await api.logout()
       dispatch({ type: 'auth/init' })
       await api.login(provider)
     }
