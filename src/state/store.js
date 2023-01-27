@@ -183,6 +183,9 @@ const reducer = (state = initialState, action) => {
         appListeners: [...state.appListeners, ...action.listeners],
       }
     case 'app/exit':
+      //remove idtoken so we get a fresh one later
+      localStorage.setItem('idToken', null)
+
       //assuming that we just have to call each
       try {
         console.log('cleaning up app listeners')

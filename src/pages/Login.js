@@ -81,7 +81,7 @@ export default function LoginMail() {
 
       <div className='flex-1'></div>
       <div className='mb-4 flex justify-center space-x-4 text-xs'>
-        <Link to='/reset' className='underline hidden'>
+        <Link to='/reset' className='underline'>
           {t('Reset Password')}
         </Link>
         <a

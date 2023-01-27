@@ -24,7 +24,7 @@ export const _apiClient = async (path, opts = {}) => {
   if (!token) {
     let currentUser = firebase.auth().currentUser
     if (!currentUser) {
-      await utils.sleep(2000) //sleep to maybe get the user in the meantime
+      await utils.sleep(4000) //sleep to maybe get the user in the meantime
       currentUser = firebase.auth().currentUser
     }
 
