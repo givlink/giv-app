@@ -19,17 +19,13 @@ if (process.env.NODE_ENV === 'development' && true) {
   API_URL = 'http://localhost:3000/api'
 }
 export const _apiClient = async (path, opts = {}) => {
-  let token = localStorage.getItem('idToken')
-
-  if (!token) {
-    let currentUser = firebase.auth().currentUser
-    if (!currentUser) {
-      await utils.sleep(4000) //sleep to maybe get the user in the meantime
-      currentUser = firebase.auth().currentUser
-    }
-
-    token = await currentUser?.getIdToken()
+  let currentUser = firebase.auth().currentUser
+  if (!currentUser) {
+    await utils.sleep(4000) //sleep to maybe get the user in the meantime
+    currentUser = firebase.auth().currentUser
   }
+
+  const token = await currentUser?.getIdToken()
 
   const payload = { url: `${API_URL}${path}`, ...opts }
   if (!payload.headers) payload.headers = {}
