@@ -2,7 +2,7 @@ import moment from 'moment'
 import Err from './err'
 import { format, formatDistance } from 'date-fns'
 
-const CDN_URL = 'https://media2.giv.link'
+const CDN_URL = 'https://cdn.giv.link'
 
 const utils = {
   checkModerators: (id, allModerators = {}) => {
