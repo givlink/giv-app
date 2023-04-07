@@ -25,10 +25,8 @@ export default function Header() {
     }
   }, [state.userSearchFilter])
 
-  const handleSubmit = e => {
-    if (e.key !== 'Enter') {
-      return
-    }
+  const handleSubmitForm = e => {
+    e.preventDefault()
 
     dispatch(
       actions.updateSearchFilter({
@@ -36,6 +34,13 @@ export default function Header() {
         value: value === '' ? null : value,
       }),
     )
+  }
+  const handleSubmit = e => {
+    if (e.key !== 'Enter') {
+      return
+    }
+
+    handleSubmitForm(e)
   }
   const handleChange = e => setValue(e.target.value)
   const handleReset = () => {
@@ -53,7 +58,10 @@ export default function Header() {
             alt='Giv'
             className='object-cover'
           />
-          <div className='relative ml-2 flex-1 md:flex-none flex justify-end mt-1'>
+          <form
+            onSubmit={handleSubmitForm}
+            className='relative ml-2 flex-1 md:flex-none flex justify-end mt-1'
+          >
             <SearchIcon className='absolute left-0 mt-2.5 ml-3 h-5 w-5 text-gray-500' />
             <input
               disabled={state.usersLoading}
@@ -66,13 +74,14 @@ export default function Header() {
             />
             {value !== '' && (
               <button
+                type='button'
                 onClick={handleReset}
                 className='absolute right-0 mt-2.5 mr-3 h-5 w-5'
               >
                 <XIcon className='h-5 w-5 text-red-500' />
               </button>
             )}
-          </div>
+          </form>
         </div>
       </header>
     </div>
