@@ -16,23 +16,17 @@ const EditModal = ({ user, editing, setEditing }) => {
   const closeModal = () => {
     if (sending) return
     setEditing(false)
+    setNewImage(null)
     dispatch({ type: 'edit_user/reset' })
   }
 
-  const getSrc = () => {
-    return newImage
-      ? URL.createObjectURL(newImage)
-      : utils.parseUrl(user.photoURL)
+  const getSrc = img => {
+    return img ? URL.createObjectURL(img) : utils.parseUrl(user.photoURL)
   }
-
-  React.useEffect(() => {
-    setNewImage(null)
-  }, [editing])
 
   const handleChange = e => {
     if (!e.target.files.length) return
     const file = e.target.files[0]
-    // const newImageUrl = URL.createObjectURL(file);
     setNewImage(file)
   }
   const onSave = async () => {
@@ -43,6 +37,7 @@ const EditModal = ({ user, editing, setEditing }) => {
     const newUser = await api.getUserProfile(user.id, false)
     dispatch({ type: 'edit_user/new_data', user: newUser })
     setSending(false)
+    setNewImage(null)
     closeModal()
   }
 
@@ -108,7 +103,7 @@ const EditModal = ({ user, editing, setEditing }) => {
                   </div>
                   <div className='py-3 px-1 mb-10'>
                     <img
-                      src={getSrc()}
+                      src={getSrc(newImage)}
                       className='rounded shadow md:h-96 md:mx-auto'
                       alt=''
                     />

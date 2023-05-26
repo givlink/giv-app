@@ -107,7 +107,7 @@ export default function UserDetail(props) {
   usePreserveScroll('userDetail', true)
 
   React.useEffect(() => {
-    if (state.user && state.user.interests && state.user.interests.length) {
+    if (state.user) {
       return
     }
     //call api and update user list
