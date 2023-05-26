@@ -3,9 +3,8 @@ import HeaderBack from 'components/HeaderBack'
 import Spinner from 'components/Spinner'
 import React from 'react'
 import { useLocation } from '@reach/router'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import utils from 'lib/utils'
-import api from 'lib/api'
 import SkillTagList from 'components/SkillTagList'
 import UserInterests from 'components/UserInterests'
 import UserGivPrefs from 'components/UserGivPrefs'
@@ -20,6 +19,7 @@ import EditUser from 'components/EditUser'
 import usePreserveScroll from 'hooks/scroll'
 import ReportActions from 'components/ReportActions'
 import EmptyUser from 'components/EmptyUser'
+import useApi from 'hooks/use-api'
 
 const safeJsonStringify = require('safe-json-stringify')
 
@@ -86,12 +86,10 @@ const Debug = () => {
 }
 
 export default function UserDetail(props) {
+  const { data: user, loading } = useApi(`/users/${props.id}`)
   const { t, i18n } = useTranslation()
   const loc = useLocation()
-  const dispatch = useDispatch()
-  const [loading, setLoading] = React.useState(true)
   const state = useSelector(s => ({
-    user: s.userById[props.id],
     currUser: s.user,
     areaMap: s.areas,
   }))
@@ -104,23 +102,11 @@ export default function UserDetail(props) {
     return area[tagField]
   }
 
+  //I don't think we need this anymore
   usePreserveScroll('userDetail', true)
-
-  React.useEffect(() => {
-    if (state.user) {
-      return
-    }
-    //call api and update user list
-    setLoading(true)
-    api.getUserProfile(props.id).then(user => {
-      dispatch({ type: 'users/data_single', user })
-      setLoading(false)
-    })
-  }, [props.id, state.user, dispatch])
 
   const isMyPage = loc.pathname === `/users/${state.currUser?.id}`
   const isAdmin = props.id === ADMIN_ID
-  const user = state.user
 
   return (
     <div className='bg-white h-full'>
@@ -137,7 +123,7 @@ export default function UserDetail(props) {
         </>
       )}
       <div className='pb-24 max-w-2xl mx-auto'>
-        {!user && state.userSingleLoading ? (
+        {loading ? (
           <div className='pt-2'>
             <Spinner />
           </div>
@@ -178,10 +164,13 @@ export default function UserDetail(props) {
             </span>
             <div className='px-4 pt-2'>
               <GivList
+                query={{
+                  giverId: user.id,
+                  limit: 4,
+                }}
+                userName={user?.name}
                 total={user.totalGivsGiven}
-                userId={user.id}
                 type='receive'
-                limit={4}
               />
             </div>
             <span className='block mt-4 mb-1 px-4 py-2 border-b font-medium'>
@@ -189,10 +178,13 @@ export default function UserDetail(props) {
             </span>
             <div className='px-4 pt-2'>
               <GivList
+                query={{
+                  authorId: user.id,
+                  limit: 4,
+                }}
                 total={user.totalGivsReceived}
-                userId={user.id}
+                userName={user?.name}
                 type='send'
-                limit={4}
               />
             </div>
 

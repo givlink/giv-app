@@ -1,11 +1,12 @@
 import React from 'react'
-import api from 'lib/api'
 import utils from 'lib/utils'
 import { Link } from '@reach/router'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/Spinner'
 import SafeImage from 'components/SafeImage'
 import { ChevronRightIcon } from '@heroicons/react/outline'
+import useApi from 'hooks/use-api'
+import qs from 'query-string'
 
 const GivCard = ({ post, type = 'receive' }) => {
   let firstImage
@@ -51,42 +52,23 @@ const EmptyGivList = () => {
 }
 
 const GivList = ({
+  query = { limit: 4 },
   total = 0,
-  userId,
   type = 'receive',
   showViewMore = true,
-  limit,
+  userName = '',
 }) => {
   const { t } = useTranslation()
-  const [givs, setGivs] = React.useState([])
-  const [loading, setLoading] = React.useState(true)
+  const { data: givs, loading } = useApi(`/posts`, query)
 
-  React.useEffect(() => {
-    if (!userId) return
-    const run = async () => {
-      //@Todo err handling
-      //@Todo pagination??
-      let givs
-      if (type === 'receive') {
-        givs = await api.getUserReceivedPosts(userId, limit)
-      } else {
-        givs = await api.getUserPosts(userId, limit)
-      }
-      try {
-        givs.sort((a, b) => {
-          return a.createdAt > b.createdAt ? 1 : -1
-        })
-      } catch (err) {}
-      setGivs(givs)
-      setLoading(false)
-    }
-    run()
-  }, [userId, type, limit])
-
-  if (!userId) return <EmptyGivList />
   if (loading) return <Spinner />
   if (!givs.length) return <EmptyGivList />
 
+  givs.sort((a, b) => {
+    return a.createdAt > b.createdAt ? 1 : -1
+  })
+
+  const morePage = `posts?` + qs.stringify(query)
   return (
     <div>
       <ul className='grid grid-cols-2 gap-x-3 gap-y-5'>
@@ -98,10 +80,11 @@ const GivList = ({
       </ul>
 
       <div className='max-w-2xl md:mx-auto flex items-center justify-end mx-2'>
-        {showViewMore && (
+        {showViewMore && givs?.length >= query?.limit && (
           <Link
-            to={`/users/${userId}/posts?type=${type}&count=${total}`}
+            to={morePage}
             className='flex items-center justify-end px-6 w-full md:w-auto border border-gray-400 shadow rounded py-3 my-3'
+            state={{ userName, count: total, type }}
           >
             <span className='mr-2 mb-px'>{t('Load More')}</span>
             <ChevronRightIcon className='h-5 w-5' />
