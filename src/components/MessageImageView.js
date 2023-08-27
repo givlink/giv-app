@@ -1,7 +1,6 @@
 import React from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon, DownloadIcon } from '@heroicons/react/outline'
-import utils from 'lib/utils'
 
 const ImageModal = ({ open, setOpen, src }) => {
   const cancelButtonRef = React.useRef(null)
@@ -27,13 +26,13 @@ const ImageModal = ({ open, setOpen, src }) => {
               style={{ maxWidth: '95vw', maxHeight: '90vh' }}
             >
               <img
-                src={utils.parseUrl(src)}
+                src={src}
                 alt=''
                 className='rounded overflow-hidden mx-auto mt-6'
               />
               <div className='w-full max-w-md flex items-center justify-between'>
                 <a
-                  href={utils.parseUrl(src)}
+                  href={src}
                   rel='noreferrer'
                   target='_blank'
                   className='mt-2 bg-white rounded-full p-2'

@@ -196,7 +196,7 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
               } flex-col items-end space-y-1 pt-1 pb-2 px-2.5 bg-gray-50`}
             >
               {(message?.attachments).map((m, idx) => (
-                <MessageImageView key={idx} src={m} />
+                <MessageImageView key={idx} src={utils.parseUrl(m)} />
               ))}
             </div>
           )}
