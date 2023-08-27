@@ -467,19 +467,41 @@ export const watchChatMessages = (groupId, cb) => {
 
   return () => clearInterval(listener)
 }
-export const watchChatGroups = cb => {
-  const run = () => {
-    _apiClient(`/chat-groups`, { timeout: 4000 })
-      .then(groups => {
-        if (groups) cb(groups)
-      })
-      .catch(() => {})
+
+//looks into localstorage and partially fetches the new groups from API
+export const watchChatGroups = (since, cb) => {
+  const run = async () => {
+    const cgCacheKey = 'chat_groups:cache' //todo use indexeddb instead
+
+    let cachedGroups = JSON.parse(localStorage.getItem(cgCacheKey) || '{}')
+
+    let url = `/chat-groups`
+    if (since) {
+      url += `?since=${since}`
+    }
+
+    const resp = await _apiClient(url, { timeout: 4000 })
+    if (since) {
+      //meaning partial fetch, update cache and return full list
+      cachedGroups = {
+        ...cachedGroups,
+        ...resp?.groups,
+      }
+    } else {
+      //meaning first time fetch so replace existing cache with new data
+      cachedGroups = resp?.groups
+    }
+
+    localStorage.setItem(cgCacheKey, JSON.stringify(cachedGroups))
+    cb(cachedGroups, resp?.timestamp)
   }
   const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
 
   run()
 
-  return () => clearInterval(listener)
+  return () => {
+    clearInterval(listener)
+  }
 }
 
 export const watchNotifications = cb => {

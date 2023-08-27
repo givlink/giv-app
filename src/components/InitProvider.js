@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAuth } from 'hooks/auth'
-import { navigate, useLocation } from '@reach/router'
+import { navigate } from '@reach/router'
 import { useDispatch } from 'react-redux'
 import * as Sentry from '@sentry/browser'
 import actions from 'state/actions'
@@ -8,7 +8,6 @@ import api from 'lib/api'
 
 //Loads up all initial resources
 const InitProvider = props => {
-  const loc = useLocation()
   const { user, loading } = useAuth()
   const [error, setError] = React.useState(null)
   const dispatch = useDispatch()
@@ -18,15 +17,16 @@ const InitProvider = props => {
 
     //Don't init on invite or login pages
     if (
-      loc.pathname === '/login' ||
-      loc.pathname === '/login-legacy' ||
-      loc.pathname === '/reset'
+      window.location.pathname === '/login' ||
+      window.location.pathname === '/login-legacy' ||
+      window.location.pathname === '/reset'
     ) {
       return
     }
 
     const run = async () => {
       try {
+        console.log('run loop')
         const isActivatedUser = await api.isActivatedUser()
         if (!isActivatedUser) {
           navigate('/invite')
@@ -67,7 +67,7 @@ const InitProvider = props => {
     }
 
     run()
-  }, [dispatch, user, loading, setError, loc])
+  }, [dispatch, user, loading, setError])
 
   if (error) throw error
 

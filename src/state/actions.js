@@ -188,8 +188,25 @@ const actions = {
   },
   watchChatGroups: () => {
     return async dispatch => {
+      const lastSeenKey = 'chat_groups:lastSeen'
+      let lastSeen = localStorage.getItem(lastSeenKey)
+
+      //hacky way to force refetch every hour
+      if (lastSeen) {
+        const d1 = new Date()
+        const d2 = new Date(lastSeen)
+        const diffMin = (d1 - d2) / 60e3
+
+        if (diffMin > 60) {
+          lastSeen = null
+        }
+      }
+
       dispatch({ type: 'chat_groups/loading' })
-      const listener = api.watchChatGroups(groups => {
+
+      const listener = api.watchChatGroups(lastSeen, (groups, timestamp) => {
+        localStorage.setItem(lastSeenKey, timestamp || null)
+
         const filtered = {}
         Object.entries(groups).forEach(([key, group]) => {
           let allow = true
