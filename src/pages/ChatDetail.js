@@ -3,11 +3,13 @@ import Footer from 'components/FooterChatDetail'
 import MessageRowItem from 'components/MessageRowItem'
 import Spinner from 'components/Spinner'
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import api from 'lib/api'
 import utils from 'lib/utils'
-// import { db } from '../lib/db'
+import { db } from '../lib/localdb'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { useTranslation } from 'react-i18next'
+
 const makeGroupName = async (group, user) => {
   if (group) {
     const memKeys = Object.keys(group?.members || {})
@@ -30,24 +32,33 @@ const makeGroupName = async (group, user) => {
 export default function ChatDetail({ id }) {
   const [groupName, setGroupName] = React.useState('')
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const ref = React.useRef(null)
+
+  const group = useLiveQuery(async () => {
+    return await db.chatGroups.where('id').equals(parseInt(id)).first()
+  })
+
+  const messages = useLiveQuery(async () => {
+    const msgsMap = {}
+    let msgs = []
+    const r = await db.messages
+      .where('chatGroupId')
+      .equals(parseInt(id))
+      .sortBy('createdAt')
+    for (const item of r) {
+      item.sender = await api.getCachedProfile(item.senderId)
+      msgsMap[item.id] = item
+      if (item.inReplyTo) {
+        item.reply = msgsMap[item.inReplyTo]
+      }
+      msgs.push(item)
+    }
+    return msgs
+  }, [id])
+
   const state = useSelector(s => {
-    //sort messages just in case
-    let messages = s.chatMessages[id] || []
-    messages.sort((a, b) => {
-      try {
-        return a.createdAt < b.createdAt
-          ? -1
-          : a.createdAt > b.createdAt
-          ? 1
-          : 0
-      } catch (err) {}
-      return 0
-    })
     return {
       chatMessagesLoading: s.chatMessagesLoading,
-      messages,
       group: s.chatGroups[id] || null,
       user: s.user || {},
     }
@@ -58,20 +69,18 @@ export default function ChatDetail({ id }) {
     state.group?.moderators,
   )
   React.useEffect(() => {
-    setTimeout(() => {
-      ref.current?.scrollIntoView()
-    }, 500)
-  }, [state.messages?.length, id])
+    ref.current?.scrollIntoView()
+  }, [messages?.length, id])
 
   React.useEffect(() => {
     //Update last read item
-    if (state.messages && state.messages.length) {
-      const lastItem = state.messages[state.messages.length - 1]
+    if (messages && messages.length) {
+      const lastItem = messages[messages.length - 1]
       localStorage.setItem(`lastRead-${id}`, lastItem.id)
 
       let lastOtherMessage
-      for (let i = state.messages.length - 1; i >= 0; i--) {
-        const msg = state.messages[i]
+      for (let i = messages.length - 1; i >= 0; i--) {
+        const msg = messages[i]
         if (msg.senderId !== state.user?.id) {
           lastOtherMessage = msg
           break
@@ -81,27 +90,17 @@ export default function ChatDetail({ id }) {
         api.updateReadReceipts(id, lastOtherMessage.id)
       }
     }
-  }, [state.messages, id, state?.user])
+  }, [messages, id, state?.user])
+
+  React.useEffect(() => api.watchChatMessages(id), [id])
 
   React.useEffect(() => {
-    if (!id) return
-
-    //@Todo err handling
-    // dispatch({ type: 'chat_messages/reset', chatGroupId: id })
-    const listener = api.watchChatMessages(id, async messages => {
-      // await db.messages.bulkPut(messages)
-      dispatch({ type: 'chat_messages/data', chatGroupId: id, messages })
-    })
-    return listener
-  }, [dispatch, id])
-
-  React.useEffect(() => {
-    if (!state.group) return
+    if (!group) return
     const run = async () => {
-      makeGroupName(state.group, state.user).then(n => setGroupName(n))
+      makeGroupName(group, state.user).then(n => setGroupName(n))
     }
     run()
-  }, [state.group, state.user])
+  }, [group, state.user])
 
   return (
     <div className='h-screen flex flex-col bg-white max-w-2xl md:mx-auto'>
@@ -123,20 +122,20 @@ export default function ChatDetail({ id }) {
           id='chats'
           className='w-full bg-gray-50 md:max-w-2xl md:mx-auto overflow-auto pt-4 flex-1 h-full bg-white px-2'
         >
-          {state.messages &&
-            state.messages.map((m, idx) => (
+          {messages &&
+            messages.map((m, idx) => (
               <li id={`msg-${m.id}`} key={m.id}>
                 <MessageRowItem
-                  ref={idx === state.messages.length - 1 ? ref : null}
+                  ref={idx === messages.length - 1 ? ref : null}
                   group={state.group}
                   message={m}
-                  prevMessage={idx === 0 ? null : state.messages[idx - 1]}
+                  prevMessage={idx === 0 ? null : messages[idx - 1]}
                   user={state.user}
                 />
               </li>
             ))}
 
-          {state.messages?.length === 0 && (
+          {messages?.length === 0 && (
             <span className='text-xs h-full flex justify-center items-end'>
               {t('Start chatting')}...
             </span>

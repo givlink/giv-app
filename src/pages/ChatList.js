@@ -2,25 +2,10 @@ import HeaderChatList from 'components/HeaderChatList'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import ChatGroupCard from 'components/ChatGroupCard'
-import Spinner from 'components/Spinner'
-import { useTranslation } from 'react-i18next'
 import usePreserveScroll from 'hooks/scroll'
+import { db } from '../lib/localdb'
+import { useLiveQuery } from 'dexie-react-hooks'
 
-const ChatComingSoon = () => {
-  const { t } = useTranslation()
-  return (
-    <div className='flex flex-col items-center justify-center pt-20'>
-      <img
-        className='w-24 h-24 animate-wobble-slow opacity-50'
-        src='/icons/tama_def_sleepy.png'
-        alt=''
-      />
-      <span className='text-sm text-gray-500 pt-2'>
-        {t('Chats Coming Soon')}
-      </span>
-    </div>
-  )
-}
 
 export default function ChatList() {
   const state = useSelector(s => ({
@@ -29,15 +14,21 @@ export default function ChatList() {
     chatGroups: s.chatGroups,
     requestsPendingCount: s.requestsPendingCount,
     chatsUnreadCount: s.chatsUnreadCount,
-    loading: s.chatsLoading,
   }))
   usePreserveScroll('chatList')
 
-  let sortedChatGroups = Object.values(state.chatGroups || {})
+  const chatGroups = useLiveQuery(async () => {
+    const resp = await db.chatGroups.reverse().sortBy('updatedAt')
+    return resp || []
+  }, [])
+
+  let sortedChatGroups = chatGroups ? [...chatGroups] : []
   const emptyChats = sortedChatGroups.filter(i => !i.lastMessage)
   const nonEmptyChats = sortedChatGroups.filter(i => i.lastMessage)
   emptyChats.sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1))
-  nonEmptyChats.sort((a, b) => (a.lastMessage?.createdAt > b.lastMessage?.createdAt ? -1 : 1))
+  nonEmptyChats.sort((a, b) =>
+    a.lastMessage?.createdAt > b.lastMessage?.createdAt ? -1 : 1,
+  )
   sortedChatGroups = [...emptyChats, ...nonEmptyChats]
 
   return (
@@ -47,23 +38,17 @@ export default function ChatList() {
         chatsCount={state.chatsUnreadCount}
         requestsCount={state.requestsPendingCount}
       />
-      {state.loading ? (
-        <Spinner className='pt-2' />
-      ) : (
-        <>
-          {Object.keys(state.chatGroups).length === 0 && <ChatComingSoon />}
-
-          <ul className='space-y-2 overflow-auto md:max-w-2xl md:mx-auto'>
-            {sortedChatGroups.map(p => {
-              return (
-                <li key={p.id}>
-                  <ChatGroupCard currUser={state.currUser} group={p} />
-                </li>
-              )
-            })}
-          </ul>
-        </>
-      )}
+      <>
+        <ul className='space-y-2 overflow-auto md:max-w-2xl md:mx-auto'>
+          {sortedChatGroups.map(p => {
+            return (
+              <li key={p.id}>
+                <ChatGroupCard currUser={state.currUser} group={p} />
+              </li>
+            )
+          })}
+        </ul>
+      </>
     </div>
   )
 }

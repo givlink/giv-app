@@ -26,7 +26,6 @@ const InitProvider = props => {
 
     const run = async () => {
       try {
-        console.log('run loop')
         const isActivatedUser = await api.isActivatedUser()
         if (!isActivatedUser) {
           navigate('/invite')

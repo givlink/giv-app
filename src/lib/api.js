@@ -4,6 +4,7 @@ import Err from 'lib/err'
 import axios from 'axios'
 import qs from 'query-string'
 import { v4 } from 'uuid'
+import { db } from 'lib/localdb'
 
 const SHOULD_REAUTH = true //process.env.NODE_ENV !== 'development'
 
@@ -435,65 +436,52 @@ const getCachedProfile = async id => {
   }
 }
 
-export const watchChatMessages = (groupId, cb) => {
+export const watchChatMessages = groupId => {
   if (!groupId) {
     console.log('No group id in watchChatMessages')
     return null
   }
 
-  const run = () => {
-    _apiClient(`/chat-messages/${groupId}`, { timeout: 5000 }).then(async r => {
-      const msgsMap = {}
-      let msgs = []
-      if (!r) {
-        cb(msgs)
-        return
-      }
-      for (const item of r) {
-        item.sender = await getCachedProfile(item.senderId)
-        item.groupId = groupId
-        msgsMap[item.id] = item
-        if (item.inReplyTo) {
-          item.reply = msgsMap[item.inReplyTo]
+  const run = async () => {
+    const lastTimestamp = await db.lastFetchedMessagesAt
+      .where('groupId')
+      .equals(groupId)
+      .first()
+
+    let url = `/chat-messages/${groupId}`
+    if (lastTimestamp) {
+      url += `?since=${lastTimestamp.timestamp}`
+    }
+
+    _apiClient(url, { timeout: 5000 }).then(
+      async messages => {
+        await db.messages.bulkPut(messages)
+        if (messages.length) {
+          const lastMsg = messages.pop()
+          await db.lastFetchedMessagesAt.put({
+            groupId,
+            timestamp: lastMsg.createdAt,
+          })
         }
-        msgs.push(item)
-      }
-      cb(msgs)
-    })
+      },
+    )
   }
-  const listener = setInterval(run, DELAY_WATCH ? 100000 : 5000)
+  const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
 
   run()
 
-  return () => clearInterval(listener)
+  return () => {
+    clearInterval(listener)
+  }
 }
 
 //looks into localstorage and partially fetches the new groups from API
-export const watchChatGroups = (since, cb) => {
+export const watchChatGroups = () => {
   const run = async () => {
-    const cgCacheKey = 'chat_groups:cache' //todo use indexeddb instead
-
-    let cachedGroups = JSON.parse(localStorage.getItem(cgCacheKey) || '{}')
-
     let url = `/chat-groups`
-    if (since) {
-      url += `?since=${since}`
-    }
 
     const resp = await _apiClient(url, { timeout: 4000 })
-    if (since) {
-      //meaning partial fetch, update cache and return full list
-      cachedGroups = {
-        ...cachedGroups,
-        ...resp?.groups,
-      }
-    } else {
-      //meaning first time fetch so replace existing cache with new data
-      cachedGroups = resp?.groups
-    }
-
-    localStorage.setItem(cgCacheKey, JSON.stringify(cachedGroups))
-    cb(cachedGroups, resp?.timestamp)
+    db.chatGroups.bulkPut(resp)
   }
   const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
 
@@ -559,8 +547,9 @@ export const watchNotifications = cb => {
   return () => clearInterval(listener)
 }
 
-export const logout = () => {
+export const logout = async () => {
   localStorage.setItem('idToken', null)
+  await db.delete() //reset database on logout
   return firebase.auth().signOut()
 }
 

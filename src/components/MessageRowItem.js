@@ -90,7 +90,7 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
     <div className=''>
       {content && (
         <div
-          className={`relative group w-2/3 mb-2 rounded-lg ${
+          className={`relative group w-2/3 break-words mb-2 rounded-lg ${
             isSenderCurrent
               ? 'chat-mine relative ml-auto bg-giv-blue-dark text-white'
               : 'mr-auto bg-gray-100 text-gray-800'
