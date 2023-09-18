@@ -453,18 +453,16 @@ export const watchChatMessages = groupId => {
       url += `?since=${lastTimestamp.timestamp}`
     }
 
-    _apiClient(url, { timeout: 5000 }).then(
-      async messages => {
-        await db.messages.bulkPut(messages)
-        if (messages.length) {
-          const lastMsg = messages.pop()
-          await db.lastFetchedMessagesAt.put({
-            groupId,
-            timestamp: lastMsg.createdAt,
-          })
-        }
-      },
-    )
+    _apiClient(url, { timeout: 5000 }).then(async messages => {
+      await db.messages.bulkPut(messages)
+      if (messages.length) {
+        const lastMsg = messages.pop()
+        await db.lastFetchedMessagesAt.put({
+          groupId,
+          timestamp: lastMsg.createdAt,
+        })
+      }
+    })
   }
   const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
 
@@ -481,7 +479,14 @@ export const watchChatGroups = () => {
     let url = `/chat-groups`
 
     const resp = await _apiClient(url, { timeout: 4000 })
-    db.chatGroups.bulkPut(resp)
+
+    //find deleted items
+    const deletedItems = {}
+    await db.chatGroups.each(item => (deletedItems[item.id] = true))
+    resp.forEach(item => delete deletedItems[item.id])
+
+    await db.chatGroups.bulkPut(resp)
+    await db.chatGroups.bulkDelete(Object.keys(deletedItems))
   }
   const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
 

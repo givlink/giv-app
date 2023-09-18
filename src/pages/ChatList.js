@@ -6,12 +6,10 @@ import usePreserveScroll from 'hooks/scroll'
 import { db } from '../lib/localdb'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-
 export default function ChatList() {
   const state = useSelector(s => ({
     currUser: s.user,
     chats: s.chats,
-    chatGroups: s.chatGroups,
     requestsPendingCount: s.requestsPendingCount,
     chatsUnreadCount: s.chatsUnreadCount,
   }))
