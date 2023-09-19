@@ -3,38 +3,32 @@ import React from 'react'
 import { useInView } from 'react-intersection-observer'
 import { Dialog, Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import api from 'lib/api'
 import SafeImage from 'components/SafeImage'
 import utils from 'lib/utils'
+import { db } from '../lib/localdb'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 const ChatUsersModal = ({ open, setOpen, id }) => {
-  const group = useSelector(s => s.chatGroups[id])
-  const [chatUsers, setChatUsers] = React.useState([])
   const { t } = useTranslation()
   const cancelButtonRef = React.useRef(null)
   const closeModal = () => {
     setOpen(false)
   }
 
-  React.useEffect(() => {
-    if (!group) return
-    const run = async () => {
-      const members = []
-      for (const m of Object.keys(group.members || {})) {
-        const u = await api.getCachedProfile(m)
-        members.push(u)
-      }
-      for (const m of Object.keys(group.moderators || {})) {
-        const u = await api.getCachedProfile(m)
-        if (u) u.isModerator = true
-        members.push(u)
-      }
+  const members = useLiveQuery(async () => {
+    const group = await db.chatGroups.where('id').equals(parseInt(id)).first()
 
-      setChatUsers(members)
-    }
-    run()
-  }, [group])
+    if (!group) return []
+
+    const result = await Promise.all([
+      ...Object.keys(group.members).map(i => api.getCachedProfile(i)),
+      ...Object.keys(group.moderators).map(i =>
+        api.getCachedProfile(i).then(r => ({ ...r, isModerator: true })),
+      ),
+    ])
+    return result
+  }, [id])
 
   return (
     <Transition.Root show={open} as={React.Fragment}>
@@ -92,7 +86,7 @@ const ChatUsersModal = ({ open, setOpen, id }) => {
                 className='space-y-1 my-2 px-3 h-full overflow-auto'
                 style={{ maxHeight: '40vh' }}
               >
-                {chatUsers.map((i, idx) => (
+                {members?.map((i, idx) => (
                   <li key={idx}>
                     <div className='py-1 px-3 text-sm bg-gray-50 flex items-center gap-2 rounded'>
                       <span>
@@ -176,7 +170,12 @@ const BackHeader = React.forwardRef((props, ref) => {
       ref={ref}
       className='z-10 border-b border-gray-200 bg-white px-3 py-2 shadow'
     >
-      <ChatUsersModal id={props.id} open={showList} setOpen={setShowList} />
+      <ChatUsersModal
+        group={props.group}
+        id={props.id}
+        open={showList}
+        setOpen={setShowList}
+      />
       <div className='flex items-center max-w-2xl mx-auto'>
         <button
           onClick={() => window.history.go(-1)}
