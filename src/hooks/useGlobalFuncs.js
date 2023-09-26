@@ -13,4 +13,8 @@ export default function useGlobalFuncs() {
       dispatch({type:'app/token', token})
     }
   }, [dispatch])
+
+
+
+
 }

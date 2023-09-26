@@ -103,7 +103,6 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
                   dispatch({
                     type: 'chat/set-in-reply-to',
                     id: message?.id,
-                    groupId: group?.id,
                   })
                 }}
                 className='p-2 rounded hover:bg-gray-100'
@@ -180,14 +179,16 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
         </div>
       )}
       <div className={`flex flex-col ${isSenderCurrent ? 'items-end' : ''}`}>
-        {!isSameSender && !isSenderCurrent && message?.attachments?.length > 0 && (
-          <span
-            style={{ maxWidth: '280px' }}
-            className='text-gray-400 pl-2.5 text-xs'
-          >
-            {senderName}さんからファイルをもらいました。
-          </span>
-        )}
+        {!isSameSender &&
+          !isSenderCurrent &&
+          message?.attachments?.length > 0 && (
+            <span
+              style={{ maxWidth: '280px' }}
+              className='text-gray-400 pl-2.5 text-xs'
+            >
+              {senderName}さんからファイルをもらいました。
+            </span>
+          )}
         <div className={`flex ${isSenderCurrent ? 'justify-end' : ''}`}>
           {message?.attachments?.length > 0 && (
             <div

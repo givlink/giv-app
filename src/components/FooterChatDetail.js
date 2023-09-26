@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { CameraIcon, XIcon, ReplyIcon } from '@heroicons/react/outline'
 import api from 'lib/api'
 import utils from 'lib/utils'
+import { db } from 'lib/localdb'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { useDispatch, useSelector } from 'react-redux'
 
 export default function FooterChatDetail({ groupId }) {
@@ -16,30 +18,31 @@ export default function FooterChatDetail({ groupId }) {
     inReplyTo: s.inReplyTo,
   }))
   const { currUser, inReplyTo } = state
+
+  const inReplyMsg = useLiveQuery(async () => {
+    if (!inReplyTo) return null
+    return await db.messages.where({ id: inReplyTo }).first()
+  }, [state])
+
   const [sending, setSending] = React.useState(false)
   const sendMessage = async () => {
     if (!groupId) return //@Todo err
     setSending(true)
     try {
-      const resp = await api.sendMessage(groupId, msg, images, inReplyTo?.id)
-      const { id: lastMsgId, attachments } = resp
-      localStorage.setItem(`lastRead-${groupId}`, lastMsgId)
+      const resp = await api.sendMessage(groupId, msg, images, inReplyMsg?.id)
+      const { id: lastMsgId, attachments, msgData } = resp
       setMsg('')
       setImages(null)
-      dispatch({
-        type: 'chat_messages/data',
-        message: {
-          content: msg,
-          attachments,
-          id: lastMsgId,
-          groupId,
-          senderId: currUser?.id,
-          reply: inReplyTo,
-        },
+      await db.messages.put({
+        content: msg,
+        attachments,
+        id: lastMsgId,
+        groupId,
+        senderId: currUser?.id,
+        inReplyTo: inReplyMsg?.id,
+        ...msgData,
       })
-      if (inReplyTo) {
-        dispatch({ type: 'chat/set-in-reply-to' })
-      }
+      dispatch({ type: 'chat/set-in-reply-to', id: null })
       setSending(false)
       ref.current.focus()
     } catch (err) {
@@ -99,15 +102,15 @@ export default function FooterChatDetail({ groupId }) {
           })}
         </div>
       )}
-      {inReplyTo && (
+      {inReplyTo && inReplyMsg && (
         <div className='-ml-1.5 bg-giv-blue py-2 px-3 flex gap-2 items-center justify-between'>
           <div className='flex-1'>
             <div className='text-xs flex items-center gap-2 text-gray-100'>
               <ReplyIcon className='w-4 h-4' />
-              {utils.snipText(inReplyTo.sender?.name, 30)}
+              {utils.snipText(inReplyMsg.sender?.name, 30)}
             </div>
             <p className='text-xs text-white'>
-              {utils.snipText(inReplyTo.content, 100)}
+              {utils.snipText(inReplyMsg.content, 100)}
             </p>
           </div>
           <div className='flex-shrink-0'>
