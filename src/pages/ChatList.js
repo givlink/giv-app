@@ -5,13 +5,12 @@ import ChatGroupCard from 'components/ChatGroupCard'
 import usePreserveScroll from 'hooks/scroll'
 import { db } from '../lib/localdb'
 import { useLiveQuery } from 'dexie-react-hooks'
+import api from 'lib/api'
 
 export default function ChatList() {
   const state = useSelector(s => ({
     currUser: s.user,
-    chats: s.chats,
     requestsPendingCount: s.requestsPendingCount,
-    chatsUnreadCount: s.chatsUnreadCount,
   }))
   usePreserveScroll('chatList')
 
@@ -19,6 +18,10 @@ export default function ChatList() {
     const resp = await db.chatGroups.reverse().sortBy('updatedAt')
     return resp || []
   }, [])
+
+  const unreadChatGroupsCount = useLiveQuery(() =>
+    db.chatGroups.where('hasUnread').equals(1).count(),
+  )
 
   let sortedChatGroups = chatGroups ? [...chatGroups] : []
   const emptyChats = sortedChatGroups.filter(i => !i.lastMessage)
@@ -30,10 +33,10 @@ export default function ChatList() {
   sortedChatGroups = [...emptyChats, ...nonEmptyChats]
 
   return (
-    <div className='pb-20 overflow-hidden'>
+    <div className='pb-36 overflow-hidden'>
       <HeaderChatList
         active='chats'
-        chatsCount={state.chatsUnreadCount}
+        chatsCount={unreadChatGroupsCount}
         requestsCount={state.requestsPendingCount}
       />
       <>
@@ -46,6 +49,18 @@ export default function ChatList() {
             )
           })}
         </ul>
+        <div className='flex items-center justify-center pt-4'>
+          <button
+            onClick={() => {
+              if (window.confirm('Confirm')) {
+                api.markAllAsRead()
+              }
+            }}
+            className='py-2 px-3 text-sm'
+          >
+            全て既読済み
+          </button>
+        </div>
       </>
     </div>
   )

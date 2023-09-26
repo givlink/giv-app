@@ -10,9 +10,6 @@ export default function ChatGroupCard({ group, currUser }) {
   const [groupName, setGroupName] = React.useState('Group')
   const [groupImg, setGroupImg] = React.useState()
 
-  //@Todo this a poor man's implementation of unread count
-  //once we have correct data in backend replace it.
-  const lastRead = localStorage.getItem(`lastRead-${group.id}`)
   const isModerator = utils.checkModerators(currUser?.id, group?.moderators)
 
   React.useEffect(() => {
@@ -36,12 +33,6 @@ export default function ChatGroupCard({ group, currUser }) {
     run()
   }, [group, currUser])
 
-  const hasUnread =
-    !!lastRead &&
-    !!group.lastMessage &&
-    lastRead !== group?.lastMessage?.id &&
-    group?.lastMessage?.senderId !== currUser?.id
-
   return (
     <Link to={`/chats/${group?.id}`}>
       <div className='pl-2 shadow-sm border-b grid grid-cols-10'>
@@ -61,7 +52,7 @@ export default function ChatGroupCard({ group, currUser }) {
               {utils.snipText(groupName, 30)}
             </h2>
             <div className='flex items-end justify-end'>
-              {hasUnread && (
+              {group?.hasUnread > 0 && (
                 <span className='animate-pulse text-xs bg-giv-blue text-white font-bold w-3 h-3 flex items-center justify-center rounded-full shadow-sm'></span>
               )}
             </div>

@@ -91,14 +91,14 @@ const ChatUsersModal = ({ open, setOpen, id }) => {
                     <div className='py-1 px-3 text-sm bg-gray-50 flex items-center gap-2 rounded'>
                       <span>
                         <SafeImage
-                          src={utils.parseUrl(i.photoURL)}
+                          src={utils.parseUrl(i?.photoURL)}
                           alt=''
                           className='h-8 w-8 object-cover rounded-full'
                           classNameFallback='h-8 w-8 object-fit rounded-full'
                         />
                       </span>
                       <div className='flex gap-3 flex-wrap items-center'>
-                        <span>{i.name}</span>
+                        <span>{i?.name}</span>
                         {i.isModerator && (
                           <span className='text-xs border border-indigo-200 bg-indigo-50 px-2 py-0.5 rounded-full'>
                             {t('Moderator')}

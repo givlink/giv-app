@@ -76,19 +76,8 @@ export default function ChatDetail({ id }) {
     //Update last read item
     if (messages && messages.length) {
       const lastItem = messages[messages.length - 1]
-      localStorage.setItem(`lastRead-${id}`, lastItem.id)
-
-      let lastOtherMessage
-      for (let i = messages.length - 1; i >= 0; i--) {
-        const msg = messages[i]
-        if (msg.senderId !== state.user?.id) {
-          lastOtherMessage = msg
-          break
-        }
-      }
-      if (lastOtherMessage) {
-        api.updateReadReceipts(id, lastOtherMessage.id)
-      }
+      db.chatGroups.update(parseInt(id), { hasUnread: 0 })
+      api.updateReadReceipts(id, lastItem.id)
     }
   }, [messages, id, state?.user])
 

@@ -4,6 +4,8 @@ import React from 'react'
 import { useLocation, useMatch } from '@reach/router'
 import { Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
+import { db } from '../lib/localdb'
+import { useLiveQuery } from 'dexie-react-hooks'
 import {
   ClockIcon as ClockIconSolid,
   ChatIcon as ChatIconSolid,
@@ -23,9 +25,8 @@ import {
 export default function Footer() {
   const { t } = useTranslation()
   // const dispatch = useDispatch();
-  const { unreadCount, user, chatsUnreadCount } = useSelector(s => ({
+  const { unreadCount, user } = useSelector(s => ({
     unreadCount: s.notificationsUnreadCount,
-    chatsUnreadCount: s.chatsUnreadCount,
     user: s.user,
   }))
   const loc = useLocation()
@@ -47,6 +48,10 @@ export default function Footer() {
     isNotsList ||
     isReccomendationList ||
     isMyPage
+
+  const unreadChatGroupsCount = useLiveQuery(() =>
+    db.chatGroups.where('hasUnread').equals(1).count(),
+  )
 
   return (
     <Transition
@@ -122,9 +127,9 @@ export default function Footer() {
               ) : (
                 <ChatIcon className='h-7 w-7' />
               )}
-              {chatsUnreadCount > 0 && (
+              {unreadChatGroupsCount > 0 && (
                 <div className='w-5 h-5 text-xs leading-none font-mono p-1 text-white flex items-center justify-center rounded-full absolute mt-0 mr-1 top-0 right-0 bg-giv-blue'>
-                  {chatsUnreadCount}
+                  {unreadChatGroupsCount}
                 </div>
               )}
               <label className='hidden md:block'>{t('Footer_Chat')}</label>

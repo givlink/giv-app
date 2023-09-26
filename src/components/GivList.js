@@ -62,7 +62,7 @@ const GivList = ({
   const { data: givs, loading } = useApi(`/posts`, query)
 
   if (loading) return <Spinner />
-  if (!givs.length) return <EmptyGivList />
+  if (!givs?.length) return <EmptyGivList />
 
   givs.sort((a, b) => {
     return a.createdAt > b.createdAt ? 1 : -1

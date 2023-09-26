@@ -42,7 +42,7 @@
   },
   "scripts": {
     "predev": "yarn",
-    "dev": "cross-env NODE_OPTIONS='--openssl-legacy-provider' HTTPS=true craco start --port 3001",
+    "dev": "cross-env NODE_OPTIONS='--openssl-legacy-provider' HTTPS=true craco start",
     "start": "yarn dev",
     "build": "craco build",
     "eject": "react-scripts eject",

@@ -93,6 +93,15 @@ export const updateReadReceipts = (groupId, messageId) => {
     },
   })
 }
+export const markAllAsRead = async () => {
+  await db.chatGroups.where({ hasUnread: 1 }).modify({ hasUnread: 0 })
+  await _apiClient(`/chat-groups`, {
+    method: 'PUT',
+    data: {
+      action: 'markAllAsRead',
+    },
+  })
+}
 
 const getCommentById = id => _apiClient(`/comments/${id}`)
 
@@ -737,5 +746,6 @@ const api = {
   listGivTypes,
   pauseGivActivity,
   unpauseGivActivity,
+  markAllAsRead,
 }
 export default api
