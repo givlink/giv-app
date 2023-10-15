@@ -8,6 +8,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import api from 'lib/api'
 
 export default function ChatList() {
+  const [showButton, setShowButton] = React.useState(true)
   const state = useSelector(s => ({
     currUser: s.user,
     requestsPendingCount: s.requestsPendingCount,
@@ -50,16 +51,17 @@ export default function ChatList() {
           })}
         </ul>
         <div className='flex items-center justify-center pt-4'>
-          <button
-            onClick={() => {
-              if (window.confirm('Confirm')) {
+          {unreadChatGroupsCount > 1 && showButton && (
+            <button
+              onClick={() => {
                 api.markAllAsRead()
-              }
-            }}
-            className='py-2 px-3 text-sm'
-          >
-            全て既読済み
-          </button>
+                setShowButton(false)
+              }}
+              className='py-2 px-3 text-sm'
+            >
+              全て既読済み
+            </button>
+          )}
         </div>
       </>
     </div>
