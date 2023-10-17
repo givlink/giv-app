@@ -1,8 +1,8 @@
 import React from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Spinner from 'components/Spinner'
-import { ChevronDownIcon, CheckCircleIcon } from '@heroicons/react/outline'
-import { UploadIcon } from '@heroicons/react/solid'
+import { ChevronDownIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import { ArrowUpTrayIcon } from '@heroicons/react/24/solid'
 import api from 'lib/api'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -119,13 +119,13 @@ const RequestModal = ({ open, setOpen, userId }) => {
                         className='text-sm font-medium block w-full rounded px-8 py-3 shadow bg-giv-blue text-white flex items-center justify-center'
                       >
                         <span className='ml-3'>{t('Want to Send')}</span>
-                        <UploadIcon className='h-6 w-6 rotate-90 transform ml-3' />
+                        <ArrowUpTrayIcon className='h-6 w-6 rotate-90 transform ml-3' />
                       </button>
                       <button
                         onClick={() => sendRequest('receive')}
                         className='text-sm font-medium block w-full rounded px-8 py-3 shadow bg-giv-blue text-white flex items-center justify-center'
                       >
-                        <UploadIcon className='h-6 w-6 mr-3 -rotate-90 transform' />
+                        <ArrowUpTrayIcon className='h-6 w-6 mr-3 -rotate-90 transform' />
 
                         <span className='mr-3'>{t('Want to Receive')}</span>
                       </button>

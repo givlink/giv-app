@@ -6,7 +6,7 @@ import Spinner from 'components/Spinner'
 import Error from 'components/Error'
 import api from 'lib/api'
 import { Dialog, Transition } from '@headlessui/react'
-import { CalendarIcon } from '@heroicons/react/outline'
+import { CalendarIcon } from '@heroicons/react/24/outline'
 import { Trans, useTranslation } from 'react-i18next'
 
 const AcceptRequestModal = ({ request, requester, open, setOpen }) => {

@@ -19,15 +19,15 @@ import TagUser from 'components/TagUser'
 import Linkify from 'react-linkify'
 import useApi from 'hooks/use-api'
 import {
-  ExclamationIcon,
+  ExclamationTriangleIcon,
   CalendarIcon,
   ChevronRightIcon,
-  ArrowCircleRightIcon,
+  ArrowRightCircleIcon,
   HeartIcon as HeartIconOutline,
-  XIcon,
-  BanIcon,
-} from '@heroicons/react/outline'
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid'
+  XMarkIcon,
+  NoSymbolIcon,
+} from '@heroicons/react/24/outline'
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
 import { Link } from '@reach/router'
 import api from 'lib/api'
 import usePreserveScroll from 'hooks/scroll'
@@ -101,7 +101,7 @@ const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
             <div className='inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6'>
               <div className='sm:flex sm:items-start'>
                 <div className='mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10'>
-                  <ExclamationIcon
+                  <ExclamationTriangleIcon
                     className='h-6 w-6 text-red-600'
                     aria-hidden='true'
                   />
@@ -209,14 +209,14 @@ const CommentCard = ({ comment, user, onDelete }) => {
               onClick={() => setDeleteOpen(true)}
               className='p-2 rounded hover:bg-gray-100'
             >
-              <XIcon className='h-4 w-4' />
+              <XMarkIcon className='h-4 w-4' />
             </button>
           ) : (
             <button
               onClick={() => setComplaintOpen(true)}
               className='hidden p-2 rounded text-red-500 hover:bg-red-500 hover:text-white'
             >
-              <BanIcon className='h-4 w-4' />
+              <NoSymbolIcon className='h-4 w-4' />
             </button>
           )}
         </div>
@@ -368,7 +368,7 @@ const CreateComment = ({ postId, onAddComment, postMembers }) => {
                 {sending ? (
                   <Spinner color='text-gray-100' />
                 ) : (
-                  <ArrowCircleRightIcon className='h-8 w-8' />
+                  <ArrowRightCircleIcon className='h-8 w-8' />
                 )}
               </button>
             )}

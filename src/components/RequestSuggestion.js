@@ -7,8 +7,8 @@ import { useSelector } from 'react-redux'
 import Spinner from 'components/Spinner'
 import {
   ChevronRightIcon,
-  ArrowNarrowRightIcon,
-} from '@heroicons/react/outline'
+  ArrowSmallRightIcon,
+} from '@heroicons/react/24/outline'
 import utils from 'lib/utils'
 import SafeImage from 'components/SafeImage'
 
@@ -268,7 +268,7 @@ export default function RequestSugestion({ fromUser, toUser }) {
                 className='h-12 w-12 object-cover rounded-full shadow-xl mb-2'
               />
             </div>
-            <ArrowNarrowRightIcon className='flex-shrink-0 w-9 text-gray-300' />
+            <ArrowSmallRightIcon className='flex-shrink-0 w-9 text-gray-300' />
             <div className='flex-shrink-0 flex flex-col items-end'>
               <SafeImage
                 src={utils.parseUrl(toUser.photoURL)}

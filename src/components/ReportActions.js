@@ -1,5 +1,5 @@
 import React from 'react'
-import { ExclamationIcon, BanIcon } from '@heroicons/react/outline'
+import { ExclamationTriangleIcon, NoSymbolIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ComplaintModal from 'components/ComplaintModal'
@@ -24,14 +24,14 @@ export default function ReportActions({ targetUser }) {
         className='group text-gray-600 flex items-center text-xs px-3 py-2 font-medium border border-red-500 hover:bg-red-600 hover:text-white rounded w-48 flex items-center justify-center'
       >
         {t('Report')}
-        <ExclamationIcon className='h-4 w-4 -mb-px ml-1 text-gray-500 group-hover:text-white' />
+        <ExclamationTriangleIcon className='h-4 w-4 -mb-px ml-1 text-gray-500 group-hover:text-white' />
       </button>
       <button
         onClick={() => setBlockOpen(true)}
         className='group text-gray-600 flex items-center text-xs px-3 py-2 font-medium border border-red-500 hover:bg-red-600 hover:text-white rounded w-48 flex items-center justify-center'
       >
         {t('Block User')}
-        <BanIcon className='h-4 w-4 -mb-px ml-1 text-gray-500 group-hover:text-white' />
+        <NoSymbolIcon className='h-4 w-4 -mb-px ml-1 text-gray-500 group-hover:text-white' />
       </button>
     </div>
   )

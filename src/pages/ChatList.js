@@ -35,11 +35,7 @@ export default function ChatList() {
 
   return (
     <div className='pb-36 overflow-hidden'>
-      <HeaderChatList
-        active='chats'
-        chatsCount={unreadChatGroupsCount}
-        requestsCount={state.requestsPendingCount}
-      />
+      <HeaderChatList chatsCount={unreadChatGroupsCount} />
       <>
         <ul className='space-y-2 overflow-auto md:max-w-2xl md:mx-auto'>
           {sortedChatGroups.map(p => {

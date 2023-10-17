@@ -4,7 +4,7 @@ import { Link } from '@reach/router'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/Spinner'
 import SafeImage from 'components/SafeImage'
-import { ChevronRightIcon } from '@heroicons/react/outline'
+import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import useApi from 'hooks/use-api'
 import qs from 'query-string'
 

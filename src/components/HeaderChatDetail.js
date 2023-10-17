@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, UserCircleIcon } from '@heroicons/react/outline'
+import { ChevronLeftIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import React from 'react'
 import { useInView } from 'react-intersection-observer'
 import { Dialog, Transition } from '@headlessui/react'

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import UserListCard from 'components/UserListCard'
 import Spinner from 'components/Spinner'
 import actions from 'state/actions'
-import { XIcon, ChevronRightIcon } from '@heroicons/react/outline'
+import { XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import usePreserveScroll from 'hooks/scroll'
 
@@ -131,7 +131,7 @@ const FilterBar = props => {
               onClick={handleReset}
               className='flex items-center justify-center px-2 py-0.5 border border-red-300 rounded'
             >
-              <XIcon className='h-4 w-4 mt-px mr-0.5 text-red-500' />
+              <XMarkIcon className='h-4 w-4 mt-px mr-0.5 text-red-500' />
               <span className='leading-none'>{t('Reset')}</span>
             </button>
           </div>

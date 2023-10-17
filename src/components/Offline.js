@@ -1,5 +1,5 @@
 import React from 'react'
-import { StatusOfflineIcon } from '@heroicons/react/outline'
+import { WifiIcon } from '@heroicons/react/24/outline'
 import { Detector } from 'react-detect-offline'
 import { Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
@@ -22,7 +22,7 @@ const OfflineBanner = () => {
         >
           <div className='fixed mt-1 top-0 left-0 right-0 z-50 flex items-center justify-center'>
             <div className='animate-shake bg-white w-2/3 bg-red-700 text-white py-0.5 border border-red-600 rounded-sm shadow font-medium text-xs text-center flex items-center justify-center'>
-              <StatusOfflineIcon className='h-6 w-6 mr-2 text-red-100' />
+              <WifiIcon className='h-6 w-6 mr-2 text-red-100' />
               <span>{t('You are offline')}</span>
             </div>
           </div>

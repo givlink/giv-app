@@ -1,7 +1,7 @@
 import React from 'react'
 import useUpdateNotifier from 'hooks/updateNotifier'
 import { Transition } from '@headlessui/react'
-import { RefreshIcon } from '@heroicons/react/outline'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { Trans } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
@@ -38,7 +38,7 @@ const AppRefreshButton = ({ available, setAvailable }) => {
               leaveFrom='rotate-0'
               leaveTo='rotate-180'
             >
-              <RefreshIcon className='animate-spin-slow duration-1000 mr-1 h-5 w-5' />
+              <ArrowPathIcon className='animate-spin-slow duration-1000 mr-1 h-5 w-5' />
             </Transition.Child>
             <Transition.Child
               enter='ease-out duration-150 transform'

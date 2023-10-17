@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Dialog, Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
-import { CogIcon } from '@heroicons/react/outline'
+import { CogIcon } from '@heroicons/react/24/outline'
 import actions from 'state/actions'
 
 // const groupMap = {

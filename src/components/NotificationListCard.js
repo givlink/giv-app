@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from '@reach/router'
 import SafeImage from 'components/SafeImage'
 import PostCreateModal from 'components/PostCreateModal'
-import { CalendarIcon } from '@heroicons/react/outline'
+import { CalendarIcon } from '@heroicons/react/24/outline'
 import api from 'lib/api'
 import { useTranslation } from 'react-i18next'
 

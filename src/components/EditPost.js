@@ -1,5 +1,5 @@
 import React from 'react'
-import { PencilIcon, PhotographIcon } from '@heroicons/react/outline'
+import { PencilIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import PostDetailEditModal from 'components/PostDetailEditModal'
 import PostImagesEditModal from 'components/PostImagesEditModal'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +15,7 @@ export default function EditPost({ id, post }) {
         onClick={() => setEditingImage(true)}
         className='underline flex items-center underline rounded pr-4 py-1.5 text-sm font-medium leading-none'
       >
-        <PhotographIcon className='h-5 w-5 mr-1' />
+        <PhotoIcon className='h-5 w-5 mr-1' />
         {t('Edit Images')}
       </button>
       <button

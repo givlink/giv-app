@@ -1,5 +1,5 @@
-import * as icons from '@heroicons/react/outline'
-import * as iconsSolid from '@heroicons/react/solid'
+import * as icons from '@heroicons/react/24/outline'
+import * as iconsSolid from '@heroicons/react/24/solid'
 
 //Refer to https://heroicons.dev for icon names
 

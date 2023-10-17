@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import React from 'react'
-import { ChevronLeftIcon } from '@heroicons/react/outline'
+import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 import SkillSelector from 'components/SkillSelector'
 import Spinner from 'components/Spinner'

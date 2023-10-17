@@ -1,6 +1,6 @@
 import React from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XIcon, DownloadIcon } from '@heroicons/react/outline'
+import { XMarkIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 
 const ImageModal = ({ open, setOpen, src }) => {
   const cancelButtonRef = React.useRef(null)
@@ -37,13 +37,13 @@ const ImageModal = ({ open, setOpen, src }) => {
                   target='_blank'
                   className='mt-2 bg-white rounded-full p-2'
                 >
-                  <DownloadIcon className='h-8 w-8 text-gray-600' />
+                  <ArrowDownTrayIcon className='h-8 w-8 text-gray-600' />
                 </a>
                 <button
                   onClick={closeModal}
                   className='mt-2 bg-white rounded-full p-2'
                 >
-                  <XIcon className='h-8 w-8 text-gray-600' />
+                  <XMarkIcon className='h-8 w-8 text-gray-600' />
                 </button>
               </div>
             </div>

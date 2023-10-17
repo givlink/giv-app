@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 import React from 'react'
-import { PlusIcon, ChevronLeftIcon } from '@heroicons/react/outline'
+import { PlusIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import utils from 'lib/utils'
 import { Dialog, Transition } from '@headlessui/react'

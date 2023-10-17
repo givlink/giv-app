@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from '@reach/router'
 
-export default function Header({ chatsCount = 0 }) {
+export default function Header({ requestsCount = 0 }) {
   const { t } = useTranslation()
   return (
     <div className='mb-16'>
@@ -15,23 +15,20 @@ export default function Header({ chatsCount = 0 }) {
           />
           <div className='flex-1 flex items-center'>
             <Link
-              className={`${
-                true
-                  ? 'border-giv-blue-dark text-giv-blue-dark'
-                  : 'border-transparent text-gray-500'
-              } -mb-px text-xs sm:text-sm font-medium border-b-2 px-2 pt-5 pb-4 w-full text-center inline-block`}
-              to='/chats'
+              className={`
+-mb-px text-xs sm:text-sm font-medium px-2 pt-5 pb-4 w-full text-center inline-block`}
+              to='/chats/requests'
             >
               <span className='relative'>
-                {t('Chats')}
+                {t('Requests')}
                 <span
-                  className={`${chatsCount > 0 ? 'visible ' : 'hidden'} ${
+                  className={`${requestsCount > 0 ? 'visible' : 'hidden'} ${
                     true
-                      ? 'text-white bg-giv-blue'
+                      ? 'text-white bg-giv-blue '
                       : 'bg-gray-300 text-gray-900 opacity-50'
-                  } absolute top-0 right-0 -mr-7 -mt-3 w-6 h-6 p-1 flex items-center justify-center leading-0 font-mono text-xs rounded-full`}
+                  } absolute top-0 right-0 -mr-7 -mt-3 w-6 h-6 p-1 flex items-center justify-center leading-0 text-xs rounded-full`}
                 >
-                  {chatsCount > 10 ? '9+' : chatsCount}
+                  {requestsCount > 10 ? '9+' : requestsCount}
                 </span>
               </span>
             </Link>

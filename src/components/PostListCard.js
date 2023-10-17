@@ -1,7 +1,7 @@
 import utils from 'lib/utils'
 import { Link } from '@reach/router'
 import SafeImage from 'components/SafeImage'
-import { ChevronRightIcon } from '@heroicons/react/outline'
+import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
 export default function PostListCard({ post }) {
   let firstImage

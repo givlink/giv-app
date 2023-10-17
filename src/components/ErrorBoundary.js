@@ -1,6 +1,6 @@
 import React from 'react'
 import Err from 'lib/err'
-import { RefreshIcon } from '@heroicons/react/outline'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -38,7 +38,7 @@ class ErrorBoundary extends React.Component {
             onClick={() => (window.location.href = '/')}
             className='flex items-center gap-2 bg-giv-blue font-medium text-white px-8 py-4 rounded'
           >
-            <RefreshIcon className='h-6 w-6' />
+            <ArrowPathIcon className='h-6 w-6' />
             アップリを再起動する？
           </button>
         </div>

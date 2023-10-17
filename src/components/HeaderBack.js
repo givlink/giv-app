@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, BanIcon } from '@heroicons/react/outline'
+import { ChevronLeftIcon, NoSymbolIcon } from '@heroicons/react/24/outline'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useInView } from 'react-intersection-observer'
@@ -64,7 +64,7 @@ const ComplaintButton = props => {
         className='text-gray-600 flex items-center text-xs pl-3 pr-1 py-2 font-medium hover:bg-gray-100 rounded'
       >
         {t('Report')}
-        <BanIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
+        <NoSymbolIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
       </button>
     </div>
   )

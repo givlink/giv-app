@@ -8,6 +8,7 @@ const translations = {
   'Footer_Search': '検索',
   'Footer_Discover': '次のお相手',
   'Footer_Chat': 'チャット',
+  'Footer_Request': 'リクエスト',
   'Footer_Notifications': '通知',
   'Footer_MyPage': 'マイページ',
 

@@ -13,7 +13,7 @@ import FloatingRequestButton from 'components/FloatingRequestButton'
 import ProfilePic from 'components/ProfilePic'
 import PauseGivActivity from 'components/PauseGivActivity'
 import GivList from 'components/GivList'
-import { LocationMarkerIcon } from '@heroicons/react/outline'
+import { MapPinIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import EditUser from 'components/EditUser'
 import usePreserveScroll from 'hooks/scroll'
@@ -140,7 +140,7 @@ export default function UserDetail(props) {
                   {user.job}
                 </span>
                 <div className='mt-4 flex items-center'>
-                  <LocationMarkerIcon className='h-5 w-5 mr-1 text-gray-400' />
+                  <MapPinIcon className='h-5 w-5 mr-1 text-gray-400' />
                   <span>{renderArea(user.areaId)}</span>
                 </div>
                 <div className='mt-4'>

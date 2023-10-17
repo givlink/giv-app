@@ -1,4 +1,4 @@
-import HeaderChatList from 'components/HeaderChatList'
+import HeaderRequestList from 'components/HeaderRequestList'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import RequestListCard from 'components/RequestListCard'
@@ -16,11 +16,7 @@ export default function RequestList() {
 
   return (
     <div className='pb-20'>
-      <HeaderChatList
-        active='requests'
-        chatsCount={state.chatsUnreadCount}
-        requestsCount={state.requestsPendingCount}
-      />
+      <HeaderRequestList requestsCount={state.requestsPendingCount} />
       {state.loading && <Spinner className='pt-2' />}
 
       <ul className='max-w-xl pt-3 mx-auto space-y-3'>

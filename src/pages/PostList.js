@@ -5,7 +5,7 @@ import PostListCard from 'components/PostListCard'
 import Spinner from 'components/Spinner'
 import actions from 'state/actions'
 import usePreserveScroll from 'hooks/scroll'
-import { ChevronRightIcon, ArrowDownIcon } from '@heroicons/react/outline'
+import { ChevronRightIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 

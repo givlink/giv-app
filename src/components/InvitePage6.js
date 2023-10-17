@@ -1,5 +1,5 @@
 import React from 'react'
-import { HomeIcon } from '@heroicons/react/outline'
+import { HomeIcon } from '@heroicons/react/24/outline'
 import ErrorComponent from 'components/Error'
 import SpinnerFull from 'components/SpinnerFull'
 import api from 'lib/api'

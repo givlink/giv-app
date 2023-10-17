@@ -6,7 +6,7 @@ import api from 'lib/api'
 import MessageImageView from 'components/MessageImageView'
 import { Link } from '@reach/router'
 import Linkify from 'react-linkify'
-import { ReplyIcon } from '@heroicons/react/outline'
+import { ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
 import { useDispatch } from 'react-redux'
 
 const ReadMarker = ({ group, messageId }) => {
@@ -107,7 +107,7 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
                 }}
                 className='p-2 rounded hover:bg-gray-100'
               >
-                <ReplyIcon className='w-5 h-5' />
+                <ArrowUturnLeftIcon className='w-5 h-5' />
               </button>
             </div>
           )}
@@ -142,7 +142,7 @@ const MessageRowItem = ({ message, prevMessage, group, user }, ref) => {
               } rounded p-2 mt-3 mb-1 mx-2`}
             >
               <div className='flex items-center gap-1'>
-                <ReplyIcon className='w-3 h-3 text-gray-500' />
+                <ArrowUturnLeftIcon className='w-3 h-3 text-gray-500' />
                 {utils.snipText(message.reply?.sender?.name, 30)}
               </div>
               {utils.snipText(message.reply?.content)}

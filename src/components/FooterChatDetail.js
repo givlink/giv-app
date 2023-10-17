@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { CameraIcon, XIcon, ReplyIcon } from '@heroicons/react/outline'
+import { CameraIcon, XMarkIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
 import api from 'lib/api'
 import utils from 'lib/utils'
 import { db } from 'lib/localdb'
@@ -88,7 +88,7 @@ export default function FooterChatDetail({ groupId }) {
                   onClick={() => deleteImage(idx)}
                   className='animate-jiggle absolute z-10 top-0 right-0 -mr-2.5 -mt-3 p-1.5 bg-red-500 rounded-full text-red-100 shadow'
                 >
-                  <XIcon className='h-4 w-4' />
+                  <XMarkIcon className='h-4 w-4' />
                 </button>
 
                 <img
@@ -106,7 +106,7 @@ export default function FooterChatDetail({ groupId }) {
         <div className='-ml-1.5 bg-giv-blue py-2 px-3 flex gap-2 items-center justify-between'>
           <div className='flex-1'>
             <div className='text-xs flex items-center gap-2 text-gray-100'>
-              <ReplyIcon className='w-4 h-4' />
+              <ArrowUturnLeftIcon className='w-4 h-4' />
               {utils.snipText(inReplyMsg.sender?.name, 30)}
             </div>
             <p className='text-xs text-white'>
@@ -120,7 +120,7 @@ export default function FooterChatDetail({ groupId }) {
               }
               className='bg-white rounded-full p-1'
             >
-              <XIcon className='w-4 h-4' />
+              <XMarkIcon className='w-4 h-4' />
             </button>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 import React from 'react'
-import { PlusIcon, XIcon, ChevronLeftIcon } from '@heroicons/react/outline'
+import { PlusIcon, XMarkIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 import Spinner from 'components/Spinner'
 import api from 'lib/api'
@@ -162,7 +162,7 @@ const PostImagesEditModal = ({
                             onClick={() => deleteImage(idx)}
                             className='animate-jiggle absolute z-10 top-0 right-0 -mr-2.5 -mt-3 p-1.5 bg-red-500 rounded-full text-red-100 shadow'
                           >
-                            <XIcon className='h-4 w-4' />
+                            <XMarkIcon className='h-4 w-4' />
                           </button>
 
                           <img

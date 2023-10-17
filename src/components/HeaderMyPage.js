@@ -1,4 +1,4 @@
-import { LogoutIcon } from '@heroicons/react/outline'
+import { PowerIcon } from '@heroicons/react/24/outline'
 import { Link } from '@reach/router'
 import { useTranslation } from 'react-i18next'
 import api from 'lib/api'
@@ -22,7 +22,7 @@ export default function Header() {
             className='text-gray-600 flex items-center text-xs pl-3 pr-1 py-2 font-medium hover:bg-gray-100 rounded'
           >
             {t('Logout')}
-            <LogoutIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
+            <PowerIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
           </button>
         </div>
       </header>

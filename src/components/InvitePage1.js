@@ -1,5 +1,5 @@
 import React from 'react'
-import { LogoutIcon, HomeIcon } from '@heroicons/react/outline'
+import { PowerIcon, HomeIcon } from '@heroicons/react/24/outline'
 import actions from 'state/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import ErrorComponent from 'components/Error'
@@ -91,7 +91,7 @@ const Page1 = ({ activeStepIndex = 0, code, setInviteCode, handleNext }) => {
             className='flex-1 text-gray-600 flex items-center justify-center text-xs py-4 px-4 mb-2 font-medium hover:bg-gray-100 rounded'
           >
             {t('Logout')}
-            <LogoutIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
+            <PowerIcon className='h-4 w-4 -mb-px ml-1 text-gray-500' />
           </button>
         )}
       </div>
