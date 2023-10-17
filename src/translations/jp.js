@@ -1,5 +1,6 @@
 const translations = {
   'Tag_Message': 'メッセージ',
+  'People Liking This Post': 'からいいねをもらいました',
 
   'RequestMessagePlaceholder': 'メッセージ',
 

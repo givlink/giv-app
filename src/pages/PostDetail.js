@@ -3,7 +3,7 @@ import ComplaintModal from 'components/ComplaintModal'
 import Error from 'components/Error'
 import EditPost from 'components/EditPost'
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useLocation } from '@reach/router'
 import { Carousel } from 'react-responsive-carousel'
 import CommentReactionButton from 'components/CommentReactionButton'
@@ -17,6 +17,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
 import TagUser from 'components/TagUser'
 import Linkify from 'react-linkify'
+import useApi from 'hooks/use-api'
 import {
   ExclamationIcon,
   CalendarIcon,
@@ -30,7 +31,28 @@ import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid'
 import { Link } from '@reach/router'
 import api from 'lib/api'
 import usePreserveScroll from 'hooks/scroll'
-import actions from 'state/actions'
+
+const LikerList = ({ post }) => {
+  const { t } = useTranslation()
+  return (
+    <ul className='flex flex-wrap -space-x-px overflow-hidden items-center'>
+      {(post?.likes || []).map(item => (
+        <Link to={`/users/${item.id}`} key={item.id}>
+          <img
+            className='ring-gray-200 inline-block ring-1 h-6 w-6 rounded-full object-cover'
+            src={utils.parseUrl(item.photoURL)}
+            alt=''
+          />
+        </Link>
+      ))}
+      {post?.likes?.length > 0 && (
+        <span className='pl-3 text-xs text-gray-700'>
+          {t('People Liking This Post')}
+        </span>
+      )}
+    </ul>
+  )
+}
 
 const DeleteCommentModal = ({ comment, postId, open, setOpen, onDelete }) => {
   const { t } = useTranslation()
@@ -431,44 +453,23 @@ const EmptyPost = () => {
 
 export default function PostDetail(props) {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const { data: post, loading, mutate } = useApi(`/posts/${props.id}`)
   const state = useSelector(s => ({
     post: s.postById[props.id],
-    currUser: s.user,
     user: s.user,
     postSingleLoading: s.postSingleLoading,
     isLiked: s.postLikeById[props.id],
   }))
-  const { post } = state
 
   usePreserveScroll('postDetail', true)
-  React.useEffect(() => {
-    if (state.isLiked === undefined) {
-      //Else call api and update user list
-      const run = async () => {
-        //@Todo err handling
-        const liked = await api.checkLiked(props.id, state.currUser?.id)
-        dispatch({ type: 'postLike/data', postId: props.id, liked })
-      }
-      run()
-    }
-  }, [dispatch, state.user, state.isLiked, props.id, state.currUser])
-
-  React.useEffect(() => {
-    if (post) return
-
-    //Else call api and update user list
-    const run = async () => {
-      //@Todo err handling
-      dispatch({ type: 'posts/data_single_loading' })
-      const post = await api.getPostById(props.id)
-      dispatch({ type: 'posts/data_single', post })
-    }
-    run()
-  }, [dispatch, post, props.id])
 
   const toggleLike = () => {
-    dispatch(actions.setLiked(props.id, !state.isLiked))
+    mutate({ ...post, liked: !post.liked }, { revalidate: false })
+    if (post.liked) {
+      api.unlikePost(post.id)
+    } else {
+      api.likePost(post.id)
+    }
   }
 
   const isMyPost = post?.author?.id === state.user?.id
@@ -477,7 +478,7 @@ export default function PostDetail(props) {
     <div>
       <HeaderBack showComplaintButton={true} />
       <div className='pb-20 bg-white max-w-2xl mx-auto'>
-        {!post && state.postSingleLoading ? (
+        {loading ? (
           <div className='pt-24'>
             <Spinner />
           </div>
@@ -515,14 +516,14 @@ export default function PostDetail(props) {
               <button
                 onClick={toggleLike}
                 className={`${
-                  state.isLiked
+                  post?.liked
                     ? 'px-2 py-0.5 bg-red-600 text-white shadow-lg'
                     : 'text-red-500 pl-3 pr-4 py-1 border-red-400'
                 } flex items-center rounded-md border`}
               >
                 <Transition
                   appear={true}
-                  show={state.isLiked || false}
+                  show={post?.liked || false}
                   enter='ease-out duration-300 transform transition-all'
                   enterFrom='opacity-0 -translate-y-2 rotate-45'
                   enterTo='opacity-100 translate-y-0 rotate-0'
@@ -532,7 +533,7 @@ export default function PostDetail(props) {
                 >
                   <HeartIconSolid className='h-7 w-7' />
                 </Transition>
-                {!state.isLiked && (
+                {!post?.liked && (
                   <>
                     <HeartIconOutline className='h-7 w-7 mr-2 text-red-400' />
                     Like
@@ -543,6 +544,9 @@ export default function PostDetail(props) {
                 <CalendarIcon className='h-6 w-6 mr-1.5 text-gray-400' />
                 {utils.parseDate(post.createdAt)}
               </span>
+            </div>
+            <div className='px-4 pt-3'>
+              <LikerList post={post} />
             </div>
             <div className='px-4 pt-6 pb-8'>
               {isMyPost && <EditPost post={post} id={post.id} />}
@@ -568,19 +572,19 @@ export default function PostDetail(props) {
               </p>
             </div>
             <Link to={`/users/${post.giver.id}`}>
-              <div className='flex items-center mx-3 mb-3 px-3 py-3 border border-gray-200 rounded-xl hover:shadow-xl'>
+              <div className='flex items-center mx-3 mb-3 px-3 py-2 border border-gray-200 rounded-xl hover:shadow-xl'>
                 <img
                   src={utils.parseUrl(post.giver.photoURL)}
                   alt={post.giver.name}
-                  className='h-24 w-24 object-cover shadow mr-4 rounded-full'
+                  className='h-12 w-12 object-cover shadow mr-4 rounded-full'
                 />
                 <div className='w-full flex flex-col'>
                   <div className='flex items-center justify-between'>
                     <div>
-                      <span className='text-sm font-medium text-giv-blue'>
+                      <span className='text-xs font-medium text-giv-blue'>
                         {t('Giv sender')}
                       </span>
-                      <h4 className='font-medium text-lg'>{post.giver.name}</h4>
+                      <h4 className='font-medium text-sm'>{post.giver.name}</h4>
                     </div>
                     <ChevronRightIcon className='h-6 w-6 text-gray-500' />
                   </div>
