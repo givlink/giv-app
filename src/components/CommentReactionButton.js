@@ -52,7 +52,7 @@ export default function CommentReaction({ commentId, onSelect = () => {} }) {
           />
           <EmojiButton
             onSelect={_onSelect}
-            icon='EmojiHappy'
+            icon='FaceSmile'
             className='text-giv-blue'
           />
         </div>
@@ -61,7 +61,7 @@ export default function CommentReaction({ commentId, onSelect = () => {} }) {
         onClick={() => setOpen(!open)}
         className='py-1 rounded-full text-xs text-gray-400 hover:text-giv-blue'
       >
-        <Icon name='EmojiHappy' size='sm' />
+        <Icon name='FaceSmile' size='sm' />
       </button>
     </div>
   )

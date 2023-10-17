@@ -19,6 +19,6 @@ export default function Icon({
   className = '',
 }) {
   const iconMap = variant === 'outline' ? icons : iconsSolid
-  const Comp = iconMap[`${name}Icon`] || iconMap['ViewListIcon']
+  const Comp = iconMap[`${name}Icon`] || iconMap['ListBulletIcon']
   return <Comp className={`${sizeClasses[size]} ${className}`} />
 }

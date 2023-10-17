@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import React from 'react'
 
 const iconClasses = {
-  EmojiHappy: {
+  FaceSmile: {
     variant: 'outline',
     className: 'text-giv-blue',
   },
@@ -48,7 +48,7 @@ export default function CommentReactionList({ reactions = [] }) {
               {t('Reactions')}
             </span>
             <button className='rounded-full p-2' onClick={() => setOpen(false)}>
-              <Icon name='X' size='xs' />
+              <Icon name='XMark' size='xs' />
             </button>
           </div>
           {reactions.map((r, idx) => (
