@@ -10,7 +10,7 @@ const NavigationProvider = props => {
   const loc = useLocation()
 
   React.useEffect(() => {
-    let { gotoLink } = parse(loc.search)
+    let gotoLink = parse(loc.search)['goto']
     //URL params take priority
     if (!gotoLink || gotoLink === 'home') {
       //If url not there then check redux state
