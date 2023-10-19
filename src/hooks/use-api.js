@@ -43,11 +43,15 @@ export default function useApi(
   query = {},
   opts = { refreshinterval: 0, disable: false, shouldRetryOnError: false },
 ) {
-  let url = `${path}`
+  let url = path
   if (Object.keys(query).length) {
     url += `?${qs.stringify(query, { arrayFormat: 'comma' })}`
   }
-  const { data, error, isValidating, mutate } = useSWR(url, fetcher, opts)
+  const { data, error, isValidating, mutate } = useSWR(
+    opts.disable ? null : url,
+    fetcher,
+    opts,
+  )
   const loading = !data && data !== null && !error
 
   return {

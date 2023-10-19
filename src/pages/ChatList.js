@@ -9,10 +9,7 @@ import api from 'lib/api'
 
 export default function ChatList() {
   const [showButton, setShowButton] = React.useState(true)
-  const state = useSelector(s => ({
-    currUser: s.user,
-    requestsPendingCount: s.requestsPendingCount,
-  }))
+  const state = useSelector(s => ({ currUser: s.user }))
   usePreserveScroll('chatList')
 
   const chatGroups = useLiveQuery(async () => {

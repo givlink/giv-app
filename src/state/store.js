@@ -139,25 +139,6 @@ const getUpdatedPostMap = (posts = [], state) => {
   return map
 }
 
-//this assumes each item has .id field else ignores it
-const mergeById = (oldList = [], newList = []) => {
-  const byId = {}
-  oldList.forEach(i => {
-    if (!i || !i.id) {
-      console.warn('No id field found in item: mergeById')
-      return
-    }
-    byId[i.id] = i
-  })
-  newList.forEach(i => {
-    if (!i || !i.id) {
-      console.warn('No id field found in item: mergeById')
-      return
-    }
-    byId[i.id] = i
-  })
-  return Object.values(byId)
-}
 
 const reducer = (state = initialState, action) => {
   if (!state) return initialState
@@ -279,22 +260,6 @@ const reducer = (state = initialState, action) => {
         notificationsUnreadCount: action.notifications.length,
         notifications: action.notifications,
         notificationsLoading: false,
-      }
-    case 'requests/loading':
-      return { ...state, requestsLoading: true }
-    case 'requests/data':
-      const newReqs = mergeById(state.requests, action.requests)
-      newReqs.sort((a, b) => {
-        return a.createdAt < b.createdAt ? 1 : -1
-      })
-      const requestsPendingCount = newReqs.filter(
-        i => i.status !== 'match',
-      ).length
-      return {
-        ...state,
-        requestsPendingCount,
-        requests: newReqs,
-        requestsLoading: false,
       }
 
     case 'auth/user_profile_loading':

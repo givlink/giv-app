@@ -28,6 +28,7 @@ import AppUpdateProvider from 'components/AppUpdateProvider'
 import AuthProvider from 'components/AuthProvider'
 import useGlobalFuncs from 'hooks/useGlobalFuncs'
 import InitProvider from 'components/InitProvider'
+import InitV2Provider from 'components/InitV2Provider'
 import NavigationProvider from 'components/NavigationProvider'
 import useSavePushToken from 'hooks/savePushToken'
 import OfflineBanner from 'components/Offline'
@@ -41,40 +42,42 @@ const App = () => {
     <ErrorBoundary>
       <AuthProvider>
         <InitProvider>
-          <AppUpdateProvider>
-            <NavigationProvider>
-              <Toaster />
-              <OfflineBanner />
+          <InitV2Provider>
+            <AppUpdateProvider>
+              <NavigationProvider>
+                <Toaster />
+                <OfflineBanner />
 
-              <Router className='h-screen w-screen' primary={false}>
-                {/* Setup */}
-                <LoginLegacy path='login-legacy' />
-                <Login path='login' />
-                <ResetPassword path='reset' />
-                <Invite path='invite' />
+                <Router className='h-screen w-screen' primary={false}>
+                  {/* Setup */}
+                  <LoginLegacy path='login-legacy' />
+                  <Login path='login' />
+                  <ResetPassword path='reset' />
+                  <Invite path='invite' />
 
-                <RecomendationList path='recommendations' />
-                {/* Users */}
-                <UserList path='users' />
-                <UserDetail path='users/:id' />
-                <UserPosts path='users/:id/posts' />
+                  <RecomendationList path='recommendations' />
+                  {/* Users */}
+                  <UserList path='users' />
+                  <UserDetail path='users/:id' />
+                  <UserPosts path='users/:id/posts' />
 
-                {/* Posts */}
-                <PostDetail path='posts/:id' />
-                <PostEdit path='posts/:id/edit' />
-                <PostList path='/' />
+                  {/* Posts */}
+                  <PostDetail path='posts/:id' />
+                  <PostEdit path='posts/:id/edit' />
+                  <PostList path='/' />
 
-                {/* Chats and Requests */}
-                <RequestList path='chats/requests' />
-                <ChatList path='chats' />
-                <ChatDetail path='chats/:id' />
+                  {/* Chats and Requests */}
+                  <RequestList path='chats/requests' />
+                  <ChatList path='chats' />
+                  <ChatDetail path='chats/:id' />
 
-                {/* Notifications */}
-                <NotificationList path='notifications' />
-              </Router>
-              <Footer />
-            </NavigationProvider>
-          </AppUpdateProvider>
+                  {/* Notifications */}
+                  <NotificationList path='notifications' />
+                </Router>
+                <Footer />
+              </NavigationProvider>
+            </AppUpdateProvider>
+          </InitV2Provider>
         </InitProvider>
       </AuthProvider>
     </ErrorBoundary>

@@ -146,15 +146,6 @@ const actions = {
       //@Todo dispatch toast to notify filter changed
     }
   },
-  watchRequests: () => {
-    return async dispatch => {
-      dispatch({ type: 'requests/loading' })
-      const listener = api.watchGivRequests(requests =>
-        dispatch({ type: 'requests/data', requests }),
-      )
-      dispatch({ type: 'app/update_listeners', listeners: [listener] })
-    }
-  },
   loadUserProfileAndInitialPost: () => {
     return async (dispatch, getState) => {
       const { activeGroup } = getState()
@@ -183,13 +174,6 @@ const actions = {
       const listener = api.watchNotifications(notifications => {
         dispatch({ type: 'notifications/data', notifications })
       })
-      dispatch({ type: 'app/update_listeners', listeners: [listener] })
-    }
-  },
-  watchChatGroups: () => {
-    return async dispatch => {
-      // dispatch({ type: 'chat_groups/loading' })
-      const listener = api.watchChatGroups()
       dispatch({ type: 'app/update_listeners', listeners: [listener] })
     }
   },

@@ -382,17 +382,6 @@ export const mock = async payload => {
 export const acceptGivRequest = id =>
   _apiClient(`/requests/${id}`, { method: 'PUT' })
 
-export const watchGivRequests = cb => {
-  const fetch = () => {
-    _apiClient(`/requests`, { timeout: 4000 })
-      .then(r => cb(r))
-      .catch(() => {})
-  }
-  const listener = setInterval(fetch, DELAY_WATCH ? 100000 : 10000)
-  fetch()
-
-  return () => clearInterval(listener)
-}
 
 export const likePost = postId =>
   _apiClient(`/posts/${postId}/like`, { method: 'PUT' })
@@ -445,65 +434,7 @@ const getCachedProfile = async id => {
   }
 }
 
-export const watchChatMessages = groupId => {
-  if (!groupId) {
-    console.log('No group id in watchChatMessages')
-    return null
-  }
 
-  const run = async () => {
-    const lastTimestamp = await db.lastFetchedMessagesAt
-      .where('groupId')
-      .equals(groupId)
-      .first()
-
-    let url = `/chat-messages/${groupId}`
-    if (lastTimestamp) {
-      url += `?since=${lastTimestamp.timestamp}`
-    }
-
-    _apiClient(url, { timeout: 5000 }).then(async messages => {
-      await db.messages.bulkPut(messages)
-      if (messages.length) {
-        const lastMsg = messages.pop()
-        await db.lastFetchedMessagesAt.put({
-          groupId,
-          timestamp: lastMsg.createdAt,
-        })
-      }
-    })
-  }
-  const listener = setInterval(run, DELAY_WATCH ? 100000 : 2000)
-
-  run()
-
-  return () => {
-    clearInterval(listener)
-  }
-}
-
-export const watchChatGroups = () => {
-  const run = async () => {
-    let url = `/chat-groups`
-
-    const resp = await _apiClient(url, { timeout: 4000 })
-
-    //find deleted items
-    const deletedItems = {}
-    await db.chatGroups.each(item => (deletedItems[item.id] = true))
-    resp.forEach(item => delete deletedItems[item.id])
-
-    await db.chatGroups.bulkPut(resp)
-    await db.chatGroups.bulkDelete(Object.keys(deletedItems))
-  }
-  const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
-
-  run()
-
-  return () => {
-    clearInterval(listener)
-  }
-}
 
 export const watchNotifications = cb => {
   const run = () => {
@@ -685,10 +616,7 @@ const api = {
   listAreas,
   listPosts,
   watchNotifications,
-  watchChatGroups,
-  watchChatMessages,
   sendMessage,
-  watchGivRequests,
   acceptGivRequest,
   updateNotification,
   getUserProfile,

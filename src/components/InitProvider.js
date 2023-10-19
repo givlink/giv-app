@@ -34,7 +34,6 @@ const InitProvider = props => {
 
         dispatch(actions.loadUserProfileAndInitialPost())
         dispatch(actions.watchNotifications())
-        dispatch(actions.watchRequests())
         dispatch(actions.loadInitialUsers())
         dispatch(actions.loadInitialSkills())
         dispatch(actions.loadInitialGivTypes())
@@ -42,7 +41,6 @@ const InitProvider = props => {
         dispatch(actions.loadInitialSkillCategories())
         dispatch(actions.loadInitialAreaCategories())
         dispatch(actions.loadRecommendations())
-        dispatch(actions.watchChatGroups())
 
         //setup push notifications
         const token = localStorage.getItem('pushToken')
