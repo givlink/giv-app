@@ -73,6 +73,11 @@ const translations = {
   'Senboku': '泉北ニュータウン',
   'All': '全体',
 
+  'All Items': '全て',
+  'CM': 'モデレーター',
+  'Member': 'メンバー',
+  'No Chats Found': 'チャットグループが見つかりません',
+
   //Header user list
   'Search by last name': '名前で検索',
 
