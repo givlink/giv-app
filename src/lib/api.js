@@ -473,7 +473,7 @@ export const watchChatMessages = groupId => {
       }
     })
   }
-  const listener = setInterval(run, DELAY_WATCH ? 100000 : 10000)
+  const listener = setInterval(run, DELAY_WATCH ? 100000 : 2000)
 
   run()
 
@@ -482,7 +482,6 @@ export const watchChatMessages = groupId => {
   }
 }
 
-//looks into localstorage and partially fetches the new groups from API
 export const watchChatGroups = () => {
   const run = async () => {
     let url = `/chat-groups`
