@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux'
 import React from 'react'
-import { PlusIcon, XMarkIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
+import {
+  PlusIcon,
+  XMarkIcon,
+  ChevronLeftIcon,
+} from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 import { navigate } from '@reach/router'
 import Spinner from 'components/Spinner'

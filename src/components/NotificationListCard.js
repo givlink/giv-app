@@ -149,11 +149,10 @@ const CommentCard = ({ notification, markRead }) => {
   )
 }
 
-export default function NotificationCard({ user, notification }) {
+export default function NotificationCard({ notification }) {
   const markRead = () => {
     //@Todo err
     api.updateNotification({
-      userId: user.id,
       id: notification.id,
       status: 'read',
     })
