@@ -13,6 +13,11 @@ export default function ChatGroupCard({ group, currUser }) {
   const isModerator = utils.checkModerators(currUser?.id, group?.moderators)
 
   React.useEffect(() => {
+    if(group?.name){
+      setGroupName(group?.name)
+      return
+    }
+
     const run = async () => {
       const memKeys = Object.keys(group?.members || {})
       if (memKeys.length === 2) {
