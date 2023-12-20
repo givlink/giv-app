@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux'
 import React from 'react'
 import utils from 'lib/utils'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
@@ -6,14 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { Dialog, Transition } from '@headlessui/react'
 import Spinner from 'components/Spinner'
 import api from 'lib/api'
-// import { toast } from "react-hot-toast";
 
-const ConfirmModal = ({ open, setOpen }) => {
+const ConfirmModal = ({ open, setOpen, mutate, user }) => {
   const { t } = useTranslation()
   const ref = React.useRef()
   const [sending, setSending] = React.useState(false)
-
-  const dispatch = useDispatch()
 
   const closeModal = () => {
     if (sending) return
@@ -22,10 +18,8 @@ const ConfirmModal = ({ open, setOpen }) => {
 
   const onSave = async () => {
     setSending(true)
-    await api.pauseGivActivity()
-    //@todo err handling
-    const user = await api.getMyProfile()
-    dispatch({ type: 'edit_user/new_data', user })
+    const resp = await api.pauseGivActivity()
+    mutate({ ...user, pauseTime: resp.pauseTime }, { revalidate: false })
     setSending(false)
     closeModal()
   }
@@ -124,18 +118,15 @@ const ConfirmModal = ({ open, setOpen }) => {
   )
 }
 
-export default function PauseGivActivity({ user, editable = false }) {
+export default function PauseGivActivity({ user, editable = false, mutate }) {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const [confirmOpen, setConfirmOpen] = React.useState(false)
   const [sending, setSending] = React.useState(false)
 
   const handleUnpause = async () => {
     setSending(true)
     await api.unpauseGivActivity()
-    //@todo err handling
-    const user = await api.getMyProfile()
-    dispatch({ type: 'edit_user/new_data', user })
+    mutate({ ...user, pauseTime: null }, { revalidate: false })
     setSending(false)
   }
 
@@ -166,6 +157,7 @@ export default function PauseGivActivity({ user, editable = false }) {
               open={confirmOpen}
               setOpen={setConfirmOpen}
               user={user}
+              mutate={mutate}
             />
           </div>
         )

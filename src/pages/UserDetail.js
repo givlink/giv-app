@@ -86,7 +86,7 @@ const Debug = () => {
 }
 
 export default function UserDetail(props) {
-  const { data: user, loading } = useApi(`/users/${props.id}`)
+  const { data: user, loading, mutate } = useApi(`/users/${props.id}`)
   const { t, i18n } = useTranslation()
   const loc = useLocation()
   const state = useSelector(s => ({
@@ -146,7 +146,7 @@ export default function UserDetail(props) {
                 <div className='mt-4'>
                   <SkillTagList skills={user.skills} size='medium' />
                 </div>
-                <PauseGivActivity user={user} editable={isMyPage} />
+                <PauseGivActivity user={user} editable={isMyPage} mutate={mutate}/>
               </div>
             </div>
             <UserAbout user={user} editable={isMyPage} />
